@@ -3,10 +3,13 @@ defmodule EdgePaymentClientTest do
   doctest EdgePaymentClient
 
   test "instantiating a new client" do
-    assert match?(%EdgePaymentClient{
-      authorization: "Bearer sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
-    }, EdgePaymentClient.client(%{
-      token: "sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
-    }))
+    assert match?(
+             %EdgePaymentClient{
+               authorization: "Bearer sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
+             },
+             EdgePaymentClient.client(%{
+               token: "sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
+             })
+           )
   end
 end
