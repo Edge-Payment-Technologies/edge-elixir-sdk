@@ -37,8 +37,10 @@ defmodule EdgePaymentClient do
     )
     |> Finch.request(:client)
     |> case do
-      {:ok, response} -> response.body
+      {:ok, response} ->
+        response.body
         |> client.json_decoder.()
+
       error ->
         error
     end
@@ -84,8 +86,10 @@ defmodule EdgePaymentClient do
         )
         |> Finch.request(:client)
         |> case do
-          {:ok, response} -> response.body
+          {:ok, response} ->
+            response.body
             |> client.json_decoder.()
+
           error ->
             error
         end
@@ -113,8 +117,10 @@ defmodule EdgePaymentClient do
         )
         |> Finch.request(:client)
         |> case do
-          {:ok, response} -> response.body
+          {:ok, response} ->
+            response.body
             |> client.json_decoder.()
+
           error ->
             error
         end
@@ -142,8 +148,10 @@ defmodule EdgePaymentClient do
         )
         |> Finch.request(:client)
         |> case do
-          {:ok, response} -> response.body
+          {:ok, response} ->
+            response.body
             |> client.json_decoder.()
+
           error ->
             error
         end
@@ -169,7 +177,10 @@ defmodule EdgePaymentClient do
        when is_struct(host, URI) and is_struct(path, URI) and is_binary(query),
        do: URI.merge(URI.merge(host, path), %URI{query: query})
 
-  defp default_headers(%EdgePaymentClient{user_agent: user_agent, authorization: authorization}, custom_headers \\ [])
+  defp default_headers(
+         %EdgePaymentClient{user_agent: user_agent, authorization: authorization},
+         custom_headers \\ []
+       )
        when is_binary(user_agent) and is_list(custom_headers) do
     @default_headers
     |> Enum.concat([

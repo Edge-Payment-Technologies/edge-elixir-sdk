@@ -1,8 +1,10 @@
 defmodule EdgePaymentClient.Product do
-  defstruct id: nil
+  defstruct id: nil, created_at: nil, updated_at: nil
 
   @type t() :: %__MODULE__{
-          id: String.t()
+          id: String.t(),
+          created_at: String.t(),
+          updated_at: String.t()
         }
 
   @spec list(EdgePaymentClient.t()) :: nil

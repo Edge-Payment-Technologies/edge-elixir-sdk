@@ -1,8 +1,40 @@
 defmodule EdgePaymentClient.Charge do
-  defstruct id: nil
+  defstruct id: nil,
+            customer_id: nil,
+            payment_method_id: nil,
+            subscription_id: nil,
+            status: nil,
+            message_type_id: nil,
+            amount: nil,
+            fee: nil,
+            net: nil,
+            currency: nil,
+            description: nil,
+            transaction_time: nil,
+            billing_address_id: nil,
+            shipping_address_id: nil,
+            is_production: false,
+            created_at: nil,
+            updated_at: nil
 
   @type t() :: %__MODULE__{
-          id: String.t()
+          id: String.t(),
+          customer_id: String.t(),
+          payment_method_id: String.t(),
+          subscription_id: String.t() | nil,
+          status: String.t(),
+          message_type_id: String.t(),
+          amount: integer(),
+          fee: integer(),
+          net: integer(),
+          currency: String.t(),
+          description: String.t(),
+          transaction_time: String.t(),
+          billing_address_id: String.t(),
+          shipping_address_id: String.t() | nil,
+          is_production: boolean(),
+          created_at: String.t(),
+          updated_at: String.t()
         }
 
   @spec list(EdgePaymentClient.t()) :: nil
