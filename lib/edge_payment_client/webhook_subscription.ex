@@ -1,4 +1,4 @@
-defmodule EdgePaymentClient.Webhook do
+defmodule EdgePaymentClient.WebhookSubscription do
   defstruct id: nil
 
   @type t() :: %__MODULE__{

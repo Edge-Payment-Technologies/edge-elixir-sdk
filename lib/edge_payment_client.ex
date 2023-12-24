@@ -5,6 +5,13 @@ defmodule EdgePaymentClient do
             host: "api.tryedge.com",
             user_agent: nil
 
+  @type raw() :: %{
+    token: String.t(),
+    user_agent: String.t(),
+    json_decoder: function() | nil,
+    json_ecoder: function() | nil,
+    host: String.t() | nil
+  }
   @type t() :: %__MODULE__{
           authorization: String.t(),
           json_decoder: (String.t() -> {:ok, any()} | {:error, any()}),
@@ -15,17 +22,18 @@ defmodule EdgePaymentClient do
 
   @default_headers []
 
-  @spec client(map()) :: %EdgePaymentClient{authorization: String.t()}
-  def client(properties) when is_map(properties) do
+  @spec client(raw()) :: t()
+  def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
     %__MODULE__{
-      authorization: "Bearer #{properties[:token]}",
-      json_decoder: properties[:json_decoder],
-      json_encoder: properties[:json_encoder],
-      host: properties[:host]
+      authorization: "Bearer #{token}",
+      user_agent: user_agent,
+      json_decoder: properties[:json_decoder] || &Jason.decode/1,
+      json_encoder: properties[:json_encoder] || &Jason.encode/1,
+      host: properties[:host] || "api.tryedge.com"
     }
   end
 
-  @spec get(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
+  @spec get(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()} | {:error, any()}
   def get(client, path, data)
       when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
     Finch.build(
@@ -38,8 +46,7 @@ defmodule EdgePaymentClient do
     |> Finch.request(:client)
     |> case do
       {:ok, response} ->
-        response.body
-        |> client.json_decoder.()
+        {:ok, %{repsonse: response, json: client.json_decoder.(response.body)}}
 
       error ->
         error
@@ -163,7 +170,7 @@ defmodule EdgePaymentClient do
 
   defp encode_without_query(host, path)
        when is_binary(host) and is_binary(path),
-       do: encode_without_query(URI.parse(host), URI.parse(path))
+       do: encode_without_query(URI.parse("https://#{host}"), URI.parse(path))
 
   defp encode_without_query(host, path)
        when is_struct(host, URI) and is_struct(path, URI),
@@ -171,11 +178,11 @@ defmodule EdgePaymentClient do
 
   defp encode_with_query(host, path, query)
        when is_binary(host) and is_binary(path) and is_map(query),
-       do: encode_with_query(URI.parse(host), URI.parse(path), URI.encode_query(query, :rfc3986))
+       do: encode_with_query(URI.parse("https://#{host}"), URI.parse(path), Plug.Conn.Query.encode(query))
 
   defp encode_with_query(host, path, query)
        when is_struct(host, URI) and is_struct(path, URI) and is_binary(query),
-       do: URI.merge(URI.merge(host, path), %URI{query: query})
+       do: URI.parse("#{host}#{path}?#{query}")
 
   defp default_headers(
          %EdgePaymentClient{user_agent: user_agent, authorization: authorization},
