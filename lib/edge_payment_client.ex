@@ -1,36 +1,39 @@
 defmodule EdgePaymentClient do
+  @enforce_keys [:authorization, :user_agent, :host, :json_decoder, :json_encoder, :namespace, :finch_options]
   defstruct authorization: nil,
+            user_agent: nil,
+            host: "api.tryedge.com",
             json_decoder: &Jason.decode/1,
             json_encoder: &Jason.encode/1,
-            host: "api.tryedge.com",
-            user_agent: nil
+            namespace: EdgePaymentClient.Finch,
+            finch_options: []
 
   @type raw() :: %{
-    token: String.t(),
-    user_agent: String.t(),
-    json_decoder: function() | nil,
-    json_ecoder: function() | nil,
-    host: String.t() | nil
-  }
+          token: String.t(),
+          user_agent: String.t(),
+          json_decoder: function() | nil,
+          json_ecoder: function() | nil,
+          host: String.t() | nil,
+          namespace: atom() | nil
+        }
   @type t() :: %__MODULE__{
           authorization: String.t(),
           json_decoder: (String.t() -> {:ok, any()} | {:error, any()}),
           json_encoder: (any() -> {:ok, String.t()} | {:error, any()}),
           host: String.t(),
-          user_agent: String.t() | nil
+          user_agent: String.t(),
+          finch_options: Keyword.t(),
+          namespace: atom()
         }
 
   @default_headers []
 
   @spec client(raw()) :: t()
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
-    %__MODULE__{
+    struct(__MODULE__, %{
       authorization: "Bearer #{token}",
-      user_agent: user_agent,
-      json_decoder: properties[:json_decoder] || &Jason.decode/1,
-      json_encoder: properties[:json_encoder] || &Jason.encode/1,
-      host: properties[:host] || "api.tryedge.com"
-    }
+      user_agent: user_agent
+    } |> Map.merge(properties))
   end
 
   @spec get(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()} | {:error, any()}
@@ -43,14 +46,8 @@ defmodule EdgePaymentClient do
         {"Accept", "application/vnd.api+json"}
       ])
     )
-    |> Finch.request(:client)
-    |> case do
-      {:ok, response} ->
-        {:ok, %{repsonse: response, json: client.json_decoder.(response.body)}}
-
-      error ->
-        error
-    end
+    |> request(client)
+    |> response(client)
   end
 
   @spec options(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
@@ -61,7 +58,7 @@ defmodule EdgePaymentClient do
       encode_with_query(client.host, path, data),
       default_headers(client)
     )
-    |> Finch.request(:client)
+    |> request(client)
   end
 
   @spec delete(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
@@ -72,10 +69,10 @@ defmodule EdgePaymentClient do
       encode_with_query(client.host, path, data),
       default_headers(client)
     )
-    |> Finch.request(:client)
+    |> request(client)
   end
 
-  @spec post(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
+  @spec post(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()} | {:error}
   def post(client, path, data)
       when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
     data
@@ -91,7 +88,7 @@ defmodule EdgePaymentClient do
           ]),
           payload
         )
-        |> Finch.request(:client)
+        |> request(client)
         |> case do
           {:ok, response} ->
             response.body
@@ -122,7 +119,7 @@ defmodule EdgePaymentClient do
           ]),
           payload
         )
-        |> Finch.request(:client)
+        |> request(client)
         |> case do
           {:ok, response} ->
             response.body
@@ -153,7 +150,7 @@ defmodule EdgePaymentClient do
           ]),
           payload
         )
-        |> Finch.request(:client)
+        |> request(client)
         |> case do
           {:ok, response} ->
             response.body
@@ -178,7 +175,12 @@ defmodule EdgePaymentClient do
 
   defp encode_with_query(host, path, query)
        when is_binary(host) and is_binary(path) and is_map(query),
-       do: encode_with_query(URI.parse("https://#{host}"), URI.parse(path), Plug.Conn.Query.encode(query))
+       do:
+         encode_with_query(
+           URI.parse("https://#{host}"),
+           URI.parse(path),
+           Plug.Conn.Query.encode(query)
+         )
 
   defp encode_with_query(host, path, query)
        when is_struct(host, URI) and is_struct(path, URI) and is_binary(query),
@@ -195,5 +197,44 @@ defmodule EdgePaymentClient do
       {"Authorization", authorization}
     ])
     |> Enum.concat(custom_headers)
+  end
+
+  defp request(finch_client, edge_client),
+    do: finch_client |> Finch.request(edge_client.namespace, edge_client.finch_options)
+
+  defp response({:ok, %Finch.Response{status: 403} = response}, _edge_client) do
+    {:error, response}
+  end
+
+  defp response({:ok, %Finch.Response{status: 401} = response}, _edge_client) do
+    {:error, response}
+  end
+
+  defp response({:ok, %Finch.Response{body: ""} = response}, _edge_client) do
+    {:ok, %{response: response, json: nil}}
+  end
+
+  defp response({:ok, %Finch.Response{status: 422, body: body} = response}, edge_client) do
+    edge_client.json_decoder.(body)
+    |> case do
+      {:ok, json} -> {:error, %{response: response, json: json}}
+      {:error, decoding_error} -> {:error, %{response: response, json: decoding_error}}
+    end
+  end
+
+  defp response({:ok, %Finch.Response{body: body} = response}, edge_client) do
+    edge_client.json_decoder.(body)
+    |> case do
+      {:ok, json} -> {:ok, %{response: response, json: json}}
+      {:error, decoding_error} -> {:error, %{response: response, json: decoding_error}}
+    end
+  end
+
+  defp response({:error, %Finch.Response{} = response}, _edge_client) do
+    {:error, response}
+  end
+
+  defp response({:error, error}, _edge_client) do
+    {:error, error}
   end
 end

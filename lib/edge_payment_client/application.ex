@@ -10,7 +10,7 @@ defmodule EdgePaymentClient.Application do
     children = [
       # Starts a worker by calling: EdgePaymentClient.Worker.start_link(arg)
       # {EdgePaymentClient.Worker, arg},
-      {Finch, name: :client}
+      {Finch, name: EdgePaymentClient.Finch}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
