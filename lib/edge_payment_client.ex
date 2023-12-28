@@ -17,7 +17,7 @@ defmodule EdgePaymentClient do
             finch_options: []
 
   @default_query_options %{
-    filters: %{},
+    filter: %{},
     include: [],
     sort: [],
     page: [],
@@ -261,8 +261,6 @@ defmodule EdgePaymentClient do
       include: query |> Keyword.get(:include, @default_query_options[:include]) |> Enum.join(",")
     }
     |> Enum.filter(fn
-      {_key, %{}} -> false
-      {_key, []} -> false
       {_key, ""} -> false
       {_key, nil} -> false
       {_key, _value} -> true

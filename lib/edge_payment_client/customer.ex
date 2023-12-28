@@ -1,6 +1,6 @@
 defmodule EdgePaymentClient.Customer do
-  @enforce_keys [:id, :name, :created_at, :updated_at, :__record__]
-  defstruct id: nil, name: nil, created_at: nil, updated_at: nil, __record__: nil
+  @enforce_keys [:id, :name, :created_at, :updated_at, :__record__, :__included__, :__meta__]
+  defstruct id: nil, name: nil, created_at: nil, updated_at: nil, __record__: nil, __included__: [], __meta__: %{}
 
   @path "/customers"
   @resource_type "customers"
@@ -24,9 +24,9 @@ defmodule EdgePaymentClient.Customer do
        %{
          json: %{
            "data" => entities
-         }
+         } = payload
        }} ->
-        Enum.map(entities, &struct_from_entity/1)
+        Enum.map(entities, &struct_from_entity(&1, payload["included"], payload["meta"]))
 
       error ->
         error
@@ -42,9 +42,9 @@ defmodule EdgePaymentClient.Customer do
        %{
          json: %{
            "data" => entity
-         }
+         } = payload
        }} ->
-        struct_from_entity(entity)
+        struct_from_entity(entity, payload["included"], payload["meta"])
 
       error ->
         error
@@ -61,9 +61,9 @@ defmodule EdgePaymentClient.Customer do
        %{
          json: %{
            "data" => entity
-         }
+         } = payload
        }} ->
-        struct_from_entity(entity)
+        struct_from_entity(entity, payload["included"], payload["meta"])
 
       error ->
         error
@@ -85,7 +85,9 @@ defmodule EdgePaymentClient.Customer do
          %{
            "id" => id,
            "attributes" => %{"name" => name, "created_at" => created_at, "updated_at" => updated_at}
-         } = record
+         } = record,
+         included,
+         meta
        ) do
     %__MODULE__{
       id: id,
@@ -93,6 +95,8 @@ defmodule EdgePaymentClient.Customer do
       # TODO: Parse date time
       created_at: created_at,
       updated_at: updated_at,
+      __included__: included,
+      __meta__: meta,
       __record__: record
     }
   end

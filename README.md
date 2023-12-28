@@ -24,16 +24,18 @@ We can now use that client to make requests:
 ``` elixir
 customerA = client
 |> EdgePaymentClient.Customer.create(%{
-  name: "Johnson"
+  name: "Johnson Parker",
+  email: "johnson@example.com"
 })
 ```
 
 ``` elixir
 customerB = client
 |> EdgePaymentClient.Customer.list(
-  %{name: "test"},
-  ["address"],
-  ["name"]
+  filter: %{name: "Johnson Parker"},
+  include: ["address"],
+  sort: ["name"],
+  fields: %{customers: ["name"]}
 )
 |> List.first()
 ```
