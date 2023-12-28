@@ -1,5 +1,13 @@
 defmodule EdgePaymentClient do
-  @enforce_keys [:authorization, :user_agent, :host, :json_decoder, :json_encoder, :namespace, :finch_options]
+  @enforce_keys [
+    :authorization,
+    :user_agent,
+    :host,
+    :json_decoder,
+    :json_encoder,
+    :namespace,
+    :finch_options
+  ]
   defstruct authorization: nil,
             user_agent: nil,
             host: "api.tryedge.com",
@@ -7,6 +15,14 @@ defmodule EdgePaymentClient do
             json_encoder: &Jason.encode/1,
             namespace: EdgePaymentClient.Finch,
             finch_options: []
+
+  @default_query_options %{
+    filters: %{},
+    include: [],
+    sort: [],
+    page: [],
+    fields: %{}
+  }
 
   @type raw() :: %{
           token: String.t(),
@@ -30,18 +46,23 @@ defmodule EdgePaymentClient do
 
   @spec client(raw()) :: t()
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
-    struct(__MODULE__, %{
-      authorization: "Bearer #{token}",
-      user_agent: user_agent
-    } |> Map.merge(properties))
+    struct(
+      __MODULE__,
+      %{
+        authorization: "Bearer #{token}",
+        user_agent: user_agent
+      }
+      |> Map.merge(properties)
+    )
   end
 
-  @spec get(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()} | {:error, any()}
-  def get(client, path, data)
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  @spec get(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) ::
+          {:ok, any()} | {:error, any()}
+  def get(client, path, query \\ [])
+      when is_struct(client, EdgePaymentClient) and is_binary(path) do
     Finch.build(
       :get,
-      encode_with_query(client.host, path, data),
+      encode_uri(client.host, path, with_query_defaults(query)),
       default_headers(client, [
         {"Accept", "application/vnd.api+json"}
       ])
@@ -50,30 +71,33 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec options(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
-  def options(client, path, data)
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  @spec options(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
+  def options(client, path, query \\ [])
+      when is_struct(client, EdgePaymentClient) and is_binary(path) do
     Finch.build(
       :options,
-      encode_with_query(client.host, path, data),
+      encode_uri(client.host, path, with_query_defaults(query)),
       default_headers(client)
     )
     |> request(client)
+    |> response(client)
   end
 
-  @spec delete(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
-  def delete(client, path, data)
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  @spec delete(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
+  def delete(client, path, query \\ [])
+      when is_struct(client, EdgePaymentClient) and is_binary(path) do
     Finch.build(
       :delete,
-      encode_with_query(client.host, path, data),
+      encode_uri(client.host, path, with_query_defaults(query)),
       default_headers(client)
     )
     |> request(client)
+    |> response(client)
   end
 
-  @spec post(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()} | {:error}
-  def post(client, path, data)
+  @spec post(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) ::
+          {:ok, any()} | {:error}
+  def post(client, path, data, query \\ [])
       when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -81,7 +105,7 @@ defmodule EdgePaymentClient do
       {:ok, payload} ->
         Finch.build(
           :post,
-          encode_without_query(client.host, path),
+          encode_uri(client.host, path, with_query_defaults(query)),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -89,22 +113,15 @@ defmodule EdgePaymentClient do
           payload
         )
         |> request(client)
-        |> case do
-          {:ok, response} ->
-            response.body
-            |> client.json_decoder.()
-
-          error ->
-            error
-        end
+        |> response(client)
 
       error ->
         error
     end
   end
 
-  @spec patch(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
-  def patch(client, path, data)
+  @spec patch(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
+  def patch(client, path, data, query \\ [])
       when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -112,7 +129,7 @@ defmodule EdgePaymentClient do
       {:ok, payload} ->
         Finch.build(
           :patch,
-          encode_without_query(client.host, path),
+          encode_uri(client.host, path, with_query_defaults(query)),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -120,22 +137,15 @@ defmodule EdgePaymentClient do
           payload
         )
         |> request(client)
-        |> case do
-          {:ok, response} ->
-            response.body
-            |> client.json_decoder.()
-
-          error ->
-            error
-        end
+        |> response(client)
 
       error ->
         error
     end
   end
 
-  @spec put(EdgePaymentClient.t(), String.t(), map()) :: {:ok, any()}
-  def put(client, path, data)
+  @spec put(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
+  def put(client, path, data, query \\ [])
       when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -143,7 +153,7 @@ defmodule EdgePaymentClient do
       {:ok, payload} ->
         Finch.build(
           :put,
-          encode_without_query(client.host, path),
+          encode_uri(client.host, path, with_query_defaults(query)),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -151,38 +161,36 @@ defmodule EdgePaymentClient do
           payload
         )
         |> request(client)
-        |> case do
-          {:ok, response} ->
-            response.body
-            |> client.json_decoder.()
-
-          error ->
-            error
-        end
+        |> response(client)
 
       error ->
         error
     end
   end
 
-  defp encode_without_query(host, path)
+  defp encode_uri(host, path, nil)
        when is_binary(host) and is_binary(path),
-       do: encode_without_query(URI.parse("https://#{host}"), URI.parse(path))
+       do:
+         encode_uri(
+           URI.parse("https://#{host}"),
+           URI.parse(path),
+           nil
+         )
 
-  defp encode_without_query(host, path)
+  defp encode_uri(host, path, nil)
        when is_struct(host, URI) and is_struct(path, URI),
-       do: URI.merge(host, path)
+       do: URI.parse("#{host}#{path}")
 
-  defp encode_with_query(host, path, query)
+  defp encode_uri(host, path, query)
        when is_binary(host) and is_binary(path) and is_map(query),
        do:
-         encode_with_query(
+         encode_uri(
            URI.parse("https://#{host}"),
            URI.parse(path),
            Plug.Conn.Query.encode(query)
          )
 
-  defp encode_with_query(host, path, query)
+  defp encode_uri(host, path, query)
        when is_struct(host, URI) and is_struct(path, URI) and is_binary(query),
        do: URI.parse("#{host}#{path}?#{query}")
 
@@ -236,5 +244,36 @@ defmodule EdgePaymentClient do
 
   defp response({:error, error}, _edge_client) do
     {:error, error}
+  end
+
+  defp with_query_defaults(nil), do: nil
+  defp with_query_defaults([]), do: nil
+
+  defp with_query_defaults(query) when is_list(query) do
+    %{
+      filter: query |> Keyword.get(:filter, @default_query_options[:filter]),
+      fields:
+        query
+        |> Keyword.get(:fields, @default_query_options[:fields])
+        |> encode_fields_query(),
+      sort: query |> Keyword.get(:sort, @default_query_options[:sort]) |> Enum.join(","),
+      page: query |> Keyword.get(:page, @default_query_options[:page]),
+      include: query |> Keyword.get(:include, @default_query_options[:include]) |> Enum.join(",")
+    }
+    |> Enum.filter(fn
+      {_key, %{}} -> false
+      {_key, []} -> false
+      {_key, ""} -> false
+      {_key, nil} -> false
+      {_key, _value} -> true
+    end)
+    |> Map.new()
+  end
+
+  defp with_query_defaults(%{}), do: %{}
+  defp encode_fields_query(fields) when is_map(fields) do
+    fields
+    |> Enum.map(fn {resource, attributes} when is_list(attributes) -> {resource, Enum.join(attributes, ",")} end)
+    |> Map.new()
   end
 end
