@@ -1,4 +1,11 @@
 defmodule EdgePaymentClient do
+  @default_query_options %{
+    filter: %{},
+    include: [],
+    sort: [],
+    page: [],
+    fields: %{}
+  }
   @enforce_keys [
     :authorization,
     :user_agent,
@@ -8,6 +15,7 @@ defmodule EdgePaymentClient do
     :namespace,
     :finch_options
   ]
+
   defstruct authorization: nil,
             user_agent: nil,
             host: "api.tryedge.com",
@@ -15,14 +23,6 @@ defmodule EdgePaymentClient do
             json_encoder: &Jason.encode/1,
             namespace: EdgePaymentClient.Finch,
             finch_options: []
-
-  @default_query_options %{
-    filter: %{},
-    include: [],
-    sort: [],
-    page: [],
-    fields: %{}
-  }
 
   @type raw() :: %{
           token: String.t(),
@@ -58,8 +58,8 @@ defmodule EdgePaymentClient do
 
   @spec get(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) ::
           {:ok, any()} | {:error, any()}
-  def get(client, path, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) do
+  def get(%EdgePaymentClient{} = client, path, query \\ [])
+      when is_binary(path) do
     Finch.build(
       :get,
       encode_uri(client.host, path, with_query_defaults(query)),
@@ -72,8 +72,8 @@ defmodule EdgePaymentClient do
   end
 
   @spec options(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
-  def options(client, path, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) do
+  def options(%EdgePaymentClient{} = client, path, query \\ [])
+      when is_binary(path) do
     Finch.build(
       :options,
       encode_uri(client.host, path, with_query_defaults(query)),
@@ -84,8 +84,8 @@ defmodule EdgePaymentClient do
   end
 
   @spec delete(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
-  def delete(client, path, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) do
+  def delete(%EdgePaymentClient{} = client, path, query \\ [])
+      when is_binary(path) do
     Finch.build(
       :delete,
       encode_uri(client.host, path, with_query_defaults(query)),
@@ -97,8 +97,8 @@ defmodule EdgePaymentClient do
 
   @spec post(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) ::
           {:ok, any()} | {:error}
-  def post(client, path, data, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  def post(%EdgePaymentClient{} = client, path, data, query \\ [])
+      when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
     |> case do
@@ -121,8 +121,8 @@ defmodule EdgePaymentClient do
   end
 
   @spec patch(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
-  def patch(client, path, data, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  def patch(%EdgePaymentClient{} = client, path, data, query \\ [])
+      when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
     |> case do
@@ -145,8 +145,8 @@ defmodule EdgePaymentClient do
   end
 
   @spec put(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
-  def put(client, path, data, query \\ [])
-      when is_struct(client, EdgePaymentClient) and is_binary(path) and is_map(data) do
+  def put(%EdgePaymentClient{} = client, path, data, query \\ [])
+      when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
     |> case do
@@ -166,6 +166,12 @@ defmodule EdgePaymentClient do
       error ->
         error
     end
+  end
+
+  @spec encode_relation({atom(), %{:id => String.t(), :type => String.t()}}) ::
+          {atom(), map()}
+  def encode_relation({relation_name, %{id: id, type: type}}) do
+    {relation_name, %{"data" => %{"id" => id, "type" => type}}}
   end
 
   defp encode_uri(host, path, nil)
@@ -269,9 +275,12 @@ defmodule EdgePaymentClient do
   end
 
   defp with_query_defaults(%{}), do: %{}
+
   defp encode_fields_query(fields) when is_map(fields) do
     fields
-    |> Enum.map(fn {resource, attributes} when is_list(attributes) -> {resource, Enum.join(attributes, ",")} end)
+    |> Enum.map(fn {resource, attributes} when is_list(attributes) ->
+      {resource, Enum.join(attributes, ",")}
+    end)
     |> Map.new()
   end
 end
