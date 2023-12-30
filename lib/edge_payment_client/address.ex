@@ -1,4 +1,6 @@
 defmodule EdgePaymentClient.Address do
+  import EdgePaymentClient.Resource, only: :macros
+
   @path "/consumer_addresses"
   @resource_type "consumer_addresses"
   @enforce_keys [
@@ -43,49 +45,12 @@ defmodule EdgePaymentClient.Address do
           __meta__: map()
         }
 
-  @spec list(EdgePaymentClient.t()) :: nil
-  def list(client) when is_struct(client, EdgePaymentClient) do
-  end
 
-  @spec show(EdgePaymentClient.t(), String.t()) :: nil
-  def show(client, id) when is_struct(client, EdgePaymentClient) and is_binary(id) do
-  end
-
-  @spec create(EdgePaymentClient.t(), map()) :: t() | {:error, any()}
-  def create(client, attributes)
-      when is_struct(client, EdgePaymentClient) and is_map(attributes) do
-    client
-    |> EdgePaymentClient.post("#{@path}", %{
-      data: %{
-        type: @resource_type,
-        attributes: attributes
-      }
-    })
-    |> case do
-      {:ok,
-       %{
-         json:
-           %{
-             "data" => entity
-           } = payload
-       }} ->
-        struct_from_entity(entity, payload["included"], payload["meta"])
-
-      error ->
-        error
-    end
-  end
-
-  @spec delete(EdgePaymentClient.t(), t()) :: nil
-  def delete(client, record)
-      when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) do
-  end
-
-  @spec update(EdgePaymentClient.t(), t(), map()) :: nil
-  def update(client, record, attributes)
-      when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) and
-             is_map(attributes) do
-  end
+  with_list()
+  with_show()
+  with_create()
+  with_update()
+  with_delete()
 
   defp struct_from_entity(
          %{

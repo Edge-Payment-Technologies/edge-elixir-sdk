@@ -15,6 +15,7 @@ defmodule EdgePaymentClient do
     :namespace,
     :finch_options
   ]
+  @default_headers []
 
   defstruct authorization: nil,
             user_agent: nil,
@@ -42,7 +43,8 @@ defmodule EdgePaymentClient do
           namespace: atom()
         }
 
-  @default_headers []
+  @type response() ::
+          {:ok, map(), Finch.Response.t()} | EdgePaymentClient.Resource.error()
 
   @spec client(raw()) :: t()
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
@@ -56,8 +58,7 @@ defmodule EdgePaymentClient do
     )
   end
 
-  @spec get(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) ::
-          {:ok, any()} | {:error, any()}
+  @spec get(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def get(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -71,7 +72,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec options(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
+  @spec options(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def options(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -83,7 +84,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec delete(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: {:ok, any()}
+  @spec delete(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def delete(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -95,8 +96,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec post(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) ::
-          {:ok, any()} | {:error}
+  @spec post(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def post(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -120,7 +120,7 @@ defmodule EdgePaymentClient do
     end
   end
 
-  @spec patch(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
+  @spec patch(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def patch(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -144,7 +144,7 @@ defmodule EdgePaymentClient do
     end
   end
 
-  @spec put(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: {:ok, any()}
+  @spec put(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def put(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -166,12 +166,6 @@ defmodule EdgePaymentClient do
       error ->
         error
     end
-  end
-
-  @spec encode_relation({atom(), %{:id => String.t(), :type => String.t()}}) ::
-          {atom(), map()}
-  def encode_relation({relation_name, %{id: id, type: type}}) do
-    {relation_name, %{"data" => %{"id" => id, "type" => type}}}
   end
 
   defp encode_uri(host, path, nil)
@@ -216,31 +210,28 @@ defmodule EdgePaymentClient do
   defp request(finch_client, edge_client),
     do: finch_client |> Finch.request(edge_client.namespace, edge_client.finch_options)
 
-  defp response({:ok, %Finch.Response{status: 403} = response}, _edge_client) do
-    {:error, response}
+  defp response({:ok, %Finch.Response{status: 422, body: body} = response}, edge_client) do
+    edge_client.json_decoder.(body)
+    |> case do
+      {:ok, payload} -> {:unprocessable_content, payload, response}
+      {:error, decoding_error} -> {:decoding_error, decoding_error, response}
+    end
   end
 
-  defp response({:ok, %Finch.Response{status: 401} = response}, _edge_client) do
+  defp response({:ok, %Finch.Response{status: status} = response}, _edge_client)
+       when status in 400..499 do
     {:error, response}
   end
 
   defp response({:ok, %Finch.Response{body: ""} = response}, _edge_client) do
-    {:ok, %{response: response, json: nil}}
-  end
-
-  defp response({:ok, %Finch.Response{status: 422, body: body} = response}, edge_client) do
-    edge_client.json_decoder.(body)
-    |> case do
-      {:ok, json} -> {:error, %{response: response, json: json}}
-      {:error, decoding_error} -> {:error, %{response: response, json: decoding_error}}
-    end
+    {:ok, nil, response}
   end
 
   defp response({:ok, %Finch.Response{body: body} = response}, edge_client) do
     edge_client.json_decoder.(body)
     |> case do
-      {:ok, json} -> {:ok, %{response: response, json: json}}
-      {:error, decoding_error} -> {:error, %{response: response, json: decoding_error}}
+      {:ok, payload} -> {:ok, payload, response}
+      {:error, decoding_error} -> {:decoding_error, decoding_error, response}
     end
   end
 

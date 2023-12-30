@@ -36,37 +36,9 @@ defmodule EdgePaymentClient.Customer do
 
   with_list()
   with_show()
-  # @spec delete(EdgePaymentClient.t(), t()) :: nil
-  # def delete(client, record)
-  #     when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) do
-  # end
-
-  # @spec update(EdgePaymentClient.t(), t(), map()) :: nil
-  # def update(client, record, attributes, relationships \\ nil)
-  #     when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) and
-  #            is_map(attributes) do
-  #   client
-  #   |> EdgePaymentClient.patch("#{@path}/#{record.id}", %{
-  #     data: %{
-  #       type: @resource_type,
-  #       attributes: attributes,
-  #       relationships: relationships |> Enum.map(&EdgePaymentClient.encode_relation/1)
-  #     }
-  #   })
-  #   |> case do
-  #     {:ok,
-  #      %{
-  #        json:
-  #          %{
-  #            "data" => entity
-  #          } = payload
-  #      }} ->
-  #       struct_from_entity(entity, payload["included"], payload["meta"])
-
-  #     error ->
-  #       error
-  #   end
-  # end
+  with_create()
+  with_update()
+  with_delete()
 
   defp struct_from_entity(
          %{
