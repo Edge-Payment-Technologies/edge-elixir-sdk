@@ -1,18 +1,24 @@
 defmodule EdgePaymentClient.Resource do
+  @type result(entity_or_entities) ::
+          {:ok, entity_or_entities, EdgePaymentClient.Resource.included(),
+           EdgePaymentClient.Resource.links(), EdgePaymentClient.Resource.relationships()}
   @type error() ::
           {:unprocessable_content, map(), Finch.Response.t()}
-          | {:error, Jason.DecodeError.t(), Finch.Response.t()}
-          | {:error, Finch.Response.t() | Mint.TransportError.t()}
+          | {:error, Finch.Response.t() | Mint.TransportError.t() | %Protocol.UndefinedError{}}
+          | {:decoding_error, Jason.DecodeError.t(), Finch.Response.t()}
+  @type links() :: map() | nil
+  @type relationships() :: map() | nil
+  @type included() :: list(map()) | nil
   @spec with_list() :: tuple()
   defmacro with_list() do
     quote do
       @spec list(EdgePaymentClient.t(), Keyword.t() | nil) ::
-              list(t()) | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(list(t())) | EdgePaymentClient.Resource.error()
       def list(client, query \\ [])
           when is_struct(client, EdgePaymentClient) do
         client
         |> EdgePaymentClient.get("#{@path}", query)
-        |> EdgePaymentClient.Resource.from_payload_with(&struct_from_entity/3)
+        |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
@@ -21,7 +27,7 @@ defmodule EdgePaymentClient.Resource do
   defmacro with_show() do
     quote do
       @spec show(EdgePaymentClient.t(), String.t() | t(), Keyword.t() | nil) ::
-              t() | nil | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t() | nil) | EdgePaymentClient.Resource.error()
       def show(_, _, query \\ [])
 
       def show(%EdgePaymentClient{} = client, %__MODULE__{id: id}, query),
@@ -30,7 +36,7 @@ defmodule EdgePaymentClient.Resource do
       def show(%EdgePaymentClient{} = client, id, query) when is_binary(id) do
         client
         |> EdgePaymentClient.get("#{@path}/#{id}", query)
-        |> EdgePaymentClient.Resource.from_payload_with(&struct_from_entity/3)
+        |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
@@ -38,12 +44,14 @@ defmodule EdgePaymentClient.Resource do
   @spec with_create() :: tuple()
   defmacro with_create() do
     quote do
-      @spec create(EdgePaymentClient.t()) :: t() | EdgePaymentClient.Resource.error()
-      @spec create(EdgePaymentClient.t(), map()) :: t() | EdgePaymentClient.Resource.error()
+      @spec create(EdgePaymentClient.t()) ::
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
+      @spec create(EdgePaymentClient.t(), map()) ::
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       @spec create(EdgePaymentClient.t(), map(), map()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       @spec create(EdgePaymentClient.t(), map(), map(), Keyword.t()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       def create(
             %EdgePaymentClient{} = client,
             attributes \\ %{},
@@ -59,7 +67,7 @@ defmodule EdgePaymentClient.Resource do
           },
           query
         )
-        |> EdgePaymentClient.Resource.from_payload_with(&struct_from_entity/3)
+        |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
@@ -76,11 +84,11 @@ defmodule EdgePaymentClient.Resource do
         - `include`, a list of relationship chains  for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
       """
       @spec update(EdgePaymentClient.t(), t() | String.t(), map()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       @spec update(EdgePaymentClient.t(), t() | String.t(), map(), map()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       @spec update(EdgePaymentClient.t(), t() | String.t(), map(), map(), Keyword.t()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       def update(
             _,
             _,
@@ -116,12 +124,14 @@ defmodule EdgePaymentClient.Resource do
               type: @resource_type,
               attributes: attributes,
               relationships:
-                relationships |> Enum.map(&EdgePaymentClient.Resource.encode_relation/1)
+                relationships
+                |> Enum.map(&EdgePaymentClient.Resource.encode_relation/1)
+                |> Map.new()
             }
           },
           query
         )
-        |> EdgePaymentClient.Resource.from_payload_with(&struct_from_entity/3)
+        |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
@@ -130,9 +140,9 @@ defmodule EdgePaymentClient.Resource do
   defmacro with_delete() do
     quote do
       @spec delete(EdgePaymentClient.t(), t() | String.t()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       @spec delete(EdgePaymentClient.t(), t() | String.t(), Keyword.t()) ::
-              t() | EdgePaymentClient.Resource.error()
+              EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
       def delete(_, _, query \\ [])
 
       def delete(%EdgePaymentClient{} = client, %__MODULE__{id: id} = record, query),
@@ -142,48 +152,61 @@ defmodule EdgePaymentClient.Resource do
           when is_binary(id) do
         client
         |> EdgePaymentClient.delete("#{@path}/#{id}", query)
-        |> EdgePaymentClient.Resource.from_payload_with(&struct_from_entity/3)
+        |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
 
-  @spec from_payload_with(
-          {:ok, %{payload: map() | list(map()), response: Finch.Response.t()}} | error(),
-          function()
-        ) :: struct() | list(struct()) | error()
-  def from_payload_with(
+  @spec from_payload({:ok, map() | list(map()), Finch.Response.t()} | error()) ::
+          {:ok, struct() | list(struct()), list() | nil, map() | nil, map() | nil} | error()
+  def from_payload(
         {:ok,
          %{
-           payload:
-             %{
-               "data" => entity
-             } = payload
-         }},
-        mapper
+           "data" => entity
+         } = payload, _response}
       )
-      when is_function(mapper, 3) and is_map(entity) do
-    mapper.(entity, payload["included"], payload["meta"])
+      when is_map(entity) do
+    entity
+    |> EdgePaymentClient.Entity.to_struct(payload["links"])
+    |> EdgePaymentClient.Resource.to_result(
+      payload["included"],
+      payload["links"],
+      payload["meta"]
+    )
   end
 
-  def from_payload_with(
+  def from_payload(
         {:ok,
          %{
-           payload:
-             %{
-               "data" => entities
-             } = payload
-         }},
-        mapper
+           "data" => entities
+         } = payload, _response}
       )
-      when is_function(mapper, 3) and is_list(entities) do
-    Enum.map(entities, &mapper.(&1, payload["included"], payload["meta"]))
+      when is_list(entities) do
+    entities
+    |> Enum.map(&EdgePaymentClient.Entity.to_struct(&1, nil))
+    |> EdgePaymentClient.Resource.to_result(
+      payload["included"],
+      payload["links"],
+      payload["meta"]
+    )
   end
 
-  def from_payload_with(error, _), do: error
+  def from_payload(error, _), do: error
 
   @spec encode_relation({atom(), %{:id => String.t(), :type => String.t()}}) ::
           {atom(), map()}
   def encode_relation({relation_name, %{id: id, type: type}}) do
     {relation_name, %{"data" => %{"id" => id, "type" => type}}}
+  end
+
+  @spec to_result(struct() | list(struct()), list(map()) | nil, map(), map() | nil) ::
+          {:ok, struct() | list(struct()), list(struct()), map(), map()}
+  def to_result(entity_or_entities, nil, links, meta) do
+    {:ok, entity_or_entities, [], links, meta}
+  end
+
+  def to_result(entity_or_entities, included, links, meta) do
+    {:ok, entity_or_entities, Enum.map(included, &EdgePaymentClient.Entity.to_struct(&1, nil)),
+     links, meta}
   end
 end

@@ -14,8 +14,8 @@ defmodule EdgePaymentClient.Address do
     :created_at,
     :updated_at,
     :__record__,
-    :__included__,
-    :__meta__
+    :__links__,
+    :__relationships__
   ]
   defstruct id: nil,
             type: @resource_type,
@@ -27,8 +27,8 @@ defmodule EdgePaymentClient.Address do
             created_at: nil,
             updated_at: nil,
             __record__: nil,
-            __included__: [],
-            __meta__: %{}
+            __links__: [],
+            __relationships__: nil
 
   @type t() :: %__MODULE__{
           id: String.t(),
@@ -41,47 +41,13 @@ defmodule EdgePaymentClient.Address do
           created_at: String.t(),
           updated_at: String.t(),
           __record__: map(),
-          __included__: list(map()),
-          __meta__: map()
+          __links__: list(map()),
+          __relationships__: map() | nil
         }
-
 
   with_list()
   with_show()
   with_create()
   with_update()
   with_delete()
-
-  defp struct_from_entity(
-         %{
-           "id" => id,
-           "attributes" => %{
-             "line_1" => line_1,
-             "city" => city,
-             "state" => state,
-             "zip" => zip,
-             "country" => country,
-             "created_at" => created_at,
-             "updated_at" => updated_at
-           }
-         } = record,
-         included,
-         meta
-       ) do
-    %__MODULE__{
-      id: id,
-      type: @resource_type,
-      line_1: line_1,
-      city: city,
-      state: state,
-      zip: zip,
-      country: country,
-      # TODO: Parse date time
-      created_at: created_at,
-      updated_at: updated_at,
-      __included__: included,
-      __meta__: meta,
-      __record__: record
-    }
-  end
 end

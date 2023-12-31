@@ -26,12 +26,12 @@ defmodule EdgePaymentClient do
             finch_options: []
 
   @type raw() :: %{
-          token: String.t(),
-          user_agent: String.t(),
-          json_decoder: function() | nil,
-          json_ecoder: function() | nil,
-          host: String.t() | nil,
-          namespace: atom() | nil
+          :token => String.t(),
+          :user_agent => String.t(),
+          optional(:json_decoder) => function(),
+          optional(:json_ecoder) => function(),
+          optional(:host) => String.t(),
+          optional(:namespace) => module()
         }
   @type t() :: %__MODULE__{
           authorization: String.t(),
