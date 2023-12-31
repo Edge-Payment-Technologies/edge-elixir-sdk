@@ -5,7 +5,6 @@ defmodule EdgePaymentClient.Customer do
   @resource_type "customers"
   @enforce_keys [
     :id,
-    :type,
     :name,
     :email,
     :created_at,
@@ -15,7 +14,6 @@ defmodule EdgePaymentClient.Customer do
     :__relationships__
   ]
   defstruct id: nil,
-            type: @resource_type,
             name: nil,
             email: nil,
             created_at: nil,
@@ -26,12 +24,11 @@ defmodule EdgePaymentClient.Customer do
 
   @type t() :: %__MODULE__{
           id: String.t(),
-          type: String.t(),
-          name: String.t(),
-          email: String.t(),
+          name: EdgePaymentClient.field(String.t()),
+          email: EdgePaymentClient.field(String.t()),
           #  TODO: Change to date time
-          created_at: String.t(),
-          updated_at: String.t(),
+          created_at: EdgePaymentClient.field(String.t()),
+          updated_at: EdgePaymentClient.field(String.t()),
           __record__: map(),
           __links__: list(map()),
           __relationships__: map() | nil

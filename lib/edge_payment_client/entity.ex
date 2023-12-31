@@ -1,31 +1,26 @@
 defmodule EdgePaymentClient.Entity do
+  @spec to_struct(
+          map(),
+          map() | nil
+        ) :: EdgePaymentClient.Address.t() | EdgePaymentClient.Customer.t()
   def to_struct(
         %{
           "id" => id,
           "type" => "consumer_addresses",
-          "attributes" => %{
-            "line_1" => line_1,
-            "city" => city,
-            "state" => state,
-            "zip" => zip,
-            "country" => country,
-            "created_at" => created_at,
-            "updated_at" => updated_at
-          }
+          "attributes" => attributes
         } = record,
         links
       ),
       do: %EdgePaymentClient.Address{
         id: id,
-        type: "consumer_addresses",
-        line_1: line_1,
-        city: city,
-        state: state,
-        zip: zip,
-        country: country,
+        line_1: fetch(attributes, "line_1"),
+        city: fetch(attributes, "city"),
+        state: fetch(attributes, "state"),
+        zip: fetch(attributes, "zip"),
+        country: fetch(attributes, "country"),
         # TODO: Parse date time
-        created_at: created_at,
-        updated_at: updated_at,
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
         __record__: record
@@ -35,25 +30,31 @@ defmodule EdgePaymentClient.Entity do
         %{
           "id" => id,
           "type" => "customers",
-          "attributes" => %{
-            "name" => name,
-            "email" => email,
-            "created_at" => created_at,
-            "updated_at" => updated_at
-          }
+          "attributes" => attributes
         } = record,
         links
       ),
       do: %EdgePaymentClient.Customer{
         id: id,
-        type: "customers",
-        name: name,
-        email: email,
+        name: fetch(attributes, "name"),
+        email: fetch(attributes, "email"),
         # TODO: Parse date time
-        created_at: created_at,
-        updated_at: updated_at,
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
         __record__: record
       }
+
+  def to_struct(record, links) when not is_map_key(record, "attributes") do
+    to_struct(Map.put(record, "attributes", %{}), links)
+  end
+
+  defp fetch(attributes, key) do
+    if Map.has_key?(attributes, key) do
+      attributes[key]
+    else
+      %EdgePaymentClient.PropertyNotAvailable{property: key}
+    end
+  end
 end

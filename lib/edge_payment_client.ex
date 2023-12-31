@@ -25,6 +25,7 @@ defmodule EdgePaymentClient do
             namespace: EdgePaymentClient.Finch,
             finch_options: []
 
+  @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
   @type raw() :: %{
           :token => String.t(),
           :user_agent => String.t(),

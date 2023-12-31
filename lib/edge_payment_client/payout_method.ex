@@ -1,33 +1,36 @@
 defmodule EdgePaymentClient.PayoutMethod do
-  defstruct id: nil, created_at: nil, updated_at: nil
+  import EdgePaymentClient.Resource, only: :macros
+
+  @path "/payout_methods"
+  @resource_type "payout_methods"
+  @enforce_keys [
+    :id,
+    :created_at,
+    :updated_at,
+    :__record__,
+    :__links__,
+    :__relationships__
+  ]
+  defstruct id: nil,
+            created_at: nil,
+            updated_at: nil,
+            __record__: nil,
+            __links__: [],
+            __relationships__: nil
 
   @type t() :: %__MODULE__{
           id: String.t(),
-          created_at: String.t(),
-          updated_at: String.t()
+          #  TODO: Change to date time
+          created_at: EdgePaymentClient.field(String.t()),
+          updated_at: EdgePaymentClient.field(String.t()),
+          __record__: map(),
+          __links__: list(map()),
+          __relationships__: map() | nil
         }
 
-  @spec list(EdgePaymentClient.t()) :: nil
-  def list(client) when is_struct(client, EdgePaymentClient) do
-  end
-
-  @spec show(EdgePaymentClient.t(), String.t()) :: nil
-  def show(client, id) when is_struct(client, EdgePaymentClient) and is_binary(id) do
-  end
-
-  @spec create(EdgePaymentClient.t(), map) :: nil
-  def create(client, attributes)
-      when is_struct(client, EdgePaymentClient) and is_map(attributes) do
-  end
-
-  @spec delete(EdgePaymentClient.t(), t()) :: nil
-  def delete(client, record)
-      when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) do
-  end
-
-  @spec update(EdgePaymentClient.t(), t(), map()) :: nil
-  def update(client, record, attributes)
-      when is_struct(client, EdgePaymentClient) and is_struct(record, __MODULE__) and
-             is_map(attributes) do
-  end
+  with_list()
+  with_show()
+  with_create()
+  with_update()
+  with_delete()
 end

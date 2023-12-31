@@ -12,6 +12,16 @@ defmodule EdgePaymentClient.Resource do
   @spec with_list() :: tuple()
   defmacro with_list() do
     quote do
+      @doc """
+      Fetches all `#{Kernel.inspect(__MODULE__)}.t()`.
+
+      The `query` argument can be:
+
+        - `fields`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
+        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+        - `sort`, ... i.e. `sort: ["-name"]
+        - `filter`, ... i.e. `fields: %{name: "John"}`
+      """
       @spec list(EdgePaymentClient.t(), Keyword.t() | nil) ::
               EdgePaymentClient.Resource.result(list(t())) | EdgePaymentClient.Resource.error()
       def list(client, query \\ [])
@@ -26,6 +36,14 @@ defmodule EdgePaymentClient.Resource do
   @spec with_show() :: tuple()
   defmacro with_show() do
     quote do
+      @doc """
+      Fetches a `#{Kernel.inspect(__MODULE__)}.t()` by `record` or by `id`.
+
+      The `query` argument can be:
+
+        - `fields`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
+        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+      """
       @spec show(EdgePaymentClient.t(), String.t() | t(), Keyword.t() | nil) ::
               EdgePaymentClient.Resource.result(t() | nil) | EdgePaymentClient.Resource.error()
       def show(_, _, query \\ [])
@@ -81,7 +99,7 @@ defmodule EdgePaymentClient.Resource do
       The `query` argument can be:
 
         - `fields`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
-        - `include`, a list of relationship chains  for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
       """
       @spec update(EdgePaymentClient.t(), t() | String.t(), map()) ::
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.Resource.error()
