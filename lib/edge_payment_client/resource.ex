@@ -209,9 +209,11 @@ defmodule EdgePaymentClient.Resource do
     )
   end
 
-  def from_payload(error, _), do: error
+  def from_payload({:error, _} = error), do: error
+  def from_payload({:unprocessable_content, _} = error), do: error
+  def from_payload({:decoding_error, _} = error), do: error
 
-  @spec encode_relation({atom(), %{:id => String.t(), :type => String.t()}}) ::
+  @spec encode_relation({atom(), %{id: String.t(), type: String.t()}}) ::
           {atom(), map()}
   def encode_relation({relation_name, %{id: id, type: type}}) do
     {relation_name, %{"data" => %{"id" => id, "type" => type}}}

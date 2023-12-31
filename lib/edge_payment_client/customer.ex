@@ -14,6 +14,7 @@ defmodule EdgePaymentClient.Customer do
     :__relationships__
   ]
   defstruct id: nil,
+            type: @resource_type,
             name: nil,
             email: nil,
             created_at: nil,
@@ -24,6 +25,7 @@ defmodule EdgePaymentClient.Customer do
 
   @type t() :: %__MODULE__{
           id: String.t(),
+          type: String.t(),
           name: EdgePaymentClient.field(String.t()),
           email: EdgePaymentClient.field(String.t()),
           #  TODO: Change to date time

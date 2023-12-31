@@ -17,6 +17,7 @@ defmodule EdgePaymentClient.Address do
     :__relationships__
   ]
   defstruct id: nil,
+            type: @resource_type,
             line_1: nil,
             city: nil,
             state: nil,
@@ -30,6 +31,7 @@ defmodule EdgePaymentClient.Address do
 
   @type t() :: %__MODULE__{
           id: String.t(),
+          type: String.t(),
           line_1: EdgePaymentClient.field(String.t()),
           city: EdgePaymentClient.field(String.t()),
           state: EdgePaymentClient.field(String.t()),
