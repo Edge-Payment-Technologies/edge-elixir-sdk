@@ -5,6 +5,11 @@ defmodule EdgePaymentClient.Charge do
   @resource_type "charges"
   @enforce_keys [
     :id,
+    :amount_cents,
+    :currency,
+    # :customer
+    # :payment_method
+    # :shipping_address
     :created_at,
     :updated_at,
     :__record__,
@@ -13,6 +18,11 @@ defmodule EdgePaymentClient.Charge do
   ]
   defstruct id: nil,
             type: @resource_type,
+            amount_cents: 1_00,
+            currency: "USD",
+            # customer
+            # payment_method
+            # shipping_address
             created_at: nil,
             updated_at: nil,
             __record__: nil,
@@ -22,12 +32,27 @@ defmodule EdgePaymentClient.Charge do
   @type t() :: %__MODULE__{
           id: String.t(),
           type: String.t(),
+          # TODO: Amount money
+          amount_cents: integer(),
+          currency: String.t(),
+          # customer: EdgePaymentClient.Customer.t()
+          # payment_method
+          # shipping_address
           #  TODO: Change to date time
           created_at: EdgePaymentClient.field(String.t()),
           updated_at: EdgePaymentClient.field(String.t()),
           __record__: map(),
           __links__: list(map()),
           __relationships__: map() | nil
+        }
+  @type attributes_for_create() :: %{
+          amount_cents: integer(),
+          currency: String.t()
+        }
+  @type relationships_for_create() :: %{
+          customer: EdgePaymentClient.Customer.t(),
+          payment_method: EdgePaymentClient.PaymentMethod.t(),
+          shipping_address: EdgePaymentClient.Address.t()
         }
 
   with_list()

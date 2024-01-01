@@ -2,7 +2,53 @@ defmodule EdgePaymentClient.Entity do
   @spec to_struct(
           map(),
           map() | nil
-        ) :: EdgePaymentClient.Address.t() | EdgePaymentClient.Customer.t()
+        ) ::
+          EdgePaymentClient.Address.t()
+          | EdgePaymentClient.Customer.t()
+          | EdgePaymentClient.PaymentMethod.t()
+          | EdgePaymentClient.Charge.t()
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "payment_methods",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.PaymentMethod{
+        id: id,
+        card_pan_token: fetch(attributes, "card_pan_token"),
+        card_cvv_token: fetch(attributes, "card_cvv_token"),
+        expiry_month: fetch(attributes, "expiry_month"),
+        expiry_year: fetch(attributes, "expiry_year"),
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        __relationships__: record["relationships"],
+        __links__: record["links"] || links,
+        __record__: record
+      }
+
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "charges",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.Charge{
+        id: id,
+        amount_cents: fetch(attributes, "amount_cents"),
+        currency: fetch(attributes, "currency"),
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        __relationships__: record["relationships"],
+        __links__: record["links"] || links,
+        __record__: record
+      }
+
   def to_struct(
         %{
           "id" => id,
@@ -41,7 +87,9 @@ defmodule EdgePaymentClient.Entity do
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
         updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
         __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
         __links__: record["links"] || links,
         __record__: record
       }

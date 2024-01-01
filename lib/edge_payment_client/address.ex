@@ -43,6 +43,28 @@ defmodule EdgePaymentClient.Address do
           __links__: list(map()),
           __relationships__: map() | nil
         }
+  @type attributes_for_create() :: %{
+    :line_1 => String.t(),
+    optional(:line_1) => String.t(),
+    :city => String.t(),
+    :state => String.t(),
+    :zip => String.t(),
+    :country => String.t()
+  }
+  @type relationships_for_create() :: %{
+
+  }
+  @type attributes_for_update() :: %{
+    optional(:line_1) => String.t(),
+    optional(:line_1) => String.t(),
+    optional(:city) => String.t(),
+    optional(:state) => String.t(),
+    optional(:zip) => String.t(),
+    optional(:country) => String.t()
+  }
+  @type relationships_for_update() :: %{
+
+  }
 
   with_list()
   with_show()

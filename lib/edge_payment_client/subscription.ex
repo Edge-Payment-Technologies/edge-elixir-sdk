@@ -29,6 +29,10 @@ defmodule EdgePaymentClient.Subscription do
           __links__: list(map()),
           __relationships__: map() | nil
         }
+  @type attributes_for_create() :: %{}
+  @type relationships_for_create() :: %{}
+  @type attributes_for_update() :: %{}
+  @type relationships_for_update() :: %{}
 
   with_list()
   with_show()

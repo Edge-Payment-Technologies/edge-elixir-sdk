@@ -23,8 +23,12 @@ defmodule EdgePaymentClient do
             json_decoder: &Jason.decode/1,
             json_encoder: &Jason.encode/1,
             namespace: EdgePaymentClient.Finch,
-            finch_options: []
+            finch_options: [],
+            links: nil,
+            included: nil,
+            meta: nil
 
+  @type query() :: [{:include, list(String.t())}, {:fields, map()}]
   @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
   @type raw() :: %{
           :token => String.t(),
@@ -41,11 +45,18 @@ defmodule EdgePaymentClient do
           host: String.t(),
           user_agent: String.t(),
           finch_options: Keyword.t(),
-          namespace: atom()
+          namespace: atom(),
+          links: map() | nil,
+          included: list() | nil,
+          meta: map() | nil
         }
+  @type error() ::
+          {:unprocessable_content, map(), Finch.Response.t()}
+          | {:error, Finch.Response.t() | Mint.TransportError.t() | %Protocol.UndefinedError{}}
+          | {:decoding_error, Jason.DecodeError.t(), Finch.Response.t()}
 
   @type response() ::
-          {:ok, map(), Finch.Response.t()} | EdgePaymentClient.Resource.error()
+          {:ok, map() | nil, Finch.Response.t()} | error()
 
   @spec client(raw()) :: t()
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
@@ -234,10 +245,6 @@ defmodule EdgePaymentClient do
       {:ok, payload} -> {:ok, payload, response}
       {:error, decoding_error} -> {:decoding_error, decoding_error, response}
     end
-  end
-
-  defp response({:error, %Finch.Response{} = response}, _edge_client) do
-    {:error, response}
   end
 
   defp response({:error, error}, _edge_client) do
