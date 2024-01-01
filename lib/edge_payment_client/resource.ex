@@ -56,7 +56,7 @@ defmodule EdgePaymentClient.Resource do
   defmacro with_create() do
     quote location: :keep do
       @doc """
-      Creates an new `#{Kernel.inspect(__MODULE__)}.t()` with `attributes: `#{Kernel.inspect(__MODULE__)}.attributes_for_create()` and `relationships:`.
+      Creates an new `#{Kernel.inspect(__MODULE__)}.t()` with `attributes: #{Kernel.inspect(__MODULE__)}.attributes_for_create()` and `relationships:`.
 
       The `options` argument can also have:
 

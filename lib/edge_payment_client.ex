@@ -28,7 +28,7 @@ defmodule EdgePaymentClient do
             included: nil,
             meta: nil
 
-  @type query() :: [{:include, list(String.t())}, {:fields, map()}]
+  @type query() :: {:include, list(String.t())} | {:fields, map()} | {:sort, list(String.t())} | {:filter, map()} | {:page, map()}
   @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
   @type raw() :: %{
           :token => String.t(),
