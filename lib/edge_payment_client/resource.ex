@@ -1,7 +1,10 @@
 defmodule EdgePaymentClient.Resource do
-  # TODO: change to EdgePaymentClient.t()
+  @moduledoc """
+  The basic shape of all resource requests, sliced into various common actions against resources.
+  """
   @type result(entity_or_entities) ::
-          {:ok, entity_or_entities, map()}
+          {:ok, entity_or_entities, EdgePaymentClient.t()}
+
   @spec with_list() :: tuple()
   defmacro with_list() do
     quote location: :keep do
@@ -21,6 +24,7 @@ defmodule EdgePaymentClient.Resource do
           when is_struct(client, EdgePaymentClient) do
         client
         |> EdgePaymentClient.get("#{@path}", options)
+        |> EdgePaymentClient.update_client_from_request(client)
         |> EdgePaymentClient.Resource.from_payload()
       end
     end
@@ -47,6 +51,7 @@ defmodule EdgePaymentClient.Resource do
       def show(%EdgePaymentClient{} = client, id, options) when is_binary(id) do
         client
         |> EdgePaymentClient.get("#{@path}/#{id}", options)
+        |> EdgePaymentClient.update_client_from_request(client)
         |> EdgePaymentClient.Resource.from_payload()
       end
     end
@@ -70,7 +75,8 @@ defmodule EdgePaymentClient.Resource do
               [
                 {:attributes, __MODULE__.attributes_for_create()}
                 | {:relationships, __MODULE__.relationships_for_create()}
-                | EdgePaymentClient.query()
+                | EdgePaymentClient.query(),
+                ...
               ]
             ) ::
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.error()
@@ -97,6 +103,7 @@ defmodule EdgePaymentClient.Resource do
           },
           options |> Keyword.drop([:attributes, :relationships])
         )
+        |> EdgePaymentClient.update_client_from_request(client)
         |> EdgePaymentClient.Resource.from_payload()
       end
     end
@@ -124,7 +131,8 @@ defmodule EdgePaymentClient.Resource do
               [
                 {:attributes, __MODULE__.attributes_for_update()}
                 | {:relationships, __MODULE__.relationships_for_update()}
-                | EdgePaymentClient.query()
+                | EdgePaymentClient.query(),
+                ...
               ]
             ) ::
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.error()
@@ -167,6 +175,7 @@ defmodule EdgePaymentClient.Resource do
           },
           options
         )
+        |> EdgePaymentClient.update_client_from_request(client)
         |> EdgePaymentClient.Resource.from_payload()
       end
     end
@@ -188,72 +197,49 @@ defmodule EdgePaymentClient.Resource do
           when is_binary(id) do
         client
         |> EdgePaymentClient.delete("#{@path}/#{id}", options)
+        |> EdgePaymentClient.update_client_from_request(client)
         |> EdgePaymentClient.Resource.from_payload()
       end
     end
   end
 
-  # TODO: replace map() in third arg with client
   @spec from_payload(
-          {:ok, map() | list(map()) | nil, Finch.Response.t()}
+          {:ok, map() | nil, EdgePaymentClient.t()}
           | EdgePaymentClient.error()
         ) ::
-          {:ok, struct() | list(struct()), map()} | EdgePaymentClient.error()
+          {:ok, struct() | list(struct()) | nil, EdgePaymentClient.t()} | EdgePaymentClient.error()
   def from_payload(
         {:ok,
          %{
            "data" => entity
-         } = payload, _response}
+         } = payload, client}
       )
       when is_map(entity) do
     entity
     |> EdgePaymentClient.Entity.to_struct(payload["links"])
-    |> EdgePaymentClient.Resource.to_result(
-      payload["included"],
-      payload["links"],
-      payload["meta"]
-    )
+    |> (&{:ok, &1, client}).()
   end
 
   def from_payload(
         {:ok,
          %{
            "data" => entities
-         } = payload, _response}
+         }, client}
       )
       when is_list(entities) do
     entities
     |> Enum.map(&EdgePaymentClient.Entity.to_struct(&1, nil))
-    |> EdgePaymentClient.Resource.to_result(
-      payload["included"],
-      payload["links"],
-      payload["meta"]
-    )
+    |> (&{:ok, &1, client}).()
   end
 
-  # TODO: return client here
-  def from_payload({:ok, nil, _response}), do: {:ok, nil, %{}}
+  def from_payload({:ok, nil, client}), do: {:ok, nil, client}
   def from_payload({:error, _} = error), do: error
-  def from_payload({:unprocessable_content, _, _response} = error), do: error
-  def from_payload({:decoding_error, _, _response} = error), do: error
+  def from_payload({:unprocessable_content, _exception, _response} = error), do: error
+  def from_payload({:decoding_error, _exception, _response} = error), do: error
 
   @spec encode_relation({atom(), %{id: String.t(), type: String.t()}}) ::
           {atom(), map()}
   def encode_relation({relation_name, %{id: id, type: type}}) do
     {relation_name, %{"data" => %{"id" => id, "type" => type}}}
-  end
-
-  # TODO: Replace third arg map with client
-  @spec to_result(struct() | list(struct()), list(map()) | nil, map(), map() | nil) ::
-          {:ok, struct() | list(struct()), map()}
-  def to_result(entity_or_entities, nil, links, meta) do
-    # [], links, meta
-    {:ok, entity_or_entities, %{}}
-  end
-
-  def to_result(entity_or_entities, included, links, meta) do
-    # Enum.map(included, &EdgePaymentClient.Entity.to_struct(&1, nil)),
-    #  links, meta
-    {:ok, entity_or_entities, %{}}
   end
 end

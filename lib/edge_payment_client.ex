@@ -24,18 +24,24 @@ defmodule EdgePaymentClient do
             json_encoder: &Jason.encode/1,
             namespace: EdgePaymentClient.Finch,
             finch_options: [],
+            response: nil,
             links: nil,
             included: nil,
             meta: nil
 
-  @type query() :: {:include, list(String.t())} | {:fields, map()} | {:sort, list(String.t())} | {:filter, map()} | {:page, map()}
+  @type query() ::
+          {:include, list(String.t())}
+          | {:fields, map()}
+          | {:sort, list(String.t())}
+          | {:filter, map()}
+          | {:page, map()}
   @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
   @type raw() :: %{
           :token => String.t(),
           :user_agent => String.t(),
           optional(:json_decoder) => function(),
           optional(:json_ecoder) => function(),
-          optional(:host) => String.t(),
+          optional(:host) => String.t() | URI.t(),
           optional(:namespace) => module()
         }
   @type t() :: %__MODULE__{
@@ -46,6 +52,7 @@ defmodule EdgePaymentClient do
           user_agent: String.t(),
           finch_options: Keyword.t(),
           namespace: atom(),
+          response: Finch.Response.t() | nil,
           links: map() | nil,
           included: list() | nil,
           meta: map() | nil
@@ -281,5 +288,23 @@ defmodule EdgePaymentClient do
       {resource, Enum.join(attributes, ",")}
     end)
     |> Map.new()
+  end
+
+  @spec update_client_from_request(response(), EdgePaymentClient.t()) ::
+          {:ok, map(), EdgePaymentClient.t()}
+  def update_client_from_request(
+        {:ok, payload, %Finch.Response{} = response},
+        %EdgePaymentClient{} = client
+      )
+      when is_map(payload) do
+    {:ok, payload,
+     %__MODULE__{
+       client
+       | response: response,
+         included:
+           Enum.map(payload["included"] || [], &EdgePaymentClient.Entity.to_struct(&1, nil)),
+         links: payload["links"],
+         meta: payload["meta"]
+     }}
   end
 end

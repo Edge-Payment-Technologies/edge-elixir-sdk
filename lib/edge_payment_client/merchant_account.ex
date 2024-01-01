@@ -34,8 +34,8 @@ defmodule EdgePaymentClient.MerchantAccount do
         }
 
   @type attributes_for_update() :: %{
-    optional(:business_name) => String.t()
-  }
+          optional(:business_name) => String.t()
+        }
 
   @type relationships_for_update() :: %{}
 
@@ -43,3 +43,4 @@ defmodule EdgePaymentClient.MerchantAccount do
   with_show()
   with_update()
 end
+ 
