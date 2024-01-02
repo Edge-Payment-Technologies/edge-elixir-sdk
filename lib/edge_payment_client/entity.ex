@@ -2,11 +2,6 @@ defmodule EdgePaymentClient.Entity do
   @moduledoc """
   An individual record from the Edge API.
   """
-  @spec to_struct(
-          map(),
-          map() | nil
-        ) ::
-          EdgePaymentClient.Resource.record()
   def to_struct(
         %{
           "id" => id,

@@ -29,43 +29,6 @@ defmodule EdgePaymentClient do
             included: nil,
             meta: nil
 
-  @type query() ::
-          {:include, nonempty_list(String.t())}
-          | {:fields, map()}
-          | {:sort, nonempty_list(String.t())}
-          | {:filter, map()}
-          | {:page, map()}
-  @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
-  @type raw() :: %{
-          :token => String.t(),
-          :user_agent => String.t(),
-          optional(:json_decoder) => function(),
-          optional(:json_ecoder) => function(),
-          optional(:host) => String.t() | URI.t(),
-          optional(:namespace) => module()
-        }
-  @type t() :: %__MODULE__{
-          authorization: String.t(),
-          json_decoder: (String.t() -> {:ok, any()} | {:error, any()}),
-          json_encoder: (any() -> {:ok, String.t()} | {:error, any()}),
-          host: String.t(),
-          user_agent: String.t(),
-          finch_options: Keyword.t(),
-          namespace: atom(),
-          response: Finch.Response.t() | nil,
-          links: map() | nil,
-          included: nonempty_list() | nil,
-          meta: map() | nil
-        }
-  @type error() ::
-          {:unprocessable_content, map(), Finch.Response.t()}
-          | {:error, Finch.Response.t() | Mint.TransportError.t() | %Protocol.UndefinedError{}}
-          | {:decoding_error, Jason.DecodeError.t(), Finch.Response.t()}
-
-  @type response() ::
-          {:ok, map() | nil, Finch.Response.t()} | error()
-
-  @spec client(raw()) :: t()
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
     struct(
       __MODULE__,
@@ -77,7 +40,6 @@ defmodule EdgePaymentClient do
     )
   end
 
-  @spec get(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def get(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -91,7 +53,6 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec options(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def options(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -103,7 +64,6 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec delete(EdgePaymentClient.t(), String.t(), Keyword.t() | nil) :: response()
   def delete(%EdgePaymentClient{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
@@ -115,7 +75,6 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  @spec post(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def post(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -139,7 +98,6 @@ defmodule EdgePaymentClient do
     end
   end
 
-  @spec patch(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def patch(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -163,7 +121,6 @@ defmodule EdgePaymentClient do
     end
   end
 
-  @spec put(EdgePaymentClient.t(), String.t(), map(), Keyword.t() | nil) :: response()
   def put(%EdgePaymentClient{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
@@ -290,8 +247,6 @@ defmodule EdgePaymentClient do
     |> Map.new()
   end
 
-  @spec update_client_from_request(response(), EdgePaymentClient.t()) ::
-          {:ok, map(), EdgePaymentClient.t()}
   def update_client_from_request(
         {:ok, payload, %Finch.Response{} = response},
         %EdgePaymentClient{} = client
