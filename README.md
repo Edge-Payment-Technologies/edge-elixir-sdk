@@ -22,7 +22,7 @@ client = EPTSDK.client(%{
 We can now use that client to make requests:
 
 ``` elixir
-customerA = client
+{:ok, customerA, client} = client
 |> EPTSDK.Customer.create(%{
   name: "Johnson Parker",
   email: "johnson@example.com"
@@ -30,7 +30,7 @@ customerA = client
 ```
 
 ``` elixir
-customerB = client
+{:ok, customerB, client} = client
 |> EPTSDK.Customer.list(
   filter: %{name: "Johnson Parker"},
   include: ["address"],
@@ -46,8 +46,8 @@ customerA == customerB
 ```
 
 ``` elixir
-client
-|> EPTSDK.Customer.update(customer, %{
+{:ok, customerA, client}
+|> EPTSDK.Customer.update(customerA, %{
   name: "Sally"
 })
 ```
