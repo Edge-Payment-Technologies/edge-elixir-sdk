@@ -6,24 +6,24 @@ defmodule EdgePaymentClient.Event do
   @enforce_keys [
     :id,
     :created_at,
-    :__record__,
+    :__raw__,
     :__links__,
     :__relationships__
   ]
-  defstruct id: nil,
-            type: @resource_type,
-            created_at: nil,
-            __record__: nil,
-            __links__: [],
-            __relationships__: nil
+  defstruct [:id,
+            :type,
+            :created_at,
+            :__raw__,
+            :__links__,
+            :__relationships__]
 
   @type t() :: %__MODULE__{
           id: String.t(),
           type: String.t(),
           #  TODO: Change to date time
           created_at: EdgePaymentClient.field(String.t()),
-          __record__: map(),
-          __links__: list(map()),
+          __raw__: map(),
+          __links__: map(),
           __relationships__: map() | nil
         }
 

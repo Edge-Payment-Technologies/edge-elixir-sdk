@@ -3,7 +3,18 @@ defmodule EdgePaymentClient.Resource do
   The basic shape of all resource requests, sliced into various common actions against resources.
   """
   @type result(entity_or_entities) ::
-          {:ok, entity_or_entities, EdgePaymentClient.t()}
+          {:ok, entity_or_entities | nil, EdgePaymentClient.t()}
+  @type record() :: EdgePaymentClient.Address.t()
+          | EdgePaymentClient.Charge.t()
+          | EdgePaymentClient.Customer.t()
+          | EdgePaymentClient.Dispute.t()
+          | EdgePaymentClient.Event.t()
+          | EdgePaymentClient.MerchantAccount.t()
+          | EdgePaymentClient.PaymentMethod.t()
+          | EdgePaymentClient.Payout.t()
+          | EdgePaymentClient.Subscription.t()
+          | EdgePaymentClient.WebhookDelivery.t()
+          | EdgePaymentClient.WebhookSubscription.t()
 
   @spec with_list() :: tuple()
   defmacro with_list() do
@@ -18,7 +29,9 @@ defmodule EdgePaymentClient.Resource do
         - `sort`, ... i.e. `sort: ["-name"]
         - `filter`, ... i.e. `fields: %{name: "John"}`
       """
-      @spec list(EdgePaymentClient.t(), Keyword.t() | nil) ::
+      @spec list(EdgePaymentClient.t()) ::
+              EdgePaymentClient.Resource.result(list(t())) | EdgePaymentClient.error()
+      @spec list(EdgePaymentClient.t(), Keyword.t()) ::
               EdgePaymentClient.Resource.result(list(t())) | EdgePaymentClient.error()
       def list(client, options \\ [])
           when is_struct(client, EdgePaymentClient) do
@@ -72,12 +85,11 @@ defmodule EdgePaymentClient.Resource do
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.error()
       @spec create(
               EdgePaymentClient.t(),
-              [
+              nonempty_list(
                 {:attributes, __MODULE__.attributes_for_create()}
                 | {:relationships, __MODULE__.relationships_for_create()}
-                | EdgePaymentClient.query(),
-                ...
-              ]
+                | EdgePaymentClient.query()
+              ) | list()
             ) ::
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.error()
       def create(
@@ -128,12 +140,11 @@ defmodule EdgePaymentClient.Resource do
       @spec update(
               EdgePaymentClient.t(),
               t() | String.t(),
-              [
+              nonempty_list(
                 {:attributes, __MODULE__.attributes_for_update()}
                 | {:relationships, __MODULE__.relationships_for_update()}
-                | EdgePaymentClient.query(),
-                ...
-              ]
+                | EdgePaymentClient.query()
+              ) | list()
             ) ::
               EdgePaymentClient.Resource.result(t()) | EdgePaymentClient.error()
       def update(
@@ -207,7 +218,7 @@ defmodule EdgePaymentClient.Resource do
           {:ok, map() | nil, EdgePaymentClient.t()}
           | EdgePaymentClient.error()
         ) ::
-          {:ok, struct() | list(struct()) | nil, EdgePaymentClient.t()} | EdgePaymentClient.error()
+          {:ok, record() | list(record()) | nil, EdgePaymentClient.t()} | EdgePaymentClient.error()
   def from_payload(
         {:ok,
          %{

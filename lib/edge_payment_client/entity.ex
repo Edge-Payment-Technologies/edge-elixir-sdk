@@ -6,10 +6,7 @@ defmodule EdgePaymentClient.Entity do
           map(),
           map() | nil
         ) ::
-          EdgePaymentClient.Address.t()
-          | EdgePaymentClient.Customer.t()
-          | EdgePaymentClient.PaymentMethod.t()
-          | EdgePaymentClient.Charge.t()
+          EdgePaymentClient.Resource.record()
   def to_struct(
         %{
           "id" => id,
@@ -29,7 +26,7 @@ defmodule EdgePaymentClient.Entity do
         updated_at: fetch(attributes, "updated_at"),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
-        __record__: record
+        __raw__: record
       }
 
   def to_struct(
@@ -44,12 +41,13 @@ defmodule EdgePaymentClient.Entity do
         id: id,
         amount_cents: fetch(attributes, "amount_cents"),
         currency: fetch(attributes, "currency"),
+        description: fetch(attributes, "description"),
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
         updated_at: fetch(attributes, "updated_at"),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
-        __record__: record
+        __raw__: record
       }
 
   def to_struct(
@@ -72,7 +70,7 @@ defmodule EdgePaymentClient.Entity do
         updated_at: fetch(attributes, "updated_at"),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
-        __record__: record
+        __raw__: record
       }
 
   def to_struct(
@@ -94,7 +92,140 @@ defmodule EdgePaymentClient.Entity do
         __relationships__: record["relationships"],
         # TODO: turn into formal links structs
         __links__: record["links"] || links,
-        __record__: record
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "merchant_accounts",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.MerchantAccount{
+        id: id,
+        business_name: fetch(attributes, "business_name"),
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "events",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.Event{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "disputes",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.Dispute{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "payout_methods",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.PayoutMethod{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "subscriptions",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.Subscription{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "webhook_deliveries",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.WebhookDelivery{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "webhook_subscriptions",
+          "attributes" => attributes
+        } = record,
+        links
+      ),
+      do: %EdgePaymentClient.WebhookSubscription{
+        id: id,
+        # TODO: Parse date time
+        created_at: fetch(attributes, "created_at"),
+        updated_at: fetch(attributes, "updated_at"),
+        # TODO: turn into formal relationship structs
+        __relationships__: record["relationships"],
+        # TODO: turn into formal links structs
+        __links__: record["links"] || links,
+        __raw__: record
       }
 
   def to_struct(record, links) when not is_map_key(record, "attributes") do

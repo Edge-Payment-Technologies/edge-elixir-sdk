@@ -11,23 +11,23 @@ defmodule EdgePaymentClient.PaymentMethod do
     :expiry_year,
     :created_at,
     :updated_at,
-    :__record__,
+    :__raw__,
     :__links__,
     :__relationships__
   ]
-  defstruct id: nil,
-            type: @resource_type,
-            card_cvv_token: nil,
-            card_pan_token: nil,
-            description: "",
-            name: "",
-            expiry_month: nil,
-            expiry_year: nil,
-            created_at: nil,
-            updated_at: nil,
-            __record__: nil,
-            __links__: [],
-            __relationships__: nil
+  defstruct [:id,
+            :type,
+            :card_cvv_token,
+            :card_pan_token,
+            :description,
+            :name,
+            :expiry_month,
+            :expiry_year,
+            :created_at,
+            :updated_at,
+            :__raw__,
+            :__links__,
+            :__relationships__]
 
   @type t() :: %__MODULE__{
           id: String.t(),
@@ -41,8 +41,8 @@ defmodule EdgePaymentClient.PaymentMethod do
           #  TODO: Change to date time
           created_at: EdgePaymentClient.field(String.t()),
           updated_at: EdgePaymentClient.field(String.t()),
-          __record__: map(),
-          __links__: list(map()),
+          __raw__: map(),
+          __links__: map(),
           __relationships__: map() | nil
         }
   @type attributes_for_create() :: %{

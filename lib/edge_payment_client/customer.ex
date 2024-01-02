@@ -9,19 +9,19 @@ defmodule EdgePaymentClient.Customer do
     :email,
     :created_at,
     :updated_at,
-    :__record__,
+    :__raw__,
     :__links__,
     :__relationships__
   ]
-  defstruct id: nil,
-            type: @resource_type,
-            name: nil,
-            email: nil,
-            created_at: nil,
-            updated_at: nil,
-            __record__: nil,
-            __links__: [],
-            __relationships__: nil
+  defstruct [:id,
+            :type,
+            :name,
+            :email,
+            :created_at,
+            :updated_at,
+            :__raw__,
+            :__links__,
+            :__relationships__]
 
   @type t() :: %__MODULE__{
           id: String.t(),
@@ -31,8 +31,8 @@ defmodule EdgePaymentClient.Customer do
           #  TODO: Change to date time
           created_at: EdgePaymentClient.field(String.t()),
           updated_at: EdgePaymentClient.field(String.t()),
-          __record__: map(),
-          __links__: list(map()),
+          __raw__: map(),
+          __links__: map(),
           __relationships__: map() | nil
         }
   @type attributes_for_create() :: %{

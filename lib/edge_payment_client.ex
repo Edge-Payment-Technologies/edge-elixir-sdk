@@ -30,9 +30,9 @@ defmodule EdgePaymentClient do
             meta: nil
 
   @type query() ::
-          {:include, list(String.t())}
+          {:include, nonempty_list(String.t())}
           | {:fields, map()}
-          | {:sort, list(String.t())}
+          | {:sort, nonempty_list(String.t())}
           | {:filter, map()}
           | {:page, map()}
   @type field(present_value) :: present_value | EdgePaymentClient.PropertyNotAvailable.t()
@@ -54,7 +54,7 @@ defmodule EdgePaymentClient do
           namespace: atom(),
           response: Finch.Response.t() | nil,
           links: map() | nil,
-          included: list() | nil,
+          included: nonempty_list() | nil,
           meta: map() | nil
         }
   @type error() ::
@@ -284,8 +284,8 @@ defmodule EdgePaymentClient do
 
   defp encode_fields_query(fields) when is_map(fields) do
     fields
-    |> Enum.map(fn {resource, attributes} when is_list(attributes) ->
-      {resource, Enum.join(attributes, ",")}
+    |> Enum.map(fn {resource, fields} when is_list(fields) ->
+      {resource, Enum.join(fields, ",")}
     end)
     |> Map.new()
   end

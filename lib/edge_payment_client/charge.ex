@@ -12,42 +12,45 @@ defmodule EdgePaymentClient.Charge do
     # :shipping_address
     :created_at,
     :updated_at,
-    :__record__,
+    :__raw__,
     :__links__,
     :__relationships__
   ]
-  defstruct id: nil,
-            type: @resource_type,
-            amount_cents: 1_00,
-            currency: "USD",
+  defstruct [:id,
+            :type,
+            :amount_cents,
+            :currency,
+            :description,
             # customer
             # payment_method
             # shipping_address
-            created_at: nil,
-            updated_at: nil,
-            __record__: nil,
-            __links__: [],
-            __relationships__: nil
+            :created_at,
+            :updated_at,
+            :__raw__,
+            :__links__,
+            :__relationships__]
 
   @type t() :: %__MODULE__{
           id: String.t(),
           type: String.t(),
           # TODO: Amount money
-          amount_cents: integer(),
-          currency: String.t(),
+          amount_cents: EdgePaymentClient.field(integer()),
+          currency: EdgePaymentClient.field(String.t()),
+          description: EdgePaymentClient.field(String.t()),
           # customer: EdgePaymentClient.Customer.t()
           # payment_method
           # shipping_address
           #  TODO: Change to date time
           created_at: EdgePaymentClient.field(String.t()),
           updated_at: EdgePaymentClient.field(String.t()),
-          __record__: map(),
-          __links__: list(map()),
+          __raw__: map(),
+          __links__: map(),
           __relationships__: map() | nil
         }
   @type attributes_for_create() :: %{
-          amount_cents: integer(),
-          currency: String.t()
+          :amount_cents => integer(),
+          :currency => String.t(),
+          optional(:description) => String.t()
         }
   @type relationships_for_create() :: %{
           customer: EdgePaymentClient.Customer.t(),
