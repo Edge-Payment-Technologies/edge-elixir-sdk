@@ -1,5 +1,5 @@
-defmodule EdgePaymentClient.WebhookDelivery do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.WebhookDelivery do
+  import EPTSDK.Resource, only: :macros
 
   @path "/webhook_deliveries"
   @resource_type "webhook_deliveries"

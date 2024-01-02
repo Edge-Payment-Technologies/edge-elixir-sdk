@@ -1,13 +1,13 @@
-defmodule EdgePaymentClientTest do
+defmodule EPTSDKTest do
   use ExUnit.Case
-  doctest EdgePaymentClient
+  doctest EPTSDK
 
   test "instantiating a new client" do
     assert match?(
-             %EdgePaymentClient{
+             %EPTSDK{
                authorization: "Bearer sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
              },
-             EdgePaymentClient.client(%{
+             EPTSDK.client(%{
                token: "sk_sandbox_ZZxeMuuV5fc3LevKmCvHSq5G"
              })
            )

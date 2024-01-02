@@ -1,4 +1,4 @@
-defmodule EdgePaymentClient.Entity do
+defmodule EPTSDK.Entity do
   @moduledoc """
   An individual record from the Edge API.
   """
@@ -10,7 +10,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.PaymentMethod{
+      do: %EPTSDK.PaymentMethod{
         id: id,
         card_pan_token: fetch(attributes, "card_pan_token"),
         card_cvv_token: fetch(attributes, "card_cvv_token"),
@@ -32,7 +32,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Charge{
+      do: %EPTSDK.Charge{
         id: id,
         amount_cents: fetch(attributes, "amount_cents"),
         currency: fetch(attributes, "currency"),
@@ -53,7 +53,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Address{
+      do: %EPTSDK.Address{
         id: id,
         line_1: fetch(attributes, "line_1"),
         city: fetch(attributes, "city"),
@@ -76,7 +76,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Customer{
+      do: %EPTSDK.Customer{
         id: id,
         name: fetch(attributes, "name"),
         email: fetch(attributes, "email"),
@@ -97,7 +97,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.MerchantAccount{
+      do: %EPTSDK.MerchantAccount{
         id: id,
         business_name: fetch(attributes, "business_name"),
         # TODO: Parse date time
@@ -117,7 +117,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Event{
+      do: %EPTSDK.Event{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -135,7 +135,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Dispute{
+      do: %EPTSDK.Dispute{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -154,7 +154,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.PayoutMethod{
+      do: %EPTSDK.PayoutMethod{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -173,7 +173,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.Subscription{
+      do: %EPTSDK.Subscription{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -192,7 +192,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.WebhookDelivery{
+      do: %EPTSDK.WebhookDelivery{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -211,7 +211,7 @@ defmodule EdgePaymentClient.Entity do
         } = record,
         links
       ),
-      do: %EdgePaymentClient.WebhookSubscription{
+      do: %EPTSDK.WebhookSubscription{
         id: id,
         # TODO: Parse date time
         created_at: fetch(attributes, "created_at"),
@@ -231,7 +231,7 @@ defmodule EdgePaymentClient.Entity do
     if Map.has_key?(attributes, key) do
       attributes[key]
     else
-      %EdgePaymentClient.PropertyNotAvailable{property: key}
+      %EPTSDK.PropertyNotAvailable{property: key}
     end
   end
 end

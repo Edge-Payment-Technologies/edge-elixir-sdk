@@ -1,4 +1,4 @@
-# EdgePaymentClient
+# EPTSDK
 
 A SDK (software development kit) for interacting with the [Edge Payment Technologies, Inc](https://tryedge.com) HTTP API.
 
@@ -13,7 +13,7 @@ In order to use the SDK you need two things:
 Once you have those two things you need to instantiate a client. This client can be used for multiple requests. The only two required parameters for a client are the `token` and `user_agent`. The former is used for authenticating your requests and the latter is used for identifying your usage. User Agent identity helps us find clients that aren't behaving correctly and communicate with their owner. You can read more here https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent and https://docs.newrelic.com/docs/apis/rest-api-v2/basic-functions/set-custom-user-agent/
 
 ``` elixir
-client = EdgePaymentClient.client(%{
+client = EPTSDK.client(%{
   token: "sk_sandbox_VUNVkopDczZcr1oJPLPAGfrN",
   user_agent: "BigShoeApp/1.0"
 })
@@ -23,7 +23,7 @@ We can now use that client to make requests:
 
 ``` elixir
 customerA = client
-|> EdgePaymentClient.Customer.create(%{
+|> EPTSDK.Customer.create(%{
   name: "Johnson Parker",
   email: "johnson@example.com"
 })
@@ -31,7 +31,7 @@ customerA = client
 
 ``` elixir
 customerB = client
-|> EdgePaymentClient.Customer.list(
+|> EPTSDK.Customer.list(
   filter: %{name: "Johnson Parker"},
   include: ["address"],
   sort: ["name"],
@@ -47,7 +47,7 @@ customerA == customerB
 
 ``` elixir
 client
-|> EdgePaymentClient.Customer.update(customer, %{
+|> EPTSDK.Customer.update(customer, %{
   name: "Sally"
 })
 ```
@@ -55,16 +55,16 @@ client
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `edge_payment_client` to your list of dependencies in `mix.exs`:
+by adding `ept_sdk` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:edge_payment_client, "~> 1.0.0"}
+    {:ept_sdk, "~> 1.0.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/edge_payment_client>.
+be found at <https://hexdocs.pm/ept_sdk>.

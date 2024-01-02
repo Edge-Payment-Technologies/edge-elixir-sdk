@@ -1,12 +1,11 @@
-defmodule EdgePaymentClient.WebhookSubscription do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.Event do
+  import EPTSDK.Resource, only: :macros
 
-  @path "/webhook_subscriptions"
-  @resource_type "webhook_subscriptions"
+  @path "/events"
+  @resource_type "events"
   @enforce_keys [
     :id,
     :created_at,
-    :updated_at,
     :__raw__,
     :__links__,
     :__relationships__
@@ -14,14 +13,10 @@ defmodule EdgePaymentClient.WebhookSubscription do
   defstruct [:id,
             :type,
             :created_at,
-            :updated_at,
             :__raw__,
             :__links__,
             :__relationships__]
 
   with_list()
   with_show()
-  with_create()
-  with_update()
-  with_delete()
 end

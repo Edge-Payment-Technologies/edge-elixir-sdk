@@ -1,5 +1,5 @@
-defmodule EdgePaymentClient.Dispute do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.Dispute do
+  import EPTSDK.Resource, only: :macros
 
   @path "/disputes"
   @resource_type "disputes"

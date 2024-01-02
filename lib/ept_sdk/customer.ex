@@ -1,10 +1,12 @@
-defmodule EdgePaymentClient.PayoutMethod do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.Customer do
+  import EPTSDK.Resource, only: :macros
 
-  @path "/payout_methods"
-  @resource_type "payout_methods"
+  @path "/customers"
+  @resource_type "customers"
   @enforce_keys [
     :id,
+    :name,
+    :email,
     :created_at,
     :updated_at,
     :__raw__,
@@ -13,6 +15,8 @@ defmodule EdgePaymentClient.PayoutMethod do
   ]
   defstruct [:id,
             :type,
+            :name,
+            :email,
             :created_at,
             :updated_at,
             :__raw__,

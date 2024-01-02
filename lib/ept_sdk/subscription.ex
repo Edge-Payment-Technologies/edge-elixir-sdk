@@ -1,5 +1,5 @@
-defmodule EdgePaymentClient.Subscription do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.Subscription do
+  import EPTSDK.Resource, only: :macros
 
   @path "/subscriptions"
   @resource_type "subscriptions"

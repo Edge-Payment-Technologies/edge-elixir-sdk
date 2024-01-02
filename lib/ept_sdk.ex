@@ -1,4 +1,4 @@
-defmodule EdgePaymentClient do
+defmodule EPTSDK do
   @default_query_options %{
     filter: %{},
     include: [],
@@ -22,7 +22,7 @@ defmodule EdgePaymentClient do
             host: "api.tryedge.com",
             json_decoder: &Jason.decode/1,
             json_encoder: &Jason.encode/1,
-            namespace: EdgePaymentClient.Finch,
+            namespace: EPTSDK.Finch,
             finch_options: [],
             response: nil,
             links: nil,
@@ -40,7 +40,7 @@ defmodule EdgePaymentClient do
     )
   end
 
-  def get(%EdgePaymentClient{} = client, path, query \\ [])
+  def get(%EPTSDK{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
       :get,
@@ -53,7 +53,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  def options(%EdgePaymentClient{} = client, path, query \\ [])
+  def options(%EPTSDK{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
       :options,
@@ -64,7 +64,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  def delete(%EdgePaymentClient{} = client, path, query \\ [])
+  def delete(%EPTSDK{} = client, path, query \\ [])
       when is_binary(path) do
     Finch.build(
       :delete,
@@ -75,7 +75,7 @@ defmodule EdgePaymentClient do
     |> response(client)
   end
 
-  def post(%EdgePaymentClient{} = client, path, data, query \\ [])
+  def post(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -98,7 +98,7 @@ defmodule EdgePaymentClient do
     end
   end
 
-  def patch(%EdgePaymentClient{} = client, path, data, query \\ [])
+  def patch(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -121,7 +121,7 @@ defmodule EdgePaymentClient do
     end
   end
 
-  def put(%EdgePaymentClient{} = client, path, data, query \\ [])
+  def put(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     data
     |> client.json_encoder.()
@@ -171,7 +171,7 @@ defmodule EdgePaymentClient do
        do: URI.parse("#{host}#{path}?#{query}")
 
   defp default_headers(
-         %EdgePaymentClient{user_agent: user_agent, authorization: authorization},
+         %EPTSDK{user_agent: user_agent, authorization: authorization},
          custom_headers \\ []
        )
        when is_binary(user_agent) and is_list(custom_headers) do
@@ -249,7 +249,7 @@ defmodule EdgePaymentClient do
 
   def update_client_from_request(
         {:ok, payload, %Finch.Response{} = response},
-        %EdgePaymentClient{} = client
+        %EPTSDK{} = client
       )
       when is_map(payload) do
     {:ok, payload,
@@ -257,7 +257,7 @@ defmodule EdgePaymentClient do
        client
        | response: response,
          included:
-           Enum.map(payload["included"] || [], &EdgePaymentClient.Entity.to_struct(&1, nil)),
+           Enum.map(payload["included"] || [], &EPTSDK.Entity.to_struct(&1, nil)),
          links: payload["links"],
          meta: payload["meta"]
      }}

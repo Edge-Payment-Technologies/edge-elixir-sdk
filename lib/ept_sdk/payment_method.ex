@@ -1,5 +1,5 @@
-defmodule EdgePaymentClient.PaymentMethod do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.PaymentMethod do
+  import EPTSDK.Resource, only: :macros
 
   @path "/payment_methods"
   @resource_type "payment_methods"

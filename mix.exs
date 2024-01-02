@@ -1,9 +1,9 @@
-defmodule EdgePaymentClient.MixProject do
+defmodule EPTSDK.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :edge_payment_client,
+      app: :ept_sdk,
       version: "1.0.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -15,7 +15,7 @@ defmodule EdgePaymentClient.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {EdgePaymentClient.Application, []}
+      mod: {EPTSDK.Application, []}
     ]
   end
 

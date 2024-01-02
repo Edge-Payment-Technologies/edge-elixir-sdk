@@ -1,15 +1,10 @@
-defmodule EdgePaymentClient.Address do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.PayoutMethod do
+  import EPTSDK.Resource, only: :macros
 
-  @path "/consumer_addresses"
-  @resource_type "consumer_addresses"
+  @path "/payout_methods"
+  @resource_type "payout_methods"
   @enforce_keys [
     :id,
-    :line_1,
-    :city,
-    :state,
-    :zip,
-    :country,
     :created_at,
     :updated_at,
     :__raw__,
@@ -18,11 +13,6 @@ defmodule EdgePaymentClient.Address do
   ]
   defstruct [:id,
             :type,
-            :line_1,
-            :city,
-            :state,
-            :zip,
-            :country,
             :created_at,
             :updated_at,
             :__raw__,

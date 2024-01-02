@@ -1,4 +1,4 @@
-defmodule EdgePaymentClient.Resource do
+defmodule EPTSDK.Resource do
   @moduledoc """
   The basic shape of all resource requests, sliced into various common actions against resources.
   """
@@ -17,11 +17,11 @@ defmodule EdgePaymentClient.Resource do
       """
 
       def list(client, options \\ [])
-          when is_struct(client, EdgePaymentClient) do
+          when is_struct(client, EPTSDK) do
         client
-        |> EdgePaymentClient.get("#{@path}", options)
-        |> EdgePaymentClient.update_client_from_request(client)
-        |> EdgePaymentClient.Resource.from_payload()
+        |> EPTSDK.get("#{@path}", options)
+        |> EPTSDK.update_client_from_request(client)
+        |> EPTSDK.Resource.from_payload()
       end
     end
   end
@@ -39,14 +39,14 @@ defmodule EdgePaymentClient.Resource do
 
       def show(_, _, options \\ [])
 
-      def show(%EdgePaymentClient{} = client, %__MODULE__{id: id}, options),
+      def show(%EPTSDK{} = client, %__MODULE__{id: id}, options),
         do: show(client, id, options)
 
-      def show(%EdgePaymentClient{} = client, id, options) when is_binary(id) do
+      def show(%EPTSDK{} = client, id, options) when is_binary(id) do
         client
-        |> EdgePaymentClient.get("#{@path}/#{id}", options)
-        |> EdgePaymentClient.update_client_from_request(client)
-        |> EdgePaymentClient.Resource.from_payload()
+        |> EPTSDK.get("#{@path}/#{id}", options)
+        |> EPTSDK.update_client_from_request(client)
+        |> EPTSDK.Resource.from_payload()
       end
     end
   end
@@ -62,7 +62,7 @@ defmodule EdgePaymentClient.Resource do
         - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
       """
       def create(
-            %EdgePaymentClient{} = client,
+            %EPTSDK{} = client,
             options \\ []
           )
           when is_list(options) do
@@ -70,7 +70,7 @@ defmodule EdgePaymentClient.Resource do
         relationships = Keyword.get(options, :relationships, %{})
 
         client
-        |> EdgePaymentClient.post(
+        |> EPTSDK.post(
           "#{@path}",
           %{
             data: %{
@@ -78,14 +78,14 @@ defmodule EdgePaymentClient.Resource do
               attributes: attributes,
               relationships:
                 relationships
-                |> Enum.map(&EdgePaymentClient.Resource.encode_relation/1)
+                |> Enum.map(&EPTSDK.Resource.encode_relation/1)
                 |> Map.new()
             }
           },
           options |> Keyword.drop([:attributes, :relationships])
         )
-        |> EdgePaymentClient.update_client_from_request(client)
-        |> EdgePaymentClient.Resource.from_payload()
+        |> EPTSDK.update_client_from_request(client)
+        |> EPTSDK.Resource.from_payload()
       end
     end
   end
@@ -107,7 +107,7 @@ defmodule EdgePaymentClient.Resource do
           )
 
       def update(
-            %EdgePaymentClient{} = client,
+            %EPTSDK{} = client,
             %__MODULE__{id: id} = record,
             options
           )
@@ -116,7 +116,7 @@ defmodule EdgePaymentClient.Resource do
       end
 
       def update(
-            %EdgePaymentClient{} = client,
+            %EPTSDK{} = client,
             id,
             options
           )
@@ -125,7 +125,7 @@ defmodule EdgePaymentClient.Resource do
         relationships = Keyword.get(options, :relationships, %{})
 
         client
-        |> EdgePaymentClient.patch(
+        |> EPTSDK.patch(
           "#{@path}/#{id}",
           %{
             data: %{
@@ -133,14 +133,14 @@ defmodule EdgePaymentClient.Resource do
               attributes: attributes,
               relationships:
                 relationships
-                |> Enum.map(&EdgePaymentClient.Resource.encode_relation/1)
+                |> Enum.map(&EPTSDK.Resource.encode_relation/1)
                 |> Map.new()
             }
           },
           options
         )
-        |> EdgePaymentClient.update_client_from_request(client)
-        |> EdgePaymentClient.Resource.from_payload()
+        |> EPTSDK.update_client_from_request(client)
+        |> EPTSDK.Resource.from_payload()
       end
     end
   end
@@ -149,15 +149,15 @@ defmodule EdgePaymentClient.Resource do
     quote location: :keep do
       def delete(_, _, options \\ [])
 
-      def delete(%EdgePaymentClient{} = client, %__MODULE__{id: id} = record, options),
+      def delete(%EPTSDK{} = client, %__MODULE__{id: id} = record, options),
         do: delete(client, id, options)
 
-      def delete(%EdgePaymentClient{} = client, id, options)
+      def delete(%EPTSDK{} = client, id, options)
           when is_binary(id) do
         client
-        |> EdgePaymentClient.delete("#{@path}/#{id}", options)
-        |> EdgePaymentClient.update_client_from_request(client)
-        |> EdgePaymentClient.Resource.from_payload()
+        |> EPTSDK.delete("#{@path}/#{id}", options)
+        |> EPTSDK.update_client_from_request(client)
+        |> EPTSDK.Resource.from_payload()
       end
     end
   end
@@ -170,7 +170,7 @@ defmodule EdgePaymentClient.Resource do
       )
       when is_map(entity) do
     entity
-    |> EdgePaymentClient.Entity.to_struct(payload["links"])
+    |> EPTSDK.Entity.to_struct(payload["links"])
     |> (&{:ok, &1, client}).()
   end
 
@@ -182,7 +182,7 @@ defmodule EdgePaymentClient.Resource do
       )
       when is_list(entities) do
     entities
-    |> Enum.map(&EdgePaymentClient.Entity.to_struct(&1, nil))
+    |> Enum.map(&EPTSDK.Entity.to_struct(&1, nil))
     |> (&{:ok, &1, client}).()
   end
 

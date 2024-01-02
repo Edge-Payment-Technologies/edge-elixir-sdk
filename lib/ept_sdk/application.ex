@@ -1,4 +1,4 @@
-defmodule EdgePaymentClient.Application do
+defmodule EPTSDK.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,14 +8,14 @@ defmodule EdgePaymentClient.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: EdgePaymentClient.Worker.start_link(arg)
-      # {EdgePaymentClient.Worker, arg},
-      {Finch, name: EdgePaymentClient.Finch}
+      # Starts a worker by calling: EPTSDK.Worker.start_link(arg)
+      # {EPTSDK.Worker, arg},
+      {Finch, name: EPTSDK.Finch}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: EdgePaymentClient.Supervisor]
+    opts = [strategy: :one_for_one, name: EPTSDK.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

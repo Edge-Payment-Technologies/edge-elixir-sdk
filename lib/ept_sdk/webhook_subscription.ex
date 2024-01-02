@@ -1,12 +1,10 @@
-defmodule EdgePaymentClient.Customer do
-  import EdgePaymentClient.Resource, only: :macros
+defmodule EPTSDK.WebhookSubscription do
+  import EPTSDK.Resource, only: :macros
 
-  @path "/customers"
-  @resource_type "customers"
+  @path "/webhook_subscriptions"
+  @resource_type "webhook_subscriptions"
   @enforce_keys [
     :id,
-    :name,
-    :email,
     :created_at,
     :updated_at,
     :__raw__,
@@ -15,8 +13,6 @@ defmodule EdgePaymentClient.Customer do
   ]
   defstruct [:id,
             :type,
-            :name,
-            :email,
             :created_at,
             :updated_at,
             :__raw__,
