@@ -11,8 +11,8 @@ defmodule EPTSDK.Resource do
       The `options` argument can be:
 
         - `fields`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
-        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
-        - `sort`, ... i.e. `sort: ["-name"]
+        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]`
+        - `sort`, ... i.e. `sort: ["-name"]`
         - `filter`, ... i.e. `fields: %{name: "John"}`
       """
 
@@ -34,7 +34,7 @@ defmodule EPTSDK.Resource do
       The `options` argument can be:
 
         - `fields`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
-        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+        - `include`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]`
       """
 
       def show(_, _, options \\ [])
@@ -59,7 +59,7 @@ defmodule EPTSDK.Resource do
       The `options` argument can also have:
 
         - `fields:`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
-        - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+        - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]`
       """
       def create(
             %EPTSDK{} = client,
@@ -98,7 +98,7 @@ defmodule EPTSDK.Resource do
       The `options` argument can also have:
 
         - `fields:`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
-        - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]
+        - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant_account"]`
       """
       def update(
             _,
