@@ -262,4 +262,8 @@ defmodule EPTSDK do
          meta: payload["meta"]
      }}
   end
+  def update_client_from_request({:error, _exception} = error), do: error
+  def update_client_from_request({:unprocessable_content, _exception, _response} = error), do: error
+  def update_client_from_request({:decoding_error, _exception, _response} = error), do: error
+  def update_client_from_request({:error, _exception, _response} = error), do: error
 end
