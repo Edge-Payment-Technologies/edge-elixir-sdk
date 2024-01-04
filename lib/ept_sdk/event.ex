@@ -5,6 +5,9 @@ defmodule EPTSDK.Event do
   @resource_type "events"
   @enforce_keys [
     :id,
+    :code,
+    :payload,
+    :occurred_at,
     :created_at,
     :__raw__,
     :__links__,
@@ -12,6 +15,9 @@ defmodule EPTSDK.Event do
   ]
   defstruct [:id,
             :type,
+            :code,
+            :payload,
+            :occurred_at,
             :created_at,
             :__raw__,
             :__links__,
