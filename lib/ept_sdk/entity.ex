@@ -310,7 +310,7 @@ defmodule EPTSDK.Entity do
   defp fetch_datetime(attributes, key) when is_map(attributes) and is_binary(key) do
     with true <- Map.has_key?(attributes, key),
          value <- Map.get(attributes, key),
-         {:ok, timestamp} <- Timex.parse(value, "{ISO:Basic}") do
+         {:ok, timestamp} <- Timex.parse(value, "{ISO:Extended:Z}") do
       timestamp
     else
       nil -> nil

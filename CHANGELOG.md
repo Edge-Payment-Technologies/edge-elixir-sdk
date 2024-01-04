@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+  - [bugfix] Incorrectly parsing timestamps with the wrong ISO format.
+
 ## 2.0.1
 
   - [bugfix] We weren't returning the type as part of the struct for resources
