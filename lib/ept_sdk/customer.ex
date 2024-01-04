@@ -13,18 +13,20 @@ defmodule EPTSDK.Customer do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :name,
-            :email,
-            :phone_number,
-            :discarded_at,
-            :blocked_at,
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :name,
+    :email,
+    :phone_number,
+    :discarded_at,
+    :blocked_at,
+    :created_at,
+    :updated_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
 
   with_list()
   with_show()

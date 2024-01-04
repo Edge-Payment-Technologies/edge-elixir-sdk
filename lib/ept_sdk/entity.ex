@@ -5,13 +5,14 @@ defmodule EPTSDK.Entity do
   def to_struct(
         %{
           "id" => id,
-          "type" => "payment_methods",
+          "type" => "payment_methods" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.PaymentMethod{
         id: id,
+        type: type,
         card_pan_token: fetch(attributes, "card_pan_token"),
         card_cvv_token: fetch(attributes, "card_cvv_token"),
         expiry_month: fetch(attributes, "expiry_month"),
@@ -31,13 +32,14 @@ defmodule EPTSDK.Entity do
   def to_struct(
         %{
           "id" => id,
-          "type" => "charges",
+          "type" => "charges" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Charge{
         id: id,
+        type: type,
         amount_cents: fetch(attributes, "amount_cents"),
         currency: fetch(attributes, "currency"),
         description: fetch(attributes, "description"),
@@ -51,14 +53,16 @@ defmodule EPTSDK.Entity do
   def to_struct(
         %{
           "id" => id,
-          "type" => "consumer_addresses",
+          "type" => "consumer_addresses" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Address{
         id: id,
+        type: type,
         line_1: fetch(attributes, "line_1"),
+        line_2: fetch(attributes, "line_2"),
         city: fetch(attributes, "city"),
         state: fetch(attributes, "state"),
         zip: fetch(attributes, "zip"),
@@ -73,13 +77,14 @@ defmodule EPTSDK.Entity do
   def to_struct(
         %{
           "id" => id,
-          "type" => "customers",
+          "type" => "customers" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Customer{
         id: id,
+        type: type,
         name: fetch(attributes, "name"),
         email: fetch(attributes, "email"),
         phone_number: fetch(attributes, "phone_number"),
@@ -93,17 +98,20 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "merchant_accounts",
+          "type" => "merchant_accounts" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.MerchantAccount{
         id: id,
-        average_monthly_transaction_volume_cents: fetch(attributes, "average_monthly_transaction_volume_cents"),
+        type: type,
+        average_monthly_transaction_volume_cents:
+          fetch(attributes, "average_monthly_transaction_volume_cents"),
         average_transaction_size_cents: fetch(attributes, "average_transaction_size_cents"),
         business_address: fetch(attributes, "business_address"),
         business_address_line_2: fetch(attributes, "business_address_line_2"),
@@ -135,16 +143,18 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "events",
+          "type" => "events" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Event{
         id: id,
+        type: type,
         code: fetch(attributes, "code"),
         payload: fetch(attributes, "payload"),
         occurred_at: fetch_datetime(attributes, "occurred_at"),
@@ -155,16 +165,18 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "disputes",
+          "type" => "disputes" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Dispute{
         id: id,
+        type: type,
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
         # TODO: turn into formal relationship structs
@@ -173,16 +185,18 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "payout_methods",
+          "type" => "payout_methods" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.PayoutMethod{
         id: id,
+        type: type,
         account_number: fetch(attributes, "account_number"),
         account_type: fetch(attributes, "account_type"),
         institution_name: fetch(attributes, "institution_name"),
@@ -197,16 +211,18 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "subscriptions",
+          "type" => "subscriptions" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Subscription{
         id: id,
+        type: type,
         amount_cents: fetch(attributes, "amount_cents"),
         amount_currency: fetch(attributes, "amount_currency"),
         billing_period: fetch(attributes, "billing_period"),
@@ -228,13 +244,14 @@ defmodule EPTSDK.Entity do
   def to_struct(
         %{
           "id" => id,
-          "type" => "webhook_subscriptions",
+          "type" => "webhook_subscriptions" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.WebhookSubscription{
         id: id,
+        type: type,
         active: fetch(attributes, "active"),
         concurrency_limit: fetch(attributes, "concurrency_limit"),
         description: fetch(attributes, "description"),
@@ -249,16 +266,18 @@ defmodule EPTSDK.Entity do
         __links__: record["links"] || links,
         __raw__: record
       }
+
   def to_struct(
         %{
           "id" => id,
-          "type" => "payouts",
+          "type" => "payouts" = type,
           "attributes" => attributes
         } = record,
         links
       ),
       do: %EPTSDK.Payout{
         id: id,
+        type: type,
         amount_cents: fetch(attributes, "amount_cents"),
         amount_currency: fetch(attributes, "amount_currency"),
         fee_cents: fetch(attributes, "fee_cents"),
@@ -290,8 +309,8 @@ defmodule EPTSDK.Entity do
 
   defp fetch_datetime(attributes, key) when is_map(attributes) and is_binary(key) do
     with true <- Map.has_key?(attributes, key),
-      value <- Map.get(attributes, key),
-      {:ok, timestamp} <- Timex.parse(value, "{ISO:Basic}") do
+         value <- Map.get(attributes, key),
+         {:ok, timestamp} <- Timex.parse(value, "{ISO:Basic}") do
       timestamp
     else
       nil -> nil

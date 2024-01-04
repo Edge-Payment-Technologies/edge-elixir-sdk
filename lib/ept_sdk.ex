@@ -256,14 +256,22 @@ defmodule EPTSDK do
      %__MODULE__{
        client
        | response: response,
-         included:
-           Enum.map(payload["included"] || [], &EPTSDK.Entity.to_struct(&1, nil)),
+         included: Enum.map(payload["included"] || [], &EPTSDK.Entity.to_struct(&1, nil)),
          links: payload["links"],
          meta: payload["meta"]
      }}
   end
+
   def update_client_from_request({:error, _exception} = error, _client), do: error
-  def update_client_from_request({:unprocessable_content, _exception, _response} = error, _client), do: error
-  def update_client_from_request({:decoding_error, _exception, _response} = error, _client), do: error
+
+  def update_client_from_request(
+        {:unprocessable_content, _exception, _response} = error,
+        _client
+      ),
+      do: error
+
+  def update_client_from_request({:decoding_error, _exception, _response} = error, _client),
+    do: error
+
   def update_client_from_request({:error, _exception, _response} = error, _client), do: error
 end

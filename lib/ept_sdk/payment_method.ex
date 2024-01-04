@@ -15,24 +15,27 @@ defmodule EPTSDK.PaymentMethod do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :card_bin,
-            :card_cvv_token,
-            :card_last_four,
-            :card_pan_token,
-            :external_state,
-            :kind,
-            :description,
-            :name,
-            :expiry_month,
-            :expiry_year,
-            :discarded_at,
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :card_bin,
+    :card_cvv_token,
+    :card_last_four,
+    :card_pan_token,
+    :external_state,
+    :kind,
+    :description,
+    :name,
+    :expiry_month,
+    :expiry_year,
+    :discarded_at,
+    :created_at,
+    :updated_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
+
   with_list()
   with_show()
   with_create()

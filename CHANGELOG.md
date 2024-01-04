@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1
+
+  - [bugfix] We weren't returning the type as part of the struct for resources
+  - [bugfix] Addresses didn't expose the `line_2` property
+
 ## 2.0.0
 
   - [feature] [breaking] Now when the client recieves timestamps it will parse them with ISO Basic (8601).

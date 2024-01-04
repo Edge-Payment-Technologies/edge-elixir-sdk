@@ -16,19 +16,21 @@ defmodule EPTSDK.Charge do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :amount_cents,
-            :currency,
-            :description,
-            # customer
-            # payment_method
-            # shipping_address
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :amount_cents,
+    :currency,
+    :description,
+    # customer
+    # payment_method
+    # shipping_address
+    :created_at,
+    :updated_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
 
   with_list()
   with_show()

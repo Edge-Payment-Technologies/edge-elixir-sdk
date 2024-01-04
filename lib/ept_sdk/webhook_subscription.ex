@@ -11,19 +11,21 @@ defmodule EPTSDK.WebhookSubscription do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :active,
-            :concurrency_limit,
-            :description,
-            :events,
-            :secret_key,
-            :url,
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :active,
+    :concurrency_limit,
+    :description,
+    :events,
+    :secret_key,
+    :url,
+    :created_at,
+    :updated_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
 
   with_list()
   with_show()

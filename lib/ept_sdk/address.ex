@@ -16,18 +16,21 @@ defmodule EPTSDK.Address do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :line_1,
-            :city,
-            :state,
-            :zip,
-            :country,
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :line_1,
+    :line_2,
+    :city,
+    :state,
+    :zip,
+    :country,
+    :created_at,
+    :updated_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
 
   with_list()
   with_show()

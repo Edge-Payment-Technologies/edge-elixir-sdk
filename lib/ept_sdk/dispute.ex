@@ -11,13 +11,7 @@ defmodule EPTSDK.Dispute do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :created_at,
-            :updated_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [:id, :type, :created_at, :updated_at, :__raw__, :__links__, :__relationships__]
 
   with_list()
   with_show()

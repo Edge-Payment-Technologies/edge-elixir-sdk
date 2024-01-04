@@ -13,15 +13,17 @@ defmodule EPTSDK.Event do
     :__links__,
     :__relationships__
   ]
-  defstruct [:id,
-            :type,
-            :code,
-            :payload,
-            :occurred_at,
-            :created_at,
-            :__raw__,
-            :__links__,
-            :__relationships__]
+  defstruct [
+    :id,
+    :type,
+    :code,
+    :payload,
+    :occurred_at,
+    :created_at,
+    :__raw__,
+    :__links__,
+    :__relationships__
+  ]
 
   with_list()
   with_show()
