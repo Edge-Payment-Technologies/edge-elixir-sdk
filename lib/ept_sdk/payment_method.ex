@@ -11,6 +11,10 @@ defmodule EPTSDK.PaymentMethod do
     :expiry_year,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :charges,
+    :customer,
+    :address,
     :__raw__,
     :__links__,
     :__relationships__
@@ -31,6 +35,10 @@ defmodule EPTSDK.PaymentMethod do
     :discarded_at,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :charges,
+    :customer,
+    :address,
     :__raw__,
     :__links__,
     :__relationships__

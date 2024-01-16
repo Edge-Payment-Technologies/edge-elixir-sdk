@@ -5,13 +5,25 @@ defmodule EPTSDK.Charge do
   @resource_type "charges"
   @enforce_keys [
     :id,
+    :amount,
     :amount_cents,
+    :net,
+    :net_cents,
+    :fee,
+    :fee_cents,
+    :refund,
+    :refund_cents,
+    :gateway,
+    :gateway_cents,
     :currency,
-    # :customer
-    # :payment_method
-    # :shipping_address
     :created_at,
     :updated_at,
+    :merchant_account,
+    :customer,
+    :payment_method,
+    :billing_address,
+    :subscription,
+    :shipping_address,
     :__raw__,
     :__links__,
     :__relationships__
@@ -19,14 +31,26 @@ defmodule EPTSDK.Charge do
   defstruct [
     :id,
     :type,
+    :amount,
     :amount_cents,
+    :net,
+    :net_cents,
+    :fee,
+    :fee_cents,
+    :refund,
+    :refund_cents,
+    :gateway,
+    :gateway_cents,
     :currency,
     :description,
-    # customer
-    # payment_method
-    # shipping_address
     :created_at,
     :updated_at,
+    :merchant_account,
+    :customer,
+    :payment_method,
+    :billing_address,
+    :subscription,
+    :shipping_address,
     :__raw__,
     :__links__,
     :__relationships__

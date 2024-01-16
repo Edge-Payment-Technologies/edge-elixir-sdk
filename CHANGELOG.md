@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.0
+
+  - [feature] Money properties now are parsed and we pulled more attributes over from charge
+  - [feature] Now when resource has a relationship we normalize it on the struct, for example `customer.address.merchant_account` will get you the merchant account of the consumer address of a customer.
+  - [breaking] [refactor] Rename `Address` to `ConsumerAddress`
+  - [breaking] [refactor] Renamed `property` property of PropertyNotFound to `name` as it reduces duplicitive naming.
+  - [breaking] [refactor] Removing `Dispute` because it isn't expressed in the HTTP API yet.
+  - [breaking] [refactor] The included values of a request are no longer stored on the `included` property of a `EPTSDK.Client`
+
 ## 2.0.2
 
   - [bugfix] Incorrectly parsing timestamps with the wrong ISO format.

@@ -7,6 +7,8 @@ defmodule EPTSDK.Payout do
     :id,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :payout_method,
     :__raw__,
     :__links__,
     :__relationships__
@@ -24,6 +26,8 @@ defmodule EPTSDK.Payout do
     :transfer_credit_type,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :payout_method,
     :__raw__,
     :__links__,
     :__relationships__

@@ -9,6 +9,7 @@ defmodule EPTSDK.Event do
     :payload,
     :occurred_at,
     :created_at,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__
@@ -20,6 +21,7 @@ defmodule EPTSDK.Event do
     :payload,
     :occurred_at,
     :created_at,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__

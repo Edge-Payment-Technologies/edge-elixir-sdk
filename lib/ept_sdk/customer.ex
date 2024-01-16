@@ -9,6 +9,10 @@ defmodule EPTSDK.Customer do
     :email,
     :created_at,
     :updated_at,
+    :address,
+    :payment_methods,
+    :charges,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__
@@ -23,6 +27,10 @@ defmodule EPTSDK.Customer do
     :blocked_at,
     :created_at,
     :updated_at,
+    :address,
+    :payment_methods,
+    :charges,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__

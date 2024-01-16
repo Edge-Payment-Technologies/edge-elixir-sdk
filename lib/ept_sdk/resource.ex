@@ -170,7 +170,7 @@ defmodule EPTSDK.Resource do
       )
       when is_map(entity) do
     entity
-    |> EPTSDK.Entity.to_struct(payload["links"])
+    |> EPTSDK.Entity.to_struct(payload["links"], payload["included"] || [])
     |> (&{:ok, &1, client}).()
   end
 
@@ -178,11 +178,11 @@ defmodule EPTSDK.Resource do
         {:ok,
          %{
            "data" => entities
-         }, client}
+         } = payload, client}
       )
       when is_list(entities) do
     entities
-    |> Enum.map(&EPTSDK.Entity.to_struct(&1, nil))
+    |> Enum.map(&EPTSDK.Entity.to_struct(&1, nil, payload["included"] || []))
     |> (&{:ok, &1, client}).()
   end
 

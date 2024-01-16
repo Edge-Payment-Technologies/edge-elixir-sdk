@@ -7,6 +7,10 @@ defmodule EPTSDK.Subscription do
     :id,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :charges,
+    :customer,
+    :payment_method,
     :__raw__,
     :__links__,
     :__relationships__
@@ -25,6 +29,10 @@ defmodule EPTSDK.Subscription do
     :next_billing,
     :created_at,
     :updated_at,
+    :merchant_account,
+    :charges,
+    :customer,
+    :payment_method,
     :__raw__,
     :__links__,
     :__relationships__

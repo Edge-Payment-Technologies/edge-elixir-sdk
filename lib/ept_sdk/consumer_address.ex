@@ -1,4 +1,4 @@
-defmodule EPTSDK.Address do
+defmodule EPTSDK.ConsumerAddress do
   import EPTSDK.Resource, only: :macros
 
   @path "/consumer_addresses"
@@ -12,6 +12,7 @@ defmodule EPTSDK.Address do
     :country,
     :created_at,
     :updated_at,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__
@@ -27,6 +28,7 @@ defmodule EPTSDK.Address do
     :country,
     :created_at,
     :updated_at,
+    :merchant_account,
     :__raw__,
     :__links__,
     :__relationships__

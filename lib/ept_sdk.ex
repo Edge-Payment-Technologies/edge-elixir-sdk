@@ -26,7 +26,6 @@ defmodule EPTSDK do
             finch_options: [],
             response: nil,
             links: nil,
-            included: nil,
             meta: nil
 
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
@@ -256,7 +255,6 @@ defmodule EPTSDK do
      %__MODULE__{
        client
        | response: response,
-         included: Enum.map(payload["included"] || [], &EPTSDK.Entity.to_struct(&1, nil)),
          links: payload["links"],
          meta: payload["meta"]
      }}
