@@ -1,0 +1,40 @@
+name: Tests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - main
+      - "!revert-**"
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  rspec-tests:
+    if: ${{ ! github.event.pull_request.draft }}
+    name: mix test
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        id: beam
+        with:
+          otp-version: 26.0
+          elixir-version: 1.15
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-deps-${{ hashFiles('**/mix.lock') }}
+      - name: Run tests
+        run: mix test
+        env:
+          MIX_ENV: test
