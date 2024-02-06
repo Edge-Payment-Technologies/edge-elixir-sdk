@@ -19,7 +19,7 @@ defmodule EPTSDK do
 
   defstruct authorization: nil,
             user_agent: nil,
-            host: "api.tryedge.com",
+            host: "api.tryedge.io",
             json_decoder: &Jason.decode/1,
             json_encoder: &Jason.encode/1,
             namespace: EPTSDK.Finch,

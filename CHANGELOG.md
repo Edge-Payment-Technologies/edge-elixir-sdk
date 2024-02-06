@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0
+
+  - [breaking] [business] We changed our domain name.
+
 ## 3.0.0
 
   - [feature] Money properties now are parsed and we pulled more attributes over from charge

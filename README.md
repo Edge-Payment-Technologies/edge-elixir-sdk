@@ -1,6 +1,6 @@
 # EPTSDK
 
-A SDK (software development kit) for interacting with the [Edge Payment Technologies, Inc](https://tryedge.com) HTTP API.
+A SDK (software development kit) for interacting with the [Edge Payment Technologies, Inc](https://tryedge.io) HTTP API.
 
 
 ## Using
@@ -60,7 +60,7 @@ by adding `ept_sdk` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ept_sdk, "~> 2.0.0"}
+    {:ept_sdk, "~> 4.0.0"}
   ]
 end
 ```
