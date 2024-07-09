@@ -1,14 +1,14 @@
-defmodule EPTSDK.Subscription do
+defmodule EPTSDK.PaymentSubscriptions do
   import EPTSDK.Resource, only: :macros
 
-  @path "/subscriptions"
-  @resource_type "subscriptions"
+  @path "/payment_subscriptions"
+  @resource_type "payment_subscriptions"
   @enforce_keys [
     :id,
     :created_at,
     :updated_at,
-    :merchant_account,
-    :charges,
+    :merchant,
+    :payment_demands,
     :customer,
     :payment_method,
     :__raw__,
@@ -29,8 +29,8 @@ defmodule EPTSDK.Subscription do
     :next_billing,
     :created_at,
     :updated_at,
-    :merchant_account,
-    :charges,
+    :merchant,
+    :payment_demands,
     :customer,
     :payment_method,
     :__raw__,

@@ -1,8 +1,8 @@
-defmodule EPTSDK.MerchantAccount do
+defmodule EPTSDK.Merchant do
   import EPTSDK.Resource, only: :macros
 
-  @path "/merchant_accounts"
-  @resource_type "merchant_accounts"
+  @path "/merchants"
+  @resource_type "merchants"
   @enforce_keys [
     :id,
     :business_name,
@@ -12,11 +12,9 @@ defmodule EPTSDK.MerchantAccount do
     :payment_methods,
     :customers,
     :events,
-    :payouts,
-    :charges,
-    :subscriptions,
+    :payment_demands,
+    :payment_subscriptions,
     :webhook_subscriptions,
-    :payout_method,
     :__raw__,
     :__links__,
     :__relationships__
@@ -54,11 +52,9 @@ defmodule EPTSDK.MerchantAccount do
     :consumer_addresses,
     :payment_methods,
     :events,
-    :payouts,
-    :charges,
-    :subscriptions,
+    :payment_demands,
+    :payment_subscriptions,
     :webhook_subscriptions,
-    :payout_method,
     :__raw__,
     :__links__,
     :__relationships__

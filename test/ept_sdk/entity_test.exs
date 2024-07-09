@@ -2,7 +2,7 @@ defmodule EPTSDK.EntityTest do
   use ExUnit.Case
   doctest EPTSDK.Entity
 
-  test "when handling a customer it normalizes the associated and included address, payment method, and merchant account" do
+  test "when handling a customer it normalizes the associated and included address, payment method, and merchant" do
     assert match?(
              %EPTSDK.Customer{
                id: "565e6a1f-4038-485c-81d8-0f6fb121ee91",
@@ -43,24 +43,24 @@ defmodule EPTSDK.EntityTest do
                          "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/address"
                      }
                    },
-                   "charges" => %{
+                   "payment_demands" => %{
                      "links" => %{
                        "related" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/charges",
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/payment_demands",
                        "self" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/charges"
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/payment_demands"
                      }
                    },
-                   "merchant_account" => %{
+                   "merchant" => %{
                      "data" => %{
                        "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
-                       "type" => "merchant_accounts"
+                       "type" => "merchants"
                      },
                      "links" => %{
                        "related" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/merchant_account",
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/merchant",
                        "self" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/merchant_account"
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/merchant"
                      }
                    },
                    "payment_methods" => %{
@@ -83,12 +83,12 @@ defmodule EPTSDK.EntityTest do
                          "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/published_events"
                      }
                    },
-                   "subscriptions" => %{
+                   "payment_subscriptions" => %{
                      "links" => %{
                        "related" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/subscriptions",
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/payment_subscriptions",
                        "self" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/subscriptions"
+                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/payment_subscriptions"
                      }
                    }
                  },
@@ -116,16 +116,16 @@ defmodule EPTSDK.EntityTest do
                        "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37"
                    },
                    "relationships" => %{
-                     "merchant_account" => %{
+                     "merchant" => %{
                        "data" => %{
                          "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
-                         "type" => "merchant_accounts"
+                         "type" => "merchants"
                        },
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/merchant_account",
+                           "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/merchant",
                          "self" =>
-                           "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/relationships/merchant_account"
+                           "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/relationships/merchant"
                        }
                      }
                    },
@@ -163,15 +163,15 @@ defmodule EPTSDK.EntityTest do
                    "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
                    "links" => %{
                      "self" =>
-                       "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813"
+                       "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813"
                    },
                    "relationships" => %{
-                     "charges" => %{
+                     "payment_demands" => %{
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/charges",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_demands",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/charges"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_demands"
                        }
                      },
                      "consumer_addresses" => %{
@@ -183,9 +183,9 @@ defmodule EPTSDK.EntityTest do
                        ],
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/consumer_addresses",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/consumer_addresses",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/consumer_addresses"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/consumer_addresses"
                        }
                      },
                      "customers" => %{
@@ -197,9 +197,9 @@ defmodule EPTSDK.EntityTest do
                        ],
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/customers",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/customers",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/customers"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/customers"
                        }
                      },
                      "events" => %{
@@ -235,53 +235,37 @@ defmodule EPTSDK.EntityTest do
                        ],
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/events",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/events",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/events"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/events"
                        }
                      },
                      "payment_methods" => %{
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_methods",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_methods",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_methods"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_methods"
                        }
                      },
-                     "payout_method" => %{
+                     "payment_subscriptions" => %{
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/payout_method",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_subscriptions",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payout_method"
-                       }
-                     },
-                     "payouts" => %{
-                       "links" => %{
-                         "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/payouts",
-                         "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payouts"
-                       }
-                     },
-                     "subscriptions" => %{
-                       "links" => %{
-                         "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/subscriptions",
-                         "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/subscriptions"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_subscriptions"
                        }
                      },
                      "webhook_subscriptions" => %{
                        "links" => %{
                          "related" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/webhook_subscriptions",
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/webhook_subscriptions",
                          "self" =>
-                           "http://localhost:3000/merchant_accounts/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/webhook_subscriptions"
+                           "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/webhook_subscriptions"
                        }
                      }
                    },
-                   "type" => "merchant_accounts"
+                   "type" => "merchants"
                  }
                ]
              )

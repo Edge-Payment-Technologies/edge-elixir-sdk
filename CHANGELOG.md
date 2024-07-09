@@ -2,36 +2,36 @@
 
 ## 4.0.0
 
-  - [breaking] [business] We changed our domain name.
+- [breaking] [business] We changed our domain name.
 
 ## 3.0.0
 
-  - [feature] Money properties now are parsed and we pulled more attributes over from charge
-  - [feature] Now when resource has a relationship we normalize it on the struct, for example `customer.address.merchant_account` will get you the merchant account of the consumer address of a customer.
-  - [breaking] [refactor] Rename `Address` to `ConsumerAddress`
-  - [breaking] [refactor] Renamed `property` property of PropertyNotFound to `name` as it reduces duplicitive naming.
-  - [breaking] [refactor] Removing `Dispute` because it isn't expressed in the HTTP API yet.
-  - [breaking] [refactor] The included values of a request are no longer stored on the `included` property of a `EPTSDK.Client`
+- [feature] Money properties now are parsed and we pulled more attributes over from charge
+- [feature] Now when resource has a relationship we normalize it on the struct, for example `customer.address.merchant` will get you the merchant account of the consumer address of a customer.
+- [breaking] [refactor] Rename `Address` to `ConsumerAddress`
+- [breaking] [refactor] Renamed `property` property of PropertyNotFound to `name` as it reduces duplicitive naming.
+- [breaking] [refactor] Removing `Dispute` because it isn't expressed in the HTTP API yet.
+- [breaking] [refactor] The included values of a request are no longer stored on the `included` property of a `EPTSDK.Client`
 
 ## 2.0.2
 
-  - [bugfix] Incorrectly parsing timestamps with the wrong ISO format.
+- [bugfix] Incorrectly parsing timestamps with the wrong ISO format.
 
 ## 2.0.1
 
-  - [bugfix] We weren't returning the type as part of the struct for resources
-  - [bugfix] Addresses didn't expose the `line_2` property
+- [bugfix] We weren't returning the type as part of the struct for resources
+- [bugfix] Addresses didn't expose the `line_2` property
 
 ## 2.0.0
 
-  - [feature] [breaking] Now when the client recieves timestamps it will parse them with ISO Basic (8601).
-  - [feature] Fully fleshed out a ton more resources with their properties (to many to name)
-  - [feature] PropertyNotAvailable will now have a reason property that tells you why it is not available, as there are two reasons: unfetched and decoding error.
+- [feature] [breaking] Now when the client recieves timestamps it will parse them with ISO Basic (8601).
+- [feature] Fully fleshed out a ton more resources with their properties (to many to name)
+- [feature] PropertyNotAvailable will now have a reason property that tells you why it is not available, as there are two reasons: unfetched and decoding error.
 
 ## 1.0.1
 
-  - [bugfix] When a request resulted in an error, like a timeout, it would fail in the middle of the library
+- [bugfix] When a request resulted in an error, like a timeout, it would fail in the middle of the library
 
 ## 1.0.0
 
-  - First release of the library
+- First release of the library

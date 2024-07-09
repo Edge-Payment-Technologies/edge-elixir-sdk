@@ -12,7 +12,7 @@ defmodule EPTSDK.ConsumerAddress do
     :country,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :__raw__,
     :__links__,
     :__relationships__
@@ -28,7 +28,7 @@ defmodule EPTSDK.ConsumerAddress do
     :country,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :__raw__,
     :__links__,
     :__relationships__

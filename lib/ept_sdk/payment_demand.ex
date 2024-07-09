@@ -1,8 +1,8 @@
-defmodule EPTSDK.Charge do
+defmodule EPTSDK.PaymentDemand do
   import EPTSDK.Resource, only: :macros
 
-  @path "/charges"
-  @resource_type "charges"
+  @path "/payment_demands"
+  @resource_type "payment_demands"
   @enforce_keys [
     :id,
     :amount,
@@ -18,11 +18,11 @@ defmodule EPTSDK.Charge do
     :currency,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :customer,
     :payment_method,
     :billing_address,
-    :subscription,
+    :payment_subscription,
     :shipping_address,
     :__raw__,
     :__links__,
@@ -45,11 +45,11 @@ defmodule EPTSDK.Charge do
     :description,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :customer,
     :payment_method,
     :billing_address,
-    :subscription,
+    :payment_subscription,
     :shipping_address,
     :__raw__,
     :__links__,

@@ -7,7 +7,7 @@ defmodule EPTSDK.WebhookSubscription do
     :id,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :__raw__,
     :__links__,
     :__relationships__
@@ -23,7 +23,7 @@ defmodule EPTSDK.WebhookSubscription do
     :url,
     :created_at,
     :updated_at,
-    :merchant_account,
+    :merchant,
     :__raw__,
     :__links__,
     :__relationships__
