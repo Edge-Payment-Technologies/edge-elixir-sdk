@@ -19,7 +19,7 @@ defmodule EPTSDK do
 
   defstruct authorization: nil,
             user_agent: nil,
-            host: "api.tryedge.io",
+            host: %URI{scheme: "https", host: "api.tryedge.io"},
             json_decoder: &Jason.decode/1,
             json_encoder: &Jason.encode/1,
             namespace: EPTSDK.Finch,
@@ -43,7 +43,7 @@ defmodule EPTSDK do
       when is_binary(path) do
     Finch.build(
       :get,
-      encode_uri(client.host, path, with_query_defaults(query)),
+      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
       default_headers(client, [
         {"Accept", "application/vnd.api+json"}
       ])
@@ -56,7 +56,7 @@ defmodule EPTSDK do
       when is_binary(path) do
     Finch.build(
       :options,
-      encode_uri(client.host, path, with_query_defaults(query)),
+      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
       default_headers(client)
     )
     |> request(client)
@@ -67,7 +67,7 @@ defmodule EPTSDK do
       when is_binary(path) do
     Finch.build(
       :delete,
-      encode_uri(client.host, path, with_query_defaults(query)),
+      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
       default_headers(client)
     )
     |> request(client)
@@ -82,7 +82,7 @@ defmodule EPTSDK do
       {:ok, payload} ->
         Finch.build(
           :post,
-          encode_uri(client.host, path, with_query_defaults(query)),
+          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -105,7 +105,7 @@ defmodule EPTSDK do
       {:ok, payload} ->
         Finch.build(
           :patch,
-          encode_uri(client.host, path, with_query_defaults(query)),
+          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -128,7 +128,7 @@ defmodule EPTSDK do
       {:ok, payload} ->
         Finch.build(
           :put,
-          encode_uri(client.host, path, with_query_defaults(query)),
+          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
           default_headers(client, [
             {"Content-Type", "application/vnd.api+json"},
             {"Accept", "application/vnd.api+json"}
@@ -145,29 +145,19 @@ defmodule EPTSDK do
 
   defp encode_uri(host, path, nil)
        when is_binary(host) and is_binary(path),
-       do:
-         encode_uri(
-           URI.parse("https://#{host}"),
-           URI.parse(path),
-           nil
-         )
+       do: URI.append_path(%URI{host: host, scheme: "https"}, path)
 
-  defp encode_uri(host, path, nil)
-       when is_struct(host, URI) and is_struct(path, URI),
-       do: URI.parse("#{host}#{path}")
+  defp encode_uri(uri, path, nil)
+       when is_struct(uri, URI) and is_binary(path),
+       do: URI.append_path(uri, path)
 
   defp encode_uri(host, path, query)
-       when is_binary(host) and is_binary(path) and is_map(query),
+       when is_map(query),
        do:
-         encode_uri(
-           URI.parse("https://#{host}"),
-           URI.parse(path),
+         URI.append_query(
+           encode_uri(host, path, nil),
            Plug.Conn.Query.encode(query)
          )
-
-  defp encode_uri(host, path, query)
-       when is_struct(host, URI) and is_struct(path, URI) and is_binary(query),
-       do: URI.parse("#{host}#{path}?#{query}")
 
   defp default_headers(
          %EPTSDK{user_agent: user_agent, authorization: authorization},

@@ -2,7 +2,6 @@
 
 A SDK (software development kit) for interacting with the [Edge Payment Technologies, Inc](https://tryedge.io) HTTP API.
 
-
 ## Using
 
 In order to use the SDK you need two things:
@@ -12,42 +11,40 @@ In order to use the SDK you need two things:
 
 Once you have those two things you need to instantiate a client. This client can be used for multiple requests. The only two required parameters for a client are the `token` and `user_agent`. The former is used for authenticating your requests and the latter is used for identifying your usage. User Agent identity helps us find clients that aren't behaving correctly and communicate with their owner. You can read more here https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent and https://docs.newrelic.com/docs/apis/rest-api-v2/basic-functions/set-custom-user-agent/
 
-``` elixir
+```elixir
 client = EPTSDK.client(%{
-  token: "sk_sandbox_VUNVkopDczZcr1oJPLPAGfrN",
-  user_agent: "BigShoeApp/1.0"
+  token: "ept_sandbox_sQsnYGFoLvE2Qt7tmsvuDESB2TBBA2wf1UfQruzmenG14tTMHb",
+  user_agent: "BigShoeApp/1.0",
 })
 ```
 
 We can now use that client to make requests:
 
-``` elixir
-{:ok, customerA, client} = client
-|> EPTSDK.Customer.create(%{
-  name: "Johnson Parker",
-  email: "johnson@example.com"
-})
+```elixir
+{:ok, customerA, client} = EPTSDK.Customer.create(client, attributes: %{
+    name: "Johnson Parker",
+    email: "johnson@example.com"
+  })
 ```
 
-``` elixir
+```elixir
 {:ok, customerB, client} = client
-|> EPTSDK.Customer.list(
-  filter: %{name: "Johnson Parker"},
-  include: ["address"],
-  sort: ["name"],
-  fields: %{customers: ["name"]}
-)
-|> List.first()
+  |> EPTSDK.Customer.list(
+    filter: %{name: "Johnson Parker"},
+    include: ["address"],
+    sort: ["name"],
+    fields: %{customers: ["name"]}
+  )
+  |> List.first()
 ```
 
-``` elixir
+```elixir
 customerA == customerB
 
 ```
 
-``` elixir
-{:ok, customerA, client}
-|> EPTSDK.Customer.update(customerA, %{
+```elixir
+{:ok, customerA, client} = EPTSDK.Customer.update(client, customerA, attributes: %{
   name: "Sally"
 })
 ```
@@ -60,7 +57,7 @@ by adding `ept_sdk` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ept_sdk, "~> 4.0.0"}
+    {:ept_sdk, "~> 5.0"}
   ]
 end
 ```
