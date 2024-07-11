@@ -10,7 +10,6 @@ defmodule EPTSDK.Application do
     children = [
       # Starts a worker by calling: EPTSDK.Worker.start_link(arg)
       # {EPTSDK.Worker, arg},
-      {Finch, name: EPTSDK.Finch}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

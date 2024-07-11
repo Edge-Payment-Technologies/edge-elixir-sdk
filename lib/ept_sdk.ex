@@ -10,23 +10,24 @@ defmodule EPTSDK do
     :authorization,
     :user_agent,
     :host,
-    :json_decoder,
-    :json_encoder,
-    :namespace,
-    :finch_options
+    :http_client
   ]
   @default_headers []
 
   defstruct authorization: nil,
             user_agent: nil,
             host: %URI{scheme: "https", host: "api.tryedge.io"},
-            json_decoder: &Jason.decode/1,
-            json_encoder: &Jason.encode/1,
-            namespace: EPTSDK.Finch,
-            finch_options: [],
+            http_client: Req.new(),
             response: nil,
             links: nil,
             meta: nil
+
+  @type t() :: %__MODULE__{
+          authorization: String.t(),
+          user_agent: String.t(),
+          host: URI.t() | String.t(),
+          http_client: Req.t()
+        }
 
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
     struct(
@@ -41,106 +42,70 @@ defmodule EPTSDK do
 
   def get(%EPTSDK{} = client, path, query \\ [])
       when is_binary(path) do
-    Finch.build(
-      :get,
-      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-      default_headers(client, [
-        {"Accept", "application/vnd.api+json"}
-      ])
+    client.http_client
+    |> Req.get(
+      url: encode_uri(client.host, path, with_query_defaults(query)),
+      headers:
+        default_headers(client, [
+          {"Accept", "application/vnd.api+json"}
+        ])
     )
-    |> request(client)
-    |> response(client)
-  end
-
-  def options(%EPTSDK{} = client, path, query \\ [])
-      when is_binary(path) do
-    Finch.build(
-      :options,
-      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-      default_headers(client)
-    )
-    |> request(client)
-    |> response(client)
+    |> response()
   end
 
   def delete(%EPTSDK{} = client, path, query \\ [])
       when is_binary(path) do
-    Finch.build(
-      :delete,
-      URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-      default_headers(client)
+    client.http_client
+    |> Req.delete(
+      url: encode_uri(client.host, path, with_query_defaults(query)),
+      headers: default_headers(client)
     )
-    |> request(client)
-    |> response(client)
+    |> response()
   end
 
   def post(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
-    data
-    |> client.json_encoder.()
-    |> case do
-      {:ok, payload} ->
-        Finch.build(
-          :post,
-          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-          default_headers(client, [
-            {"Content-Type", "application/vnd.api+json"},
-            {"Accept", "application/vnd.api+json"}
-          ]),
-          payload
-        )
-        |> request(client)
-        |> response(client)
-
-      error ->
-        error
-    end
+    client.http_client
+    |> Req.post(
+      url: encode_uri(client.host, path, with_query_defaults(query)),
+      headers:
+        default_headers(client, [
+          {"Content-Type", "application/vnd.api+json"},
+          {"Accept", "application/vnd.api+json"}
+        ]),
+      json: dbg(data)
+    )
+    |> response()
   end
 
   def patch(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
-    data
-    |> client.json_encoder.()
-    |> case do
-      {:ok, payload} ->
-        Finch.build(
-          :patch,
-          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-          default_headers(client, [
-            {"Content-Type", "application/vnd.api+json"},
-            {"Accept", "application/vnd.api+json"}
-          ]),
-          payload
-        )
-        |> request(client)
-        |> response(client)
-
-      error ->
-        error
-    end
+    client.http_client
+    |> Req.patch(
+      url: encode_uri(client.host, path, with_query_defaults(query)),
+      headers:
+        default_headers(client, [
+          {"Content-Type", "application/vnd.api+json"},
+          {"Accept", "application/vnd.api+json"}
+        ]),
+      json: data
+    )
+    |> response()
   end
 
   def put(%EPTSDK{} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
-    data
-    |> client.json_encoder.()
-    |> case do
-      {:ok, payload} ->
-        Finch.build(
-          :put,
-          URI.to_string(encode_uri(client.host, path, with_query_defaults(query))),
-          default_headers(client, [
-            {"Content-Type", "application/vnd.api+json"},
-            {"Accept", "application/vnd.api+json"}
-          ]),
-          payload
-        )
-        |> request(client)
-        |> response(client)
-
-      error ->
-        error
-    end
+    client.http_client
+    |> Req.put(
+      url: encode_uri(client.host, path, with_query_defaults(query)),
+      headers:
+        default_headers(client, [
+          {"Content-Type", "application/vnd.api+json"},
+          {"Accept", "application/vnd.api+json"}
+        ]),
+      json: data
+    )
+    |> response()
   end
 
   defp encode_uri(host, path, nil)
@@ -166,41 +131,30 @@ defmodule EPTSDK do
        when is_binary(user_agent) and is_list(custom_headers) do
     @default_headers
     |> Enum.concat([
-      {"User-Agent", Enum.join(["Edge Payment Client/1.0.0", user_agent], " ")},
+      {"User-Agent", Enum.join(["Edge Payment Client/1.0", user_agent], " ")},
       {"Authorization", authorization}
     ])
     |> Enum.concat(custom_headers)
   end
 
-  defp request(finch_client, edge_client),
-    do: finch_client |> Finch.request(edge_client.namespace, edge_client.finch_options)
-
-  defp response({:ok, %Finch.Response{status: 422, body: body} = response}, edge_client) do
-    edge_client.json_decoder.(body)
-    |> case do
-      {:ok, payload} -> {:unprocessable_content, payload, response}
-      {:error, decoding_error} -> {:decoding_error, decoding_error, response}
-    end
+  defp response({:ok, %Req.Response{status: 422, body: body} = response}) do
+    {:unprocessable_content, body, response}
   end
 
-  defp response({:ok, %Finch.Response{status: status} = response}, _edge_client)
+  defp response({:ok, %Req.Response{status: status} = response})
        when status in 400..499 do
     {:error, response}
   end
 
-  defp response({:ok, %Finch.Response{body: ""} = response}, _edge_client) do
-    {:ok, nil, response}
+  # defp response({:ok, %Req.Response{body: ""} = response}) do
+  #   {:ok, nil, response}
+  # end
+
+  defp response({:ok, %Req.Response{body: body} = response}) do
+    {:ok, body, response}
   end
 
-  defp response({:ok, %Finch.Response{body: body} = response}, edge_client) do
-    edge_client.json_decoder.(body)
-    |> case do
-      {:ok, payload} -> {:ok, payload, response}
-      {:error, decoding_error} -> {:decoding_error, decoding_error, response}
-    end
-  end
-
-  defp response({:error, error}, _edge_client) do
+  defp response({:error, error}) do
     {:error, error}
   end
 
@@ -237,7 +191,7 @@ defmodule EPTSDK do
   end
 
   def update_client_from_request(
-        {:ok, payload, %Finch.Response{} = response},
+        {:ok, payload, %Req.Response{} = response},
         %EPTSDK{} = client
       )
       when is_map(payload) do
