@@ -44,7 +44,7 @@ defmodule EPTSDK do
       when is_binary(path) do
     client.http_client
     |> Req.get(
-      url: encode_uri(client.host, path, with_query_defaults(query)),
+      url: encode_uri(location, path, with_query_defaults(query)),
       headers:
         default_headers(client, [
           {"Accept", "application/vnd.api+json"}
