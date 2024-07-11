@@ -9,14 +9,14 @@ defmodule EPTSDK do
   @enforce_keys [
     :authorization,
     :user_agent,
-    :host,
+    :location,
     :http_client
   ]
   @default_headers []
 
   defstruct authorization: nil,
             user_agent: nil,
-            host: %URI{scheme: "https", host: "api.tryedge.io"},
+            location: %URI{scheme: "https", host: "api.tryedge.io"},
             http_client: Req.new(),
             response: nil,
             links: nil,
@@ -25,7 +25,7 @@ defmodule EPTSDK do
   @type t() :: %__MODULE__{
           authorization: String.t(),
           user_agent: String.t(),
-          host: URI.t() | String.t(),
+          location: URI.t() | String.t(),
           http_client: Req.t()
         }
 
@@ -40,7 +40,7 @@ defmodule EPTSDK do
     )
   end
 
-  def get(%EPTSDK{} = client, path, query \\ [])
+  def get(%EPTSDK{location: location} = client, path, query \\ [])
       when is_binary(path) do
     client.http_client
     |> Req.get(
@@ -53,21 +53,21 @@ defmodule EPTSDK do
     |> response()
   end
 
-  def delete(%EPTSDK{} = client, path, query \\ [])
+  def delete(%EPTSDK{location: location} = client, path, query \\ [])
       when is_binary(path) do
     client.http_client
     |> Req.delete(
-      url: encode_uri(client.host, path, with_query_defaults(query)),
+      url: encode_uri(location, path, with_query_defaults(query)),
       headers: default_headers(client)
     )
     |> response()
   end
 
-  def post(%EPTSDK{} = client, path, data, query \\ [])
+  def post(%EPTSDK{location: location} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     client.http_client
     |> Req.post(
-      url: encode_uri(client.host, path, with_query_defaults(query)),
+      url: encode_uri(location, path, with_query_defaults(query)),
       headers:
         default_headers(client, [
           {"Content-Type", "application/vnd.api+json"},
@@ -78,11 +78,11 @@ defmodule EPTSDK do
     |> response()
   end
 
-  def patch(%EPTSDK{} = client, path, data, query \\ [])
+  def patch(%EPTSDK{location: location} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     client.http_client
     |> Req.patch(
-      url: encode_uri(client.host, path, with_query_defaults(query)),
+      url: encode_uri(location, path, with_query_defaults(query)),
       headers:
         default_headers(client, [
           {"Content-Type", "application/vnd.api+json"},
@@ -93,11 +93,11 @@ defmodule EPTSDK do
     |> response()
   end
 
-  def put(%EPTSDK{} = client, path, data, query \\ [])
+  def put(%EPTSDK{location: location} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
     client.http_client
     |> Req.put(
-      url: encode_uri(client.host, path, with_query_defaults(query)),
+      url: encode_uri(location, path, with_query_defaults(query)),
       headers:
         default_headers(client, [
           {"Content-Type", "application/vnd.api+json"},
@@ -108,19 +108,19 @@ defmodule EPTSDK do
     |> response()
   end
 
-  defp encode_uri(host, path, nil)
-       when is_binary(host) and is_binary(path),
-       do: URI.append_path(%URI{host: host, scheme: "https"}, path)
+  defp encode_uri(location, path, nil)
+       when is_binary(location) and is_binary(path),
+       do: URI.append_path(%URI{host: location, scheme: "https"}, path)
 
   defp encode_uri(uri, path, nil)
        when is_struct(uri, URI) and is_binary(path),
        do: URI.append_path(uri, path)
 
-  defp encode_uri(host, path, query)
+  defp encode_uri(location, path, query)
        when is_map(query),
        do:
          URI.append_query(
-           encode_uri(host, path, nil),
+           encode_uri(location, path, nil),
            Plug.Conn.Query.encode(query)
          )
 
@@ -145,10 +145,6 @@ defmodule EPTSDK do
        when status in 400..499 do
     {:error, response}
   end
-
-  # defp response({:ok, %Req.Response{body: ""} = response}) do
-  #   {:ok, nil, response}
-  # end
 
   defp response({:ok, %Req.Response{body: body} = response}) do
     {:ok, body, response}
@@ -192,9 +188,9 @@ defmodule EPTSDK do
 
   def update_client_from_request(
         {:ok, payload, %Req.Response{} = response},
-        %EPTSDK{} = client
+        client
       )
-      when is_map(payload) do
+      when is_struct(client, EPTSDK) and is_map(payload) do
     {:ok, payload,
      %__MODULE__{
        client

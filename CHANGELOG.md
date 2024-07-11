@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.0.0
+
+- [breaking] With the new v2 endpoints we've officially moved away from the previous implementation. Not much has changed in terms of data, but a lot better naming:
+  - charges to payment demand
+  - refund demands split from charges
+  - subscriptions to payment subscriptions
+  - merchant accounts to merchants
+  - users to accounts
+- [breaking] We've also updated from a direct Finch integration to Req which has quickly become a community standard in Elixir. Instead of passing `finch_options`, you now pass an entire HTTP client. This also means we can drop the `json_encoder` and `json_decoder` options.
+- [breaking] Allowing the usage of URIs for the `host` which is now called `location`
+
 ## 4.0.0
 
 - [breaking] [business] We changed our domain name.
