@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.2
+
+- [fix] Removing an errant dbg() call.
+
 ## 5.0.1
 
 - [fix] Update requests weren't sending the ID as part of the payload which is required by some JSONAPI servers.
