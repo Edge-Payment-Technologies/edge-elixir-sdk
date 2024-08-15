@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- [fix] Update requests weren't sending the ID as part of the payload which is required by some JSONAPI servers.
+
 ## 5.0.0
 
 - [breaking] With the new v2 endpoints we've officially moved away from the previous implementation. Not much has changed in terms of data, but a lot better naming:

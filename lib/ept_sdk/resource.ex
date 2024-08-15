@@ -129,6 +129,7 @@ defmodule EPTSDK.Resource do
           "#{@path}/#{id}",
           %{
             data: %{
+              id: id,
               type: @resource_type,
               attributes: attributes,
               relationships:
