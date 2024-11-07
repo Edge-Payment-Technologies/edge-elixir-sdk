@@ -47,16 +47,16 @@ defmodule EPTSDK.Entity do
       do: %EPTSDK.PaymentDemand{
         id: id,
         type: type,
-        amount: fetch_money(attributes, ["amount_cents", "currency"]),
+        amount: fetch_money(attributes, ["amount_cents", "amount_currency"]),
         amount_cents: fetch(attributes, "amount_cents"),
-        fee: fetch_money(attributes, ["fee_cents", "currency"]),
+        fee: fetch_money(attributes, ["fee_cents", "amount_currency"]),
         fee_cents: fetch(attributes, "fee_cents"),
-        gateway: fetch_money(attributes, ["gateway_cents", "currency"]),
+        gateway: fetch_money(attributes, ["gateway_cents", "amount_currency"]),
         gateway_cents: fetch(attributes, "gateway_cents"),
 
-        net: fetch_money(attributes, ["net_cents", "currency"]),
+        net: fetch_money(attributes, ["net_cents", "amount_currency"]),
         net_cents: fetch(attributes, "net_cents"),
-        currency: fetch(attributes, "currency"),
+        amount_currency: fetch(attributes, "amount_currency"),
         description: fetch(attributes, "description"),
         expires_at: fetch_datetime(attributes, "expires_at"),
         created_at: fetch_datetime(attributes, "created_at"),
@@ -70,6 +70,32 @@ defmodule EPTSDK.Entity do
         refund_demands: fetch_relationship(record["relationships"], "refund_demands", included),
         shipping_address:
           fetch_relationship(record["relationships"], "shipping_address", included),
+        merchant:
+          fetch_relationship(record["relationships"], "merchant", included),
+        __relationships__: record["relationships"],
+        __links__: record["links"] || links,
+        __raw__: record
+      }
+
+  def to_struct(
+        %{
+          "id" => id,
+          "type" => "refund_demands" = type,
+          "attributes" => attributes
+        } = record,
+        links,
+        included
+      ),
+      do: %EPTSDK.RefundDemand{
+        id: id,
+        type: type,
+        amount: fetch_money(attributes, ["amount_cents", "amount_currency"]),
+        amount_cents: fetch(attributes, "amount_cents"),
+        amount_currency: fetch(attributes, "amount_currency"),
+        state: fetch(attributes, "state"),
+        created_at: fetch_datetime(attributes, "created_at"),
+        updated_at: fetch_datetime(attributes, "updated_at"),
+        payment_demand: fetch_relationship(record["relationships"], "payment_demand", included),
         merchant:
           fetch_relationship(record["relationships"], "merchant", included),
         __relationships__: record["relationships"],
@@ -227,6 +253,7 @@ defmodule EPTSDK.Entity do
       do: %EPTSDK.PaymentSubscriptions{
         id: id,
         type: type,
+        amount: fetch_money(attributes, ["amount_cents", "amount_currency"]),
         amount_cents: fetch(attributes, "amount_cents"),
         amount_currency: fetch(attributes, "amount_currency"),
         billing_period: fetch(attributes, "billing_period"),

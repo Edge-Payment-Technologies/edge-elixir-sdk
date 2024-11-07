@@ -1,16 +1,16 @@
-defmodule EPTSDK.PaymentSubscriptions do
+defmodule EPTSDK.RefundDemand do
   import EPTSDK.Resource, only: :macros
 
-  @path "/payment_subscriptions"
-  @resource_type "payment_subscriptions"
+  @path "/refund_demands"
+  @resource_type "refund_demands"
   @enforce_keys [
     :id,
+    :amount,
+    :amount_cents,
     :created_at,
     :updated_at,
     :merchant,
-    :payment_demands,
-    :customer,
-    :payment_method,
+    :payment_demand,
     :__raw__,
     :__links__,
     :__relationships__
@@ -21,19 +21,11 @@ defmodule EPTSDK.PaymentSubscriptions do
     :amount,
     :amount_cents,
     :amount_currency,
-    :billing_period,
-    :description,
-    :next_billing_day,
-    :status,
-    :discarded_at,
-    :end_at,
-    :next_billing,
+    :state,
     :created_at,
     :updated_at,
     :merchant,
-    :payment_demands,
-    :customer,
-    :payment_method,
+    :payment_demand,
     :__raw__,
     :__links__,
     :__relationships__
@@ -42,5 +34,4 @@ defmodule EPTSDK.PaymentSubscriptions do
   with_list()
   with_show()
   with_create()
-  with_delete()
 end

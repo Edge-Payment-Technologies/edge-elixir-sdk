@@ -1,5 +1,14 @@
 # Changelog
 
+## 6.0.1
+
+- [breaking] More changes to payment demand's interface
+- [feature] Refund demands are now available
+
+## 6.0.0
+
+- [breaking] Payment demand has changed it's interface
+
 ## 5.0.2
 
 - [fix] Removing an errant dbg() call.
