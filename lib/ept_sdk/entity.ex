@@ -25,8 +25,7 @@ defmodule EPTSDK.Entity do
         discarded_at: fetch_datetime(attributes, "discarded_at"),
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         payment_demands: fetch_relationship(record["relationships"], "payment_demands", included),
         customer: fetch_relationship(record["relationships"], "customer", included),
         address: fetch_relationship(record["relationships"], "address", included),
@@ -49,16 +48,13 @@ defmodule EPTSDK.Entity do
         type: type,
         amount: fetch_money(attributes, ["amount_cents", "amount_currency"]),
         amount_cents: fetch(attributes, "amount_cents"),
+        amount_currency: fetch(attributes, "amount_currency"),
         fee: fetch_money(attributes, ["fee_cents", "amount_currency"]),
         fee_cents: fetch(attributes, "fee_cents"),
-        gateway: fetch_money(attributes, ["gateway_cents", "amount_currency"]),
-        gateway_cents: fetch(attributes, "gateway_cents"),
-
         net: fetch_money(attributes, ["net_cents", "amount_currency"]),
         net_cents: fetch(attributes, "net_cents"),
-        amount_currency: fetch(attributes, "amount_currency"),
+        idempotency_key: fetch(attributes, "idempotency_key"),
         description: fetch(attributes, "description"),
-        expires_at: fetch_datetime(attributes, "expires_at"),
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
         buyer: fetch_relationship(record["relationships"], "buyer", included),
@@ -66,12 +62,12 @@ defmodule EPTSDK.Entity do
         payer: fetch_relationship(record["relationships"], "payer", included),
         payment_method: fetch_relationship(record["relationships"], "payment_method", included),
         billing_address: fetch_relationship(record["relationships"], "billing_address", included),
-        payment_subscription: fetch_relationship(record["relationships"], "payment_subscription", included),
+        payment_subscription:
+          fetch_relationship(record["relationships"], "payment_subscription", included),
         refund_demands: fetch_relationship(record["relationships"], "refund_demands", included),
         shipping_address:
           fetch_relationship(record["relationships"], "shipping_address", included),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
         __raw__: record
@@ -96,8 +92,7 @@ defmodule EPTSDK.Entity do
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
         payment_demand: fetch_relationship(record["relationships"], "payment_demand", included),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
         __raw__: record
@@ -123,8 +118,7 @@ defmodule EPTSDK.Entity do
         country: fetch(attributes, "country"),
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         __relationships__: record["relationships"],
         __links__: record["links"] || links,
         __raw__: record
@@ -151,8 +145,7 @@ defmodule EPTSDK.Entity do
         updated_at: fetch_datetime(attributes, "updated_at"),
         address: fetch_relationship(record["relationships"], "address", included),
         payment_methods: fetch_relationship(record["relationships"], "payment_methods", included),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         payment_demands: fetch_relationship(record["relationships"], "payment_demands", included),
         # TODO: turn into formal relationship structs
         __relationships__: record["relationships"],
@@ -208,7 +201,8 @@ defmodule EPTSDK.Entity do
         events: fetch_relationship(record["relationships"], "events", included),
         webhook_subscriptions:
           fetch_relationship(record["relationships"], "webhook_subscriptions", included),
-        payment_subscriptions: fetch_relationship(record["relationships"], "payment_subscriptions", included),
+        payment_subscriptions:
+          fetch_relationship(record["relationships"], "payment_subscriptions", included),
         # TODO: turn into formal relationship structs
         __relationships__: record["relationships"],
         # TODO: turn into formal links structs
@@ -232,8 +226,7 @@ defmodule EPTSDK.Entity do
         payload: fetch(attributes, "payload"),
         occurred_at: fetch_datetime(attributes, "occurred_at"),
         created_at: fetch_datetime(attributes, "created_at"),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         # TODO: turn into formal relationship structs
         __relationships__: record["relationships"],
         # TODO: turn into formal links structs
@@ -265,8 +258,7 @@ defmodule EPTSDK.Entity do
         end_at: fetch_datetime(attributes, "end_at"),
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         payment_demands: fetch_relationship(record["relationships"], "payment_demands", included),
         payment_method: fetch_relationship(record["relationships"], "payment_method", included),
         customer: fetch_relationship(record["relationships"], "customer", included),
@@ -297,8 +289,7 @@ defmodule EPTSDK.Entity do
         url: fetch(attributes, "url"),
         created_at: fetch_datetime(attributes, "created_at"),
         updated_at: fetch_datetime(attributes, "updated_at"),
-        merchant:
-          fetch_relationship(record["relationships"], "merchant", included),
+        merchant: fetch_relationship(record["relationships"], "merchant", included),
         # TODO: turn into formal relationship structs
         __relationships__: record["relationships"],
         # TODO: turn into formal links structs

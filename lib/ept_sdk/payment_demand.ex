@@ -12,8 +12,6 @@ defmodule EPTSDK.PaymentDemand do
     :net_cents,
     :fee,
     :fee_cents,
-    :gateway,
-    :gateway_cents,
     :created_at,
     :updated_at,
     :merchant,
@@ -38,11 +36,8 @@ defmodule EPTSDK.PaymentDemand do
     :net_cents,
     :fee,
     :fee_cents,
-    :gateway,
-    :gateway_cents,
     :description,
     :idempotency_key,
-    :expires_at,
     :processor_state,
     :created_at,
     :updated_at,
@@ -63,4 +58,5 @@ defmodule EPTSDK.PaymentDemand do
   with_list()
   with_show()
   with_create()
+  with_update()
 end

@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.2
+
+- [breaking] More changes to payment demand's interface
+
 ## 6.0.1
 
 - [breaking] More changes to payment demand's interface
