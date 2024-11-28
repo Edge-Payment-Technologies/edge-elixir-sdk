@@ -29,4 +29,21 @@ defmodule EPTSDK.Event do
 
   with_list()
   with_show()
+
+  def new(id, type, attributes, record, included, links) do
+    %__MODULE__{
+      id: id,
+      type: type,
+      code: EPTSDK.Encoder.fetch(attributes, "code"),
+      payload: EPTSDK.Encoder.fetch(attributes, "payload"),
+      occurred_at: EPTSDK.Encoder.fetch_datetime(attributes, "occurred_at"),
+      created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+      # TODO: turn into formal relationship structs
+      __relationships__: record["relationships"],
+      # TODO: turn into formal links structs
+      __links__: record["links"] || links,
+      __raw__: record
+    }
+  end
 end

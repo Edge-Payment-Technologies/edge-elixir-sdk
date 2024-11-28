@@ -59,4 +59,43 @@ defmodule EPTSDK.PaymentDemand do
   with_show()
   with_create()
   with_update()
+
+  def new(id, type, attributes, record, included, links) do
+    %__MODULE__{
+      id: id,
+      type: type,
+      amount: EPTSDK.Encoder.fetch_money(attributes, ["amount_cents", "amount_currency"]),
+      amount_cents: EPTSDK.Encoder.fetch(attributes, "amount_cents"),
+      amount_currency: EPTSDK.Encoder.fetch(attributes, "amount_currency"),
+      fee: EPTSDK.Encoder.fetch_money(attributes, ["fee_cents", "amount_currency"]),
+      fee_cents: EPTSDK.Encoder.fetch(attributes, "fee_cents"),
+      net: EPTSDK.Encoder.fetch_money(attributes, ["net_cents", "amount_currency"]),
+      net_cents: EPTSDK.Encoder.fetch(attributes, "net_cents"),
+      idempotency_key: EPTSDK.Encoder.fetch(attributes, "idempotency_key"),
+      description: EPTSDK.Encoder.fetch(attributes, "description"),
+      created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
+      updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
+      buyer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "buyer", included),
+      receiver: EPTSDK.Encoder.fetch_relationship(record["relationships"], "receiver", included),
+      payer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "payer", included),
+      payment_method:
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_method", included),
+      billing_address:
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "billing_address", included),
+      payment_subscription:
+        EPTSDK.Encoder.fetch_relationship(
+          record["relationships"],
+          "payment_subscription",
+          included
+        ),
+      refund_demands:
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "refund_demands", included),
+      shipping_address:
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "shipping_address", included),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+      __relationships__: record["relationships"],
+      __links__: record["links"] || links,
+      __raw__: record
+    }
+  end
 end

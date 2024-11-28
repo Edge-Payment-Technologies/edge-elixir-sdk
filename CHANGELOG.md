@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.0
+
+- [feature] You can now update a payment demand that isn't ready for processing
+
 ## 6.0.2
 
 - [breaking] More changes to payment demand's interface

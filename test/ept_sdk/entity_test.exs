@@ -1,6 +1,6 @@
-defmodule EPTSDK.EntityTest do
+defmodule EPTSDK.EncoderTest do
   use ExUnit.Case
-  doctest EPTSDK.Entity
+  doctest EPTSDK.Encoder
 
   test "when handling a customer it normalizes the associated and included address, payment method, and merchant" do
     assert match?(
@@ -13,7 +13,7 @@ defmodule EPTSDK.EntityTest do
                created_at: %DateTime{},
                updated_at: %DateTime{}
              },
-             EPTSDK.Entity.to_struct(
+             EPTSDK.Encoder.to_struct(
                %{
                  "attributes" => %{
                    "blocked_at" => nil,
