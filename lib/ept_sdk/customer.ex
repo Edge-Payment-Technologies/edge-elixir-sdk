@@ -9,7 +9,7 @@ defmodule EPTSDK.Customer do
     :email,
     :created_at,
     :updated_at,
-    :address,
+    :addresses,
     :payment_methods,
     :payment_demands,
     :merchant,
@@ -27,7 +27,7 @@ defmodule EPTSDK.Customer do
     :blocked_at,
     :created_at,
     :updated_at,
-    :address,
+    :addresses,
     :payment_methods,
     :payment_demands,
     :merchant,
@@ -53,7 +53,8 @@ defmodule EPTSDK.Customer do
       blocked_at: EPTSDK.Encoder.fetch_datetime(attributes, "blocked_at"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      address: EPTSDK.Encoder.fetch_relationship(record["relationships"], "address", included),
+      addresses:
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "addresses", included),
       payment_methods:
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_methods", included),
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),

@@ -2,6 +2,7 @@ defmodule EPTSDK.Encoder do
   @moduledoc """
   An individual record from the Edge API.
   """
+  @spec to_struct(map(), map(), list()) :: struct()
   def to_struct(
         %{
           "id" => id,
@@ -157,42 +158,39 @@ defmodule EPTSDK.Encoder do
       when is_map(relationships) and is_binary(key) and is_list(included) do
     Map.get(relationships, key)
     |> case do
-      nil -> {:error, :unknown_relationship}
-      relationship -> {:ok, decode_relationship(relationship)}
-    end
-    |> case do
-      {:error, _} = error -> error
-      {:ok, nil} -> {:ok, []}
-      {:ok, relation} -> {:ok, find_by_relation(included, relation)}
-    end
-    |> case do
-      {:error, _} = error -> error
-      {:ok, nil} -> {:error, :not_included}
-      {:ok, data} when is_list(data) -> data |> Enum.map(&to_struct(&1, nil, included))
-      {:ok, data} -> to_struct(data, nil, included)
-    end
-    |> case do
-      {:error, reason} ->
+      nil ->
         %EPTSDK.RelationshipNotAvailable{
           name: key,
-          reason: reason
+          reason: :unknown
         }
 
-      record ->
-        record
+      relationship ->
+        decode_relationship(key, relationship)
     end
   end
 
-  defp decode_relationship(%{"data" => %{"id" => id, "type" => type}} = relationship)
-       when is_map(relationship) do
-    {id, type}
+  defp decode_relationship(key, %{"data" => data}) when is_list(data) do
+    Enum.map(data, fn %{"id" => id, "type" => type} ->
+      %EPTSDK.Relationship{name: key, id: id, type: type}
+    end)
   end
 
-  defp decode_relationship(%{} = relationship) when is_map(relationship), do: nil
+  defp decode_relationship(key, %{"data" => %{"id" => id, "type" => type}}) do
+    %EPTSDK.Relationship{name: key, id: id, type: type}
+  end
 
-  defp find_by_relation(included, {id, type}),
-    do:
-      Enum.find(included, fn %{"id" => included_id, "type" => included_type} ->
-        included_type == type && included_id == id
-      end)
+  defp decode_relationship(key, _relationship) do
+    %EPTSDK.RelationshipNotAvailable{
+      name: key,
+      reason: :unfetched
+    }
+  end
+
+  # defp find_by_relation(included, {id, type}) do
+  #   dbg()
+
+  #   Enum.find(included, fn %{"id" => included_id, "type" => included_type} ->
+  #     included_type == type && included_id == id
+  #   end)
+  # end
 end

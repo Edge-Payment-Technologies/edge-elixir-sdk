@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.0
+
+- [breaking] Customers now have many addresses rather than one single address
+- [breaking] We no longer automatically normalize relationships due to an infinite loop (fetch customers, include addresses, merchant, normalize customer -> addresses -> merchant -> addresses -> [...])
+- [feature] You now have a reason for a relationship being unfetched
+
 ## 6.1.0
 
 - [feature] You can now update a payment demand that isn't ready for processing

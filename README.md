@@ -57,7 +57,7 @@ by adding `ept_sdk` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ept_sdk, "~> 5.0"}
+    {:ept_sdk, "~> 7.0"}
   ]
 end
 ```

@@ -6,10 +6,18 @@ defmodule EPTSDK.EncoderTest do
     assert match?(
              %EPTSDK.Customer{
                id: "565e6a1f-4038-485c-81d8-0f6fb121ee91",
-               address: %EPTSDK.ConsumerAddress{
-                 id: "573b18f8-140e-4983-95b6-7b031b35ed37"
+               addresses: [
+                 %EPTSDK.Relationship{
+                   id: "573b18f8-140e-4983-95b6-7b031b35ed37",
+                   name: "addresses",
+                   type: "consumer_addresses"
+                 }
+               ],
+               merchant: %EPTSDK.RelationshipNotAvailable{name: "merchant", reason: :unknown},
+               payment_methods: %EPTSDK.RelationshipNotAvailable{
+                 name: "payment_methods",
+                 reason: :unfetched
                },
-               payment_methods: [],
                created_at: %DateTime{},
                updated_at: %DateTime{}
              },
@@ -31,11 +39,13 @@ defmodule EPTSDK.EncoderTest do
                      "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91"
                  },
                  "relationships" => %{
-                   "address" => %{
-                     "data" => %{
-                       "id" => "573b18f8-140e-4983-95b6-7b031b35ed37",
-                       "type" => "consumer_addresses"
-                     },
+                   "addresses" => %{
+                     "data" => [
+                       %{
+                         "id" => "573b18f8-140e-4983-95b6-7b031b35ed37",
+                         "type" => "consumer_addresses"
+                       }
+                     ],
                      "links" => %{
                        "related" =>
                          "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/address",
@@ -49,18 +59,6 @@ defmodule EPTSDK.EncoderTest do
                          "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/payment_demands",
                        "self" =>
                          "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/payment_demands"
-                     }
-                   },
-                   "merchant" => %{
-                     "data" => %{
-                       "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
-                       "type" => "merchants"
-                     },
-                     "links" => %{
-                       "related" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/merchant",
-                       "self" =>
-                         "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91/relationships/merchant"
                      }
                    },
                    "payment_methods" => %{

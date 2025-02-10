@@ -13,9 +13,9 @@
       "self": "https://api.tryedge.test:4001/api/v2/customers/485262fd-54a2-48d9-829c-e34dbec8c7c3"
     },
     "relationships": {
-      "address": {
+      "addresses": {
         "links": {
-          "self": "https://api.tryedge.test:4001/api/v2/customers/relationships/address"
+          "self": "https://api.tryedge.test:4001/api/v2/customers/relationships/addresses"
         }
       },
       "merchant": {
