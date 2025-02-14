@@ -60,7 +60,7 @@ defmodule EPTSDK.PaymentDemand do
   with_create()
   with_update()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -75,24 +75,23 @@ defmodule EPTSDK.PaymentDemand do
       description: EPTSDK.Encoder.fetch(attributes, "description"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      buyer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "buyer", included),
-      receiver: EPTSDK.Encoder.fetch_relationship(record["relationships"], "receiver", included),
-      payer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "payer", included),
+      buyer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "buyer"),
+      receiver: EPTSDK.Encoder.fetch_relationship(record["relationships"], "receiver"),
+      payer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "payer"),
       payment_method:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_method", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_method"),
       billing_address:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "billing_address", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "billing_address"),
       payment_subscription:
         EPTSDK.Encoder.fetch_relationship(
           record["relationships"],
-          "payment_subscription",
-          included
+          "payment_subscription"
         ),
       refund_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "refund_demands", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "refund_demands"),
       shipping_address:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "shipping_address", included),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "shipping_address"),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record

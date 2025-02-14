@@ -40,6 +40,56 @@ defmodule EPTSDK do
     )
   end
 
+  @spec sideload(list(struct()) | struct(), list(map()), list(atom())) ::
+          list(struct()) | struct()
+  def sideload(records, included, relationships)
+      when is_list(records) and is_list(included) and is_list(relationships) do
+    for record <- records, do: sideload(record, included, relationships)
+  end
+
+  def sideload(record, included, relationships)
+      when is_struct(record) and is_list(included) and is_list(relationships) do
+    Enum.reduce(relationships, record, &update_record(&1, &2, included))
+  end
+
+  defp update_record(name, record, included) when is_atom(name) do
+    Map.merge(record, %{
+      name =>
+        record
+        |> Map.get(name)
+        |> case do
+          %EPTSDK.Relationship{has: :many, data: data} ->
+            Enum.map(data, fn datum ->
+              find_and_encode_relationship(datum, included) ||
+                %EPTSDK.RelationshipNotAvailable{name: name, reason: :not_included}
+            end)
+
+          %EPTSDK.Relationship{has: :one, data: data} ->
+            find_and_encode_relationship(data, included) ||
+              %EPTSDK.RelationshipNotAvailable{name: name, reason: :not_included}
+
+          relationship ->
+            relationship
+        end
+    })
+  end
+
+  defp find_and_encode_relationship(relationship, included) do
+    included
+    |> Enum.find(&compare_relationship_to_included(&1, relationship))
+    |> case do
+      nil -> nil
+      found_record -> EPTSDK.Encoder.to_struct(found_record, %{})
+    end
+  end
+
+  defp compare_relationship_to_included(
+         %{"id" => included_id, "type" => included_type},
+         %{id: id, type: type}
+       ) do
+    included_id == id and included_type == type
+  end
+
   def get(%EPTSDK{location: location} = client, path, query \\ [])
       when is_binary(path) do
     client.http_client

@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.0
+
+- [breaking] [feature] Now relationships return the relation context (one to one or one to many)
+- [breaking] No longer need the `included` list to be passed to structs
+- [feature] New API `EPTSDK.sideload/3` which takes a list of records or record, an included list, and a list of things to load. This will replace the relationship structs with the actual relationships
+
 ## 7.0.0
 
 - [breaking] Customers now have many addresses rather than one single address

@@ -42,7 +42,7 @@ defmodule EPTSDK.Customer do
   with_update()
   with_delete()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -53,13 +53,12 @@ defmodule EPTSDK.Customer do
       blocked_at: EPTSDK.Encoder.fetch_datetime(attributes, "blocked_at"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      addresses:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "addresses", included),
+      addresses: EPTSDK.Encoder.fetch_relationship(record["relationships"], "addresses"),
       payment_methods:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_methods", included),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_methods"),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       payment_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
       # TODO: turn into formal relationship structs
       __relationships__: record["relationships"],
       # TODO: turn into formal links structs

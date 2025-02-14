@@ -35,7 +35,7 @@ defmodule EPTSDK.WebhookSubscription do
   with_update()
   with_delete()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -47,7 +47,7 @@ defmodule EPTSDK.WebhookSubscription do
       url: EPTSDK.Encoder.fetch(attributes, "url"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       # TODO: turn into formal relationship structs
       __relationships__: record["relationships"],
       # TODO: turn into formal links structs

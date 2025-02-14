@@ -64,7 +64,7 @@ defmodule EPTSDK.Merchant do
   with_show()
   with_update()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -96,26 +96,23 @@ defmodule EPTSDK.Merchant do
       pending_at: EPTSDK.Encoder.fetch_datetime(attributes, "pending_at"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      customers:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "customers", included),
+      customers: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customers"),
       consumer_addresses:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "consumer_addresses", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "consumer_addresses"),
       payment_methods:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_methods", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_methods"),
       payment_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands", included),
-      events: EPTSDK.Encoder.fetch_relationship(record["relationships"], "events", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
+      events: EPTSDK.Encoder.fetch_relationship(record["relationships"], "events"),
       webhook_subscriptions:
         EPTSDK.Encoder.fetch_relationship(
           record["relationships"],
-          "webhook_subscriptions",
-          included
+          "webhook_subscriptions"
         ),
       payment_subscriptions:
         EPTSDK.Encoder.fetch_relationship(
           record["relationships"],
-          "payment_subscriptions",
-          included
+          "payment_subscriptions"
         ),
       # TODO: turn into formal relationship structs
       __relationships__: record["relationships"],

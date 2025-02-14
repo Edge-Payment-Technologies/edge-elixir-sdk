@@ -2,17 +2,16 @@ defmodule EPTSDK.Encoder do
   @moduledoc """
   An individual record from the Edge API.
   """
-  @spec to_struct(map(), map(), list()) :: struct()
+  @spec to_struct(map(), map()) :: struct()
   def to_struct(
         %{
           "id" => id,
           "type" => "payment_methods" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.PaymentMethod.new(id, type, attributes, record, included, links)
+      do: EPTSDK.PaymentMethod.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -20,10 +19,9 @@ defmodule EPTSDK.Encoder do
           "type" => "payment_demands" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.PaymentDemand.new(id, type, attributes, record, included, links)
+      do: EPTSDK.PaymentDemand.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -31,10 +29,9 @@ defmodule EPTSDK.Encoder do
           "type" => "refund_demands" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.RefundDemand.new(id, type, attributes, record, included, links)
+      do: EPTSDK.RefundDemand.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -42,10 +39,9 @@ defmodule EPTSDK.Encoder do
           "type" => "consumer_addresses" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.ConsumerAddress.new(id, type, attributes, record, included, links)
+      do: EPTSDK.ConsumerAddress.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -53,10 +49,9 @@ defmodule EPTSDK.Encoder do
           "type" => "customers" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.Customer.new(id, type, attributes, record, included, links)
+      do: EPTSDK.Customer.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -64,10 +59,9 @@ defmodule EPTSDK.Encoder do
           "type" => "merchants" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.Merchant.new(id, type, attributes, record, included, links)
+      do: EPTSDK.Merchant.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -75,10 +69,9 @@ defmodule EPTSDK.Encoder do
           "type" => "events" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.Event.new(id, type, attributes, record, included, links)
+      do: EPTSDK.Event.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -86,10 +79,9 @@ defmodule EPTSDK.Encoder do
           "type" => "payment_subscriptions" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.PaymentSubscriptions.new(id, type, attributes, record, included, links)
+      do: EPTSDK.PaymentSubscriptions.new(id, type, attributes, record, links)
 
   def to_struct(
         %{
@@ -97,10 +89,9 @@ defmodule EPTSDK.Encoder do
           "type" => "webhook_subscriptions" = type,
           "attributes" => attributes
         } = record,
-        links,
-        included
+        links
       ),
-      do: EPTSDK.WebhookSubscription.new(id, type, attributes, record, included, links)
+      do: EPTSDK.WebhookSubscription.new(id, type, attributes, record, links)
 
   def to_struct(record, links, included) when not is_map_key(record, "attributes") do
     to_struct(Map.put(record, "attributes", %{}), links, included)
@@ -140,7 +131,8 @@ defmodule EPTSDK.Encoder do
     end
   end
 
-  def fetch_relationship(relationships, key, []) do
+  def fetch_relationship(relationships, key)
+      when is_map(relationships) and is_binary(key) do
     Map.get(relationships, key)
     |> case do
       nil ->
@@ -149,34 +141,24 @@ defmodule EPTSDK.Encoder do
           reason: :undefined_relationship
         }
 
-      _relationship ->
-        %EPTSDK.RelationshipNotAvailable{name: key, reason: :not_included}
-    end
-  end
-
-  def fetch_relationship(relationships, key, included)
-      when is_map(relationships) and is_binary(key) and is_list(included) do
-    Map.get(relationships, key)
-    |> case do
-      nil ->
-        %EPTSDK.RelationshipNotAvailable{
-          name: key,
-          reason: :unknown
-        }
-
       relationship ->
         decode_relationship(key, relationship)
     end
   end
 
   defp decode_relationship(key, %{"data" => data}) when is_list(data) do
-    Enum.map(data, fn %{"id" => id, "type" => type} ->
-      %EPTSDK.Relationship{name: key, id: id, type: type}
-    end)
+    %EPTSDK.Relationship{
+      name: key,
+      has: :many,
+      data:
+        Enum.map(data, fn %{"id" => id, "type" => type} ->
+          %{id: id, type: type}
+        end)
+    }
   end
 
   defp decode_relationship(key, %{"data" => %{"id" => id, "type" => type}}) do
-    %EPTSDK.Relationship{name: key, id: id, type: type}
+    %EPTSDK.Relationship{name: key, has: :one, data: %{id: id, type: type}}
   end
 
   defp decode_relationship(key, _relationship) do
@@ -185,12 +167,4 @@ defmodule EPTSDK.Encoder do
       reason: :unfetched
     }
   end
-
-  # defp find_by_relation(included, {id, type}) do
-  #   dbg()
-
-  #   Enum.find(included, fn %{"id" => included_id, "type" => included_type} ->
-  #     included_type == type && included_id == id
-  #   end)
-  # end
 end

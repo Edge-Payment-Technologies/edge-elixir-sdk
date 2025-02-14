@@ -30,7 +30,7 @@ defmodule EPTSDK.Event do
   with_list()
   with_show()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -38,7 +38,7 @@ defmodule EPTSDK.Event do
       payload: EPTSDK.Encoder.fetch(attributes, "payload"),
       occurred_at: EPTSDK.Encoder.fetch_datetime(attributes, "occurred_at"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       # TODO: turn into formal relationship structs
       __relationships__: record["relationships"],
       # TODO: turn into formal links structs

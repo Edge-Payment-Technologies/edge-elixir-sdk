@@ -50,7 +50,7 @@ defmodule EPTSDK.PaymentMethod do
   with_update()
   with_delete()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -65,11 +65,11 @@ defmodule EPTSDK.PaymentMethod do
       discarded_at: EPTSDK.Encoder.fetch_datetime(attributes, "discarded_at"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       payment_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands", included),
-      customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer", included),
-      address: EPTSDK.Encoder.fetch_relationship(record["relationships"], "address", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
+      customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer"),
+      address: EPTSDK.Encoder.fetch_relationship(record["relationships"], "address"),
       __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record

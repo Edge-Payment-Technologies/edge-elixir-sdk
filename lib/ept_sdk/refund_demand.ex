@@ -35,7 +35,7 @@ defmodule EPTSDK.RefundDemand do
   with_show()
   with_create()
 
-  def new(id, type, attributes, record, included, links) do
+  def new(id, type, attributes, record, links) do
     %__MODULE__{
       id: id,
       type: type,
@@ -46,8 +46,8 @@ defmodule EPTSDK.RefundDemand do
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
       payment_demand:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demand", included),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant", included),
+        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demand"),
+      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record
