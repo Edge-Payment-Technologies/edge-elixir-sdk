@@ -15,8 +15,7 @@ defmodule EPTSDK.ConsumerAddress do
     :customer,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -32,8 +31,7 @@ defmodule EPTSDK.ConsumerAddress do
     :customer,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -56,7 +54,6 @@ defmodule EPTSDK.ConsumerAddress do
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
       customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer"),
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record
     }

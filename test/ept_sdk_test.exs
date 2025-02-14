@@ -205,8 +205,7 @@ defmodule EPTSDKTest do
       reason: :undefined_relationship
     },
     __raw__: %{},
-    __links__: %{},
-    __relationships__: %{}
+    __links__: %{}
   }
 
   test "sideload/3" do

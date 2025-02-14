@@ -16,8 +16,7 @@ defmodule EPTSDK.PaymentMethod do
     :customer,
     :address,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -40,8 +39,7 @@ defmodule EPTSDK.PaymentMethod do
     :customer,
     :address,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -70,7 +68,6 @@ defmodule EPTSDK.PaymentMethod do
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
       customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer"),
       address: EPTSDK.Encoder.fetch_relationship(record["relationships"], "address"),
-      __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record
     }

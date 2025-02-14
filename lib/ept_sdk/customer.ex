@@ -14,8 +14,7 @@ defmodule EPTSDK.Customer do
     :payment_demands,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -32,8 +31,7 @@ defmodule EPTSDK.Customer do
     :payment_demands,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -59,8 +57,6 @@ defmodule EPTSDK.Customer do
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
       payment_demands:
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
-      # TODO: turn into formal relationship structs
-      __relationships__: record["relationships"],
       # TODO: turn into formal links structs
       __links__: record["links"] || links,
       __raw__: record

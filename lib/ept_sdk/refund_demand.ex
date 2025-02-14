@@ -12,8 +12,7 @@ defmodule EPTSDK.RefundDemand do
     :merchant,
     :payment_demand,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -27,8 +26,7 @@ defmodule EPTSDK.RefundDemand do
     :merchant,
     :payment_demand,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -48,7 +46,6 @@ defmodule EPTSDK.RefundDemand do
       payment_demand:
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demand"),
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record
     }

@@ -12,8 +12,7 @@ defmodule EPTSDK.PaymentSubscriptions do
     :customer,
     :payment_method,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -35,8 +34,7 @@ defmodule EPTSDK.PaymentSubscriptions do
     :customer,
     :payment_method,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -66,8 +64,6 @@ defmodule EPTSDK.PaymentSubscriptions do
       payment_method:
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_method"),
       customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer"),
-      # TODO: turn into formal relationship structs
-      __relationships__: record["relationships"],
       # TODO: turn into formal links structs
       __links__: record["links"] || links,
       __raw__: record

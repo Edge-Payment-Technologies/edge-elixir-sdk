@@ -23,8 +23,7 @@ defmodule EPTSDK.PaymentDemand do
     :payment_subscription,
     :shipping_address,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -51,8 +50,7 @@ defmodule EPTSDK.PaymentDemand do
     :payment_subscription,
     :shipping_address,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -92,7 +90,6 @@ defmodule EPTSDK.PaymentDemand do
       shipping_address:
         EPTSDK.Encoder.fetch_relationship(record["relationships"], "shipping_address"),
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      __relationships__: record["relationships"],
       __links__: record["links"] || links,
       __raw__: record
     }

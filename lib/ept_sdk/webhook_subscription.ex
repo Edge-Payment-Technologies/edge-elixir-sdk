@@ -9,8 +9,7 @@ defmodule EPTSDK.WebhookSubscription do
     :updated_at,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -25,8 +24,7 @@ defmodule EPTSDK.WebhookSubscription do
     :updated_at,
     :merchant,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -48,8 +46,6 @@ defmodule EPTSDK.WebhookSubscription do
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
       merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      # TODO: turn into formal relationship structs
-      __relationships__: record["relationships"],
       # TODO: turn into formal links structs
       __links__: record["links"] || links,
       __raw__: record

@@ -16,8 +16,7 @@ defmodule EPTSDK.Merchant do
     :payment_subscriptions,
     :webhook_subscriptions,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
   defstruct [
     :id,
@@ -56,8 +55,7 @@ defmodule EPTSDK.Merchant do
     :payment_subscriptions,
     :webhook_subscriptions,
     :__raw__,
-    :__links__,
-    :__relationships__
+    :__links__
   ]
 
   with_list()
@@ -114,8 +112,6 @@ defmodule EPTSDK.Merchant do
           record["relationships"],
           "payment_subscriptions"
         ),
-      # TODO: turn into formal relationship structs
-      __relationships__: record["relationships"],
       # TODO: turn into formal links structs
       __links__: record["links"] || links,
       __raw__: record

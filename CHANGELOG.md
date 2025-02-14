@@ -1,5 +1,9 @@
 # Changelog
 
+## 9.0.0
+
+- [breaking] Removing old relationships property now that we have codified results
+
 ## 8.0.1
 
 - [bug] Two APIs still used includes, added tests to account for it.
