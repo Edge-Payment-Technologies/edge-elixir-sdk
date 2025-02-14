@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.1
+
+- [bug] Two APIs still used includes, added tests to account for it.
+
 ## 8.0.0
 
 - [breaking] [feature] Now relationships return the relation context (one to one or one to many)

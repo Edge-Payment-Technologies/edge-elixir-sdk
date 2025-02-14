@@ -93,8 +93,8 @@ defmodule EPTSDK.Encoder do
       ),
       do: EPTSDK.WebhookSubscription.new(id, type, attributes, record, links)
 
-  def to_struct(record, links, included) when not is_map_key(record, "attributes") do
-    to_struct(Map.put(record, "attributes", %{}), links, included)
+  def to_struct(record, links) when not is_map_key(record, "attributes") do
+    to_struct(Map.put(record, "attributes", %{}), links)
   end
 
   def fetch(attributes, key) when is_map(attributes) and is_binary(key) do
