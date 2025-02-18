@@ -1,5 +1,10 @@
 # Changelog
 
+## 10.0.0
+
+- [breaking] sideload now can easily fit into the response from any `EPTSDK` api call instead of requiring a contorted series of steps
+- [breaking] Now every api call returns `{:ok, resource_or_resources, included_list, client}` instead of the previous which didn't included the `included_list`.
+
 ## 9.0.0
 
 - [breaking] Removing old relationships property now that we have codified results
@@ -67,7 +72,7 @@
 - [breaking] [refactor] Rename `Address` to `ConsumerAddress`
 - [breaking] [refactor] Renamed `property` property of PropertyNotFound to `name` as it reduces duplicitive naming.
 - [breaking] [refactor] Removing `Dispute` because it isn't expressed in the HTTP API yet.
-- [breaking] [refactor] The included values of a request are no longer stored on the `included` property of a `EPTSDK.Client`
+- [breaking] [refactor] The included values of a request are no longer stored on the `included` property of a `EPTSDK`
 
 ## 2.0.2
 

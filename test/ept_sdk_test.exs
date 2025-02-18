@@ -210,8 +210,12 @@ defmodule EPTSDKTest do
 
   test "sideload/3" do
     assert match?(
-             %EPTSDK.Customer{addresses: [%EPTSDK.ConsumerAddress{}]},
-             EPTSDK.sideload(@data, @included, [:addresses])
+             {:ok, %EPTSDK.Customer{addresses: [%EPTSDK.ConsumerAddress{}]}, [_ | _], %EPTSDK{}},
+             EPTSDK.sideload(
+               {:ok, @data, @included,
+                EPTSDK.client(%{token: "token", user_agent: "user_agent"})},
+               [:addresses]
+             )
            )
   end
 

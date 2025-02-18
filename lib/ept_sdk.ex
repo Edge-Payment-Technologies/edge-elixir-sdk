@@ -40,17 +40,26 @@ defmodule EPTSDK do
     )
   end
 
-  @spec sideload(list(struct()) | struct(), list(map()), list(atom())) ::
-          list(struct()) | struct()
-  def sideload(records, included, relationships)
+  @spec sideload(
+          {:ok, list(struct()) | struct(), list(), EPTSDK.t()},
+          list(atom())
+        ) ::
+          {:ok, list(struct()) | struct(), EPTSDK.t()} | {:error, any()}
+  def sideload({:ok, records, included, client}, relationships)
       when is_list(records) and is_list(included) and is_list(relationships) do
-    for record <- records, do: sideload(record, included, relationships)
+    {:ok,
+     Enum.map(records, fn record ->
+       Enum.reduce(relationships, record, &update_record(&1, &2, included))
+     end), included, client}
   end
 
-  def sideload(record, included, relationships)
+  def sideload({:ok, record, included, client}, relationships)
       when is_struct(record) and is_list(included) and is_list(relationships) do
-    Enum.reduce(relationships, record, &update_record(&1, &2, included))
+    {:ok, Enum.reduce(relationships, record, &update_record(&1, &2, included)), included, client}
   end
+
+  def sideload({:error, _anything} = exception), do: exception
+  def sideload({:error, _anything, _client} = exception), do: exception
 
   defp update_record(name, record, included) when is_atom(name) do
     Map.merge(record, %{

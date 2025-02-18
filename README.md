@@ -21,14 +21,14 @@ client = EPTSDK.client(%{
 We can now use that client to make requests:
 
 ```elixir
-{:ok, customerA, client} = EPTSDK.Customer.create(client, attributes: %{
+{:ok, customerA, [], client} = EPTSDK.Customer.create(client, attributes: %{
     name: "Johnson Parker",
     email: "johnson@example.com"
   })
 ```
 
 ```elixir
-{:ok, customerB, client} = client
+{:ok, customerB, included, client} = client
   |> EPTSDK.Customer.list(
     filter: %{name: "Johnson Parker"},
     include: ["address"],
@@ -44,7 +44,7 @@ customerA == customerB
 ```
 
 ```elixir
-{:ok, customerA, client} = EPTSDK.Customer.update(client, customerA, attributes: %{
+{:ok, customerA, [], client} = EPTSDK.Customer.update(client, customerA, attributes: %{
   name: "Sally"
 })
 ```
@@ -57,7 +57,7 @@ by adding `ept_sdk` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ept_sdk, "~> 7.0"}
+    {:ept_sdk, "~> 10.0"}
   ]
 end
 ```

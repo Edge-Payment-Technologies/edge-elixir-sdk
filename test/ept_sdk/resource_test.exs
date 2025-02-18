@@ -59,7 +59,7 @@ defmodule EPTSDK.ResourceTest do
 
   test "from_payload/1" do
     assert match?(
-             {:ok, %EPTSDK.Customer{}, %EPTSDK{}},
+             {:ok, %EPTSDK.Customer{}, [], %EPTSDK{}},
              EPTSDK.Resource.from_payload(
                {:ok, @data, EPTSDK.client(%{token: "token", user_agent: "user_agent"})}
              )

@@ -172,19 +172,19 @@ defmodule EPTSDK.Resource do
       when is_map(entity) do
     entity
     |> EPTSDK.Encoder.to_struct(payload["links"])
-    |> (&{:ok, &1, client}).()
+    |> (&{:ok, &1, payload["included"] || [], client}).()
   end
 
   def from_payload(
         {:ok,
          %{
            "data" => entities
-         }, client}
+         } = payload, client}
       )
       when is_list(entities) do
     entities
     |> Enum.map(&EPTSDK.Encoder.to_struct(&1, %{}))
-    |> (&{:ok, &1, client}).()
+    |> (&{:ok, &1, payload["included"] || [], client}).()
   end
 
   def from_payload({:ok, nil, client}), do: {:ok, nil, client}
