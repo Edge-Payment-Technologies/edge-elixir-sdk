@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.1
+
+- [bug] Correcting some types, adding a new one, as well as the return value when no data comes back
+
 ## 10.0.0
 
 - [breaking] sideload now can easily fit into the response from any `EPTSDK` api call instead of requiring a contorted series of steps

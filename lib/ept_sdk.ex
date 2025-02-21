@@ -44,7 +44,7 @@ defmodule EPTSDK do
           {:ok, list(struct()) | struct(), list(), EPTSDK.t()},
           list(atom())
         ) ::
-          {:ok, list(struct()) | struct(), EPTSDK.t()} | {:error, any()}
+          {:ok, list(struct()) | struct(), list(), EPTSDK.t()} | {:error, any()}
   def sideload({:ok, records, included, client}, relationships)
       when is_list(records) and is_list(included) and is_list(relationships) do
     {:ok,
@@ -196,6 +196,10 @@ defmodule EPTSDK do
     |> Enum.concat(custom_headers)
   end
 
+  defp response({:ok, %Req.Response{body: body} = response}) do
+    {:ok, body, response}
+  end
+
   defp response({:ok, %Req.Response{status: 422, body: body} = response}) do
     {:unprocessable_content, body, response}
   end
@@ -205,12 +209,8 @@ defmodule EPTSDK do
     {:error, response}
   end
 
-  defp response({:ok, %Req.Response{body: body} = response}) do
-    {:ok, body, response}
-  end
-
-  defp response({:error, error}) do
-    {:error, error}
+  defp response({:error, exception}) do
+    {:error, exception}
   end
 
   defp with_query_defaults(nil), do: nil

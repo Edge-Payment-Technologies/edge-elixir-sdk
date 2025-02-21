@@ -163,6 +163,11 @@ defmodule EPTSDK.Resource do
     end
   end
 
+  @spec from_payload(
+          {:ok, list(map()) | map() | nil, EPTSDK.t()}
+          | {:error, any()}
+          | {:error | :unprocessable_content | :decoding_error, any(), Req.Response.t()}
+        ) :: {:ok, list(struct()) | struct(), list(), EPTSDK.t()}
   def from_payload(
         {:ok,
          %{
@@ -187,8 +192,8 @@ defmodule EPTSDK.Resource do
     |> (&{:ok, &1, payload["included"] || [], client}).()
   end
 
-  def from_payload({:ok, nil, client}), do: {:ok, nil, client}
-  def from_payload({:error, _} = error), do: error
+  def from_payload({:ok, nil, client}), do: {:ok, nil, [], client}
+  def from_payload({:error, _exception} = error), do: error
   def from_payload({:unprocessable_content, _exception, _response} = error), do: error
   def from_payload({:decoding_error, _exception, _response} = error), do: error
 
