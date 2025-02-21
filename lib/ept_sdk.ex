@@ -26,7 +26,7 @@ defmodule EPTSDK do
           authorization: String.t(),
           user_agent: String.t(),
           location: URI.t() | String.t(),
-          http_client: Req.t()
+          http_client: Req.Request.t()
         }
 
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
@@ -41,10 +41,12 @@ defmodule EPTSDK do
   end
 
   @spec sideload(
-          {:ok, list(struct()) | struct(), list(), EPTSDK.t()},
+          {:ok, list(struct()) | struct() | nil, list(), EPTSDK.t()},
           list(atom())
         ) ::
-          {:ok, list(struct()) | struct(), list(), EPTSDK.t()} | {:error, any()}
+          {:ok, list(struct()) | struct() | nil, list(), EPTSDK.t()}
+          | {:error, any()}
+          | {:error | :unprocessable_content | :decoding_error, any(), Req.Response.t()}
   def sideload({:ok, records, included, client}, relationships)
       when is_list(records) and is_list(included) and is_list(relationships) do
     {:ok,
@@ -58,8 +60,10 @@ defmodule EPTSDK do
     {:ok, Enum.reduce(relationships, record, &update_record(&1, &2, included)), included, client}
   end
 
-  def sideload({:error, _anything} = exception), do: exception
-  def sideload({:error, _anything, _client} = exception), do: exception
+  def sideload({:ok, nil, included, client}, _relationships), do: {:ok, nil, included, client}
+
+  def sideload({:error, _anything} = exception, _relationships), do: exception
+  def sideload({:error, _anything, _client} = exception, _relationships), do: exception
 
   defp update_record(name, record, included) when is_atom(name) do
     Map.merge(record, %{
@@ -196,22 +200,16 @@ defmodule EPTSDK do
     |> Enum.concat(custom_headers)
   end
 
-  defp response({:ok, %Req.Response{body: body} = response}) do
-    {:ok, body, response}
-  end
+  defp response({:ok, %Req.Response{body: body} = response}), do: {:ok, body, response}
 
-  defp response({:ok, %Req.Response{status: 422, body: body} = response}) do
-    {:unprocessable_content, body, response}
-  end
+  defp response({:ok, %Req.Response{status: 422, body: body} = response}),
+    do: {:unprocessable_content, body, response}
 
   defp response({:ok, %Req.Response{status: status} = response})
-       when status in 400..499 do
-    {:error, response}
-  end
+       when status in 400..499,
+       do: {:error, response}
 
-  defp response({:error, exception}) do
-    {:error, exception}
-  end
+  defp response({:error, exception}), do: {:error, exception}
 
   defp with_query_defaults(nil), do: nil
   defp with_query_defaults([]), do: nil
@@ -262,13 +260,9 @@ defmodule EPTSDK do
   def update_client_from_request({:error, _exception} = error, _client), do: error
 
   def update_client_from_request(
-        {:unprocessable_content, _exception, _response} = error,
+        {indicator, _exception, _response} = error,
         _client
-      ),
+      )
+      when indicator in [:error, :decoding_error, :unprocessable_content],
       do: error
-
-  def update_client_from_request({:decoding_error, _exception, _response} = error, _client),
-    do: error
-
-  def update_client_from_request({:error, _exception, _response} = error, _client), do: error
 end

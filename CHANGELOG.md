@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.0.2
+
+- [bug] `EPTSDK.sideload/3` had an error pattern that was incorrectly defined as `EPTSDK.sideload/2` causing numerous issues
+
 ## 10.0.1
 
 - [bug] Correcting some types, adding a new one, as well as the return value when no data comes back
