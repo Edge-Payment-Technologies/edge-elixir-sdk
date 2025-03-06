@@ -94,4 +94,49 @@ defmodule EPTSDK.PaymentDemand do
       __raw__: record
     }
   end
+
+  @doc """
+  Confirms an existing `%#{Kernel.inspect(__MODULE__)}` for processing.
+
+  The `options` argument can also have:
+
+    - `fields:`, a map of filds to return for each resource type i.e. `fields: %{#{@resource_type}: ["id"]}`
+    - `include:`, a list of relationship chains for the response to return i.e. `include: ["#{@resource_type}.merchant"]`
+  """
+  def confirm(
+        _,
+        _,
+        options \\ []
+      )
+
+  def confirm(
+        %EPTSDK{} = client,
+        %__MODULE__{id: id} = _record,
+        options
+      )
+      when is_list(options) do
+    update(client, id, options)
+  end
+
+  def confirm(
+        %EPTSDK{} = client,
+        id,
+        options
+      )
+      when is_binary(id) and is_list(options) do
+    client
+    |> EPTSDK.patch(
+      "#{@path}/#{id}/confirm",
+      %{
+        data: %{
+          id: id,
+          type: @resource_type,
+          attributes: %{}
+        }
+      },
+      options
+    )
+    |> EPTSDK.update_client_from_request(client)
+    |> EPTSDK.Resource.from_payload()
+  end
 end

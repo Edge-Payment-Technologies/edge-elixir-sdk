@@ -34,6 +34,11 @@ jobs:
             deps
             _build
           key: ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-deps-
+      - name: Install mix dependencies
+        run: mix deps.get
+      - name: Compile the application
+        run: mix compile
       - name: Run tests
         run: mix test
         env:
