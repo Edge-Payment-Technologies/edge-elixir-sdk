@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.1.0
+
+- [feature] Allow for payment demands to be confirmed
+
 ## 10.0.2
 
 - [bug] `EPTSDK.sideload/3` had an error pattern that was incorrectly defined as `EPTSDK.sideload/2` causing numerous issues
