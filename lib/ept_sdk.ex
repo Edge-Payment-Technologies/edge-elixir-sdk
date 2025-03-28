@@ -200,14 +200,14 @@ defmodule EPTSDK do
     |> Enum.concat(custom_headers)
   end
 
-  defp response({:ok, %Req.Response{body: body} = response}), do: {:ok, body, response}
-
   defp response({:ok, %Req.Response{status: 422, body: body} = response}),
     do: {:unprocessable_content, body, response}
 
   defp response({:ok, %Req.Response{status: status} = response})
        when status in 400..499,
        do: {:error, response}
+
+  defp response({:ok, %Req.Response{body: body} = response}), do: {:ok, body, response}
 
   defp response({:error, exception}), do: {:error, exception}
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 10.1.1
+
+- [bug] When decoding responses the client wouldn't handle errors like it should, instead trying to encode it as a struct
+
 ## 10.1.0
 
 - [feature] Allow for payment demands to be confirmed
