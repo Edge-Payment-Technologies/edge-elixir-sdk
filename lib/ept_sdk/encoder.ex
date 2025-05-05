@@ -105,7 +105,15 @@ defmodule EPTSDK.Encoder do
     end
   end
 
-  def fetch_money(attributes, [cents_key, currency_key])
+  def fetch(attributes, key, :atom) when is_map(attributes) and is_binary(key) do
+    if Map.has_key?(attributes, key) do
+      String.to_atom(attributes[key])
+    else
+      %EPTSDK.PropertyNotAvailable{name: key, reason: :unfetched}
+    end
+  end
+
+  def fetch(attributes, [cents_key, currency_key], :money)
       when is_map(attributes) and is_binary(cents_key) and is_binary(currency_key) do
     with true <- Map.has_key?(attributes, cents_key),
          true <- Map.has_key?(attributes, currency_key),

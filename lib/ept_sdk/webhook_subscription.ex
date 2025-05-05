@@ -1,4 +1,8 @@
 defmodule EPTSDK.WebhookSubscription do
+  @moduledoc """
+  A webhook subscription is the defintion of a listener for events that should send HTTP requests to the
+  described interface.
+  """
   import EPTSDK.Resource, only: :macros
 
   @path "/webhook_subscriptions"

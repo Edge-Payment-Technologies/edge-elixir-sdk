@@ -1,4 +1,8 @@
 defmodule EPTSDK do
+  @moduledoc """
+  EPTSDK is a library for interacting with the Edge Payment Technologies, Inc. HTTP API using their jsonapi.org interface
+  for all interactions.
+  """
   @default_query_options %{
     filter: %{},
     include: [],

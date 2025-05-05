@@ -37,7 +37,7 @@ defmodule EPTSDK.RefundDemand do
     %__MODULE__{
       id: id,
       type: type,
-      amount: EPTSDK.Encoder.fetch_money(attributes, ["amount_cents", "amount_currency"]),
+      amount: EPTSDK.Encoder.fetch(attributes, ["amount_cents", "amount_currency"], :money),
       amount_cents: EPTSDK.Encoder.fetch(attributes, "amount_cents"),
       amount_currency: EPTSDK.Encoder.fetch(attributes, "amount_currency"),
       state: EPTSDK.Encoder.fetch(attributes, "state"),

@@ -22,6 +22,7 @@ defmodule EPTSDK.PaymentDemand do
     :billing_address,
     :payment_subscription,
     :shipping_address,
+    :processor_state,
     :__raw__,
     :__links__
   ]
@@ -62,14 +63,15 @@ defmodule EPTSDK.PaymentDemand do
     %__MODULE__{
       id: id,
       type: type,
-      amount: EPTSDK.Encoder.fetch_money(attributes, ["amount_cents", "amount_currency"]),
+      amount: EPTSDK.Encoder.fetch(attributes, ["amount_cents", "amount_currency"], :money),
       amount_cents: EPTSDK.Encoder.fetch(attributes, "amount_cents"),
       amount_currency: EPTSDK.Encoder.fetch(attributes, "amount_currency"),
-      fee: EPTSDK.Encoder.fetch_money(attributes, ["fee_cents", "amount_currency"]),
+      fee: EPTSDK.Encoder.fetch(attributes, ["fee_cents", "amount_currency"], :money),
       fee_cents: EPTSDK.Encoder.fetch(attributes, "fee_cents"),
-      net: EPTSDK.Encoder.fetch_money(attributes, ["net_cents", "amount_currency"]),
+      net: EPTSDK.Encoder.fetch(attributes, ["net_cents", "amount_currency"], :money),
       net_cents: EPTSDK.Encoder.fetch(attributes, "net_cents"),
       idempotency_key: EPTSDK.Encoder.fetch(attributes, "idempotency_key"),
+      processor_state: EPTSDK.Encoder.fetch(attributes, "processor_state", :atom),
       description: EPTSDK.Encoder.fetch(attributes, "description"),
       created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
       updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),

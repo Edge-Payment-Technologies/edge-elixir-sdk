@@ -1,5 +1,23 @@
 # Changelog
 
+## 11.0.0
+
+- [breaking] Now enum fields are returned as atoms of the same value
+- [breaking] `EPTSDK.fetch_money/2` deprecated in favor of a multimodal `EPTSDK.fetch_money/3` that takes a "type" like `:money` or `:atom`.
+- [feature] PaymentDemand now has a `processor_state` property, from the API
+- Added some documentation to the modules
+- Updated libraries:
+  - certifi 2.12.0 => 2.14.0
+  - credo 1.7.11 => 1.7.12
+  - earmark_parser 1.4.43 => 1.4.44
+  - ex_doc 0.37.0 => 0.37.3
+  - hackney 1.20.1 => 1.23.0
+  - hpax 1.0.2 => 1.0.3
+  - money 1.13.1 => 1.14.0
+  - plug 1.16.1 => 1.17.0
+  - plug_crypto 2.1.0 => 2.1.1
+  - req 0.5.8 => 0.5.10
+
 ## 10.1.1
 
 - [bug] When decoding responses the client wouldn't handle errors like it should, instead trying to encode it as a struct
