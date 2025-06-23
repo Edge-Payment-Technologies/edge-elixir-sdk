@@ -1,5 +1,9 @@
 # Changelog
 
+## 11.0.1
+
+- [bug] PaymentDemands.confirm with an EPTSDK record wasn't hitting the confirmation patch
+
 ## 11.0.0
 
 - [breaking] Now enum fields are returned as atoms of the same value

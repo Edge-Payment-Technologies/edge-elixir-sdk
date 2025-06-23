@@ -117,7 +117,7 @@ defmodule EPTSDK.PaymentDemand do
         options
       )
       when is_list(options) do
-    update(client, id, options)
+    confirm(client, id, options)
   end
 
   def confirm(
