@@ -6,7 +6,7 @@ defmodule EPTSDK.EncoderTest do
     "attributes" => %{
       "blocked_at" => nil,
       "created_at" => "2024-01-16T17:24:38Z",
-      "description" => nil,
+      "description" => "Regular customer",
       "discarded_at" => nil,
       "email" => "john+58050@example.com",
       "name" => "Johnson Sable 58050",
