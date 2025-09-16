@@ -67,7 +67,11 @@ defmodule EPTSDK do
   def sideload({:ok, nil, included, client}, _relationships), do: {:ok, nil, included, client}
 
   def sideload({:error, _anything} = exception, _relationships), do: exception
-  def sideload({:error, _anything, _client} = exception, _relationships), do: exception
+
+  def sideload({signal, _anything, client} = exception, _relationships)
+      when signal in [:error, :unprocessable_content, :decoding_error] and
+             is_struct(client, EPTSDK),
+      do: exception
 
   defp update_record(name, record, included) when is_atom(name) do
     Map.merge(record, %{
@@ -207,8 +211,15 @@ defmodule EPTSDK do
   defp response({:ok, %Req.Response{status: 422, body: body} = response}),
     do: {:unprocessable_content, body, response}
 
+  defp response({:ok, %Req.Response{status: 500} = response}),
+    do: {:internal_server_error, response}
+
   defp response({:ok, %Req.Response{status: status} = response})
        when status in 400..499,
+       do: {:error, response}
+
+  defp response({:ok, %Req.Response{status: status} = response})
+       when status in 500..599,
        do: {:error, response}
 
   defp response({:ok, %Req.Response{body: body} = response}), do: {:ok, body, response}
@@ -261,12 +272,12 @@ defmodule EPTSDK do
      }}
   end
 
-  def update_client_from_request({:error, _exception} = error, _client), do: error
-
   def update_client_from_request(
         {indicator, _exception, _response} = error,
         _client
       )
-      when indicator in [:error, :decoding_error, :unprocessable_content],
+      when indicator in [:error, :internal_server_error, :decoding_error, :unprocessable_content],
       do: error
+
+  def update_client_from_request({:error, _exception} = error, _client), do: error
 end

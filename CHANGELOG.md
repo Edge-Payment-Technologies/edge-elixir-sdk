@@ -1,5 +1,10 @@
 # Changelog
 
+## 12.0.0
+
+- [bug] We weren't properly handling 5XX exceptions
+- [bug] The customer description was not settable or fetchable
+
 ## 11.0.1
 
 - [bug] PaymentDemands.confirm with an EPTSDK record wasn't hitting the confirmation patch

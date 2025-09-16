@@ -166,11 +166,13 @@ defmodule EPTSDK.Resource do
   @spec from_payload(
           {:ok, list(map()) | map() | nil, EPTSDK.t()}
           | {:error, any()}
-          | {:error | :unprocessable_content | :decoding_error, any(), any()}
+          | {:error, :internal_server_error, :decoding_error, :unprocessable_content, any(),
+             any()}
         ) ::
           {:ok, list(struct()) | struct() | nil, list(), EPTSDK.t()}
           | {:error, any()}
-          | {:error | :unprocessable_content | :decoding_error, any(), Req.Response.t()}
+          | {:error, :internal_server_error, :decoding_error, :unprocessable_content, any(),
+             Req.Response.t()}
   def from_payload(
         {:ok,
          %{
@@ -196,9 +198,13 @@ defmodule EPTSDK.Resource do
   end
 
   def from_payload({:ok, nil, client}), do: {:ok, nil, [], client}
+
+  def from_payload({signal, _exception, response} = error)
+      when signal in [:error, :internal_server_error, :decoding_error, :unprocessable_content] and
+             is_struct(response, Req.Response),
+      do: error
+
   def from_payload({:error, _exception} = error), do: error
-  def from_payload({:unprocessable_content, _exception, _response} = error), do: error
-  def from_payload({:decoding_error, _exception, _response} = error), do: error
 
   def encode_relation({relation_name, %{id: id, type: type}}) do
     {relation_name, %{"data" => %{"id" => id, "type" => type}}}
