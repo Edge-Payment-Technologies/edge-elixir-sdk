@@ -69,8 +69,7 @@ defmodule EPTSDK do
   def sideload({:error, _anything} = exception, _relationships), do: exception
 
   def sideload({signal, _anything, client} = exception, _relationships)
-      when signal in [:error, :unprocessable_content, :decoding_error] and
-             is_struct(client, EPTSDK),
+      when is_atom(signal) and is_struct(client, EPTSDK),
       do: exception
 
   defp update_record(name, record, included) when is_atom(name) do
