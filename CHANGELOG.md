@@ -1,5 +1,9 @@
 # Changelog
 
+## 12.0.2
+
+- [bug] `EPTSDK.sideload/2` didn't get the changes needed to allow for 422 exceptions
+
 ## 12.0.1
 
 - [bug] Reducing constraints on `EPTSDK.sideload/2` to avoid having to constantly update
