@@ -66,13 +66,16 @@ defmodule EPTSDK do
 
   def sideload({:ok, nil, included, client}, _relationships), do: {:ok, nil, included, client}
 
-  def sideload({:error, _anything} = exception, _relationships), do: exception
+  def sideload({:unprocessable_content, _anything, _response} = exception, _relationships),
+    do: exception
 
   def sideload({signal, _anything, client} = exception, _relationships)
       when is_atom(signal) and is_struct(client, EPTSDK),
       do: exception
 
   defp update_record(name, record, included) when is_atom(name) do
+  def sideload({:error, _anything} = exception, _relationships), do: exception
+
     Map.merge(record, %{
       name =>
         record
@@ -112,6 +115,8 @@ defmodule EPTSDK do
 
   def get(%EPTSDK{location: location} = client, path, query \\ [])
       when is_binary(path) do
+    Keyword.validate!(query, [:filter, :sort, :fields, :page, :include])
+
     client.http_client
     |> Req.get(
       url: encode_uri(location, path, with_query_defaults(query)),
@@ -135,6 +140,8 @@ defmodule EPTSDK do
 
   def post(%EPTSDK{location: location} = client, path, data, query \\ [])
       when is_binary(path) and is_map(data) do
+    Keyword.validate!(query, [:filter, :sort, :fields, :page, :include])
+
     client.http_client
     |> Req.post(
       url: encode_uri(location, path, with_query_defaults(query)),
