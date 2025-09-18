@@ -7,7 +7,7 @@ defmodule EPTSDK.ResourceTest do
       "attributes" => %{
         "description" => "Regular customer",
         "email" => "johnson@example.com",
-        "inserted_at" => "2024-07-09T22:11:50.079276Z",
+        "created_at" => "2024-07-09T22:11:50.079276Z",
         "name" => "Johnson Parker",
         "phone_number" => nil,
         "updated_at" => "2024-07-09T22:11:50.079276Z"

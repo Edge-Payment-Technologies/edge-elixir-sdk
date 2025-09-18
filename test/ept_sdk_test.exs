@@ -5,31 +5,102 @@ defmodule EPTSDKTest do
   @included [
     %{
       "attributes" => %{
-        "city" => "Portland",
-        "country" => "USA",
-        "created_at" => "2024-01-16T17:34:44.403Z",
-        "discarded_at" => nil,
-        "line_1" => "58050 Los Calamos Ave.",
-        "line_2" => nil,
-        "state" => "OR",
-        "updated_at" => "2024-01-16T17:34:44.403Z",
-        "zip" => "90112"
+        "account_status" => "active",
+        "active_at" => "2024-06-10T00:08:41.492654Z",
+        "business_description" =>
+          "We're building payments infrastructure for merchants who are mislabeled as high-risk.",
+        "business_email" => "dega@tryedge.io",
+        "business_name" => "Edge",
+        "business_support_email" => "support@tryedge.io",
+        "business_support_url" => "https://www.tryedge.io/support",
+        "business_terms_url" => "https://www.tryedge.io/terms",
+        "business_timezone" => "UTC",
+        "business_website" => "https://www.tryedge.io",
+        "business_zip_code" => "90232",
+        "category_code" => "5045",
+        "created_at" => "2024-06-01T00:08:41.492654Z",
+        "entity_type" => "private_ccorporation",
+        "phone_number" => "+13233883931",
+        "prior_bankruptcies" => false,
+        "tax_id_type" => "ein",
+        "updated_at" => "2025-04-10T00:08:41.492654Z"
       },
-      "id" => "573b18f8-140e-4983-95b6-7b031b35ed37",
+      "id" => "5c83409a-f8c2-40ae-ad4c-fd721c114750",
       "links" => %{
-        "self" => "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37"
+        "self" =>
+          "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750"
       },
       "relationships" => %{
+        "beneficial_owners" => %{
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750/relationships/beneficial_owners"
+          }
+        },
+        "corporate_officials" => %{
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750/relationships/corporate_officials"
+          }
+        },
+        "customers" => %{
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750/relationships/customers"
+          }
+        },
+        "payment_demands" => %{
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750/relationships/payment_demands"
+          }
+        },
+        "payment_methods" => %{
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/5c83409a-f8c2-40ae-ad4c-fd721c114750/relationships/payment_methods"
+          }
+        }
+      },
+      "type" => "merchants"
+    },
+    %{
+      "attributes" => %{
+        "city" => "New Savion",
+        "country" => "USA",
+        "created_at" => "2025-04-10T00:08:41.492654Z",
+        "discarded_at" => nil,
+        "line_1" => "73234 Obie Fields",
+        "line_2" => nil,
+        "state" => "FL",
+        "status" => "immutable",
+        "updated_at" => "2025-08-31T00:08:41.458810Z",
+        "zip" => "81933"
+      },
+      "id" => "56b4ba75-d039-4cba-b479-2ef937918c4e",
+      "links" => %{
+        "self" =>
+          "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e"
+      },
+      "relationships" => %{
+        "customer" => %{
+          "data" => %{
+            "id" => "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d",
+            "type" => "customers"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e/relationships/customer"
+          }
+        },
         "merchant" => %{
           "data" => %{
-            "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
+            "id" => "5c83409a-f8c2-40ae-ad4c-fd721c114750",
             "type" => "merchants"
           },
           "links" => %{
-            "related" =>
-              "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/merchant",
             "self" =>
-              "http://localhost:3000/consumer_addresses/573b18f8-140e-4983-95b6-7b031b35ed37/relationships/merchant"
+              "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e/relationships/merchant"
           }
         }
       },
@@ -37,180 +108,209 @@ defmodule EPTSDKTest do
     },
     %{
       "attributes" => %{
-        "active_at" => "2024-01-13T17:19:01.000Z",
-        "average_monthly_transaction_volume_cents" => 1_000_000_000,
-        "average_transaction_size_cents" => 100_000,
-        "business_address" => "6010 S Celedon Creek",
-        "business_address_line_2" => "",
-        "business_city_name" => "Playa Vista",
-        "business_country" => "USA",
-        "business_description" => "Edge root test account",
-        "business_name" => "Edge",
-        "business_privacy_url" => "https://www.tryedge.io/privacy",
-        "business_state" => "California",
-        "business_support_email" => "support@tryedge.io",
-        "business_support_url" => "https://www.tryedge.io/support",
-        "business_terms_url" => "https://www.tryedge.io/terms",
-        "business_timezone" => "UTC",
-        "business_website" => "https://www.tryedge.io",
-        "business_zip_code" => "90094",
-        "created_at" => "2024-01-16T17:19:03.517Z",
-        "manual_review_at" => nil,
-        "max_transaction_size_cents" => 10_000_000,
-        "pending_at" => nil,
-        "phone_number" => "+13107484186",
-        "public_business_name" => "Edge",
-        "shortened_descriptor" => "pymts",
-        "statement_descriptor" => "EDGEPYMTS",
-        "updated_at" => "2024-01-16T17:19:05.787Z"
+        "city" => "New Savion",
+        "country" => "USA",
+        "created_at" => "2025-04-10T00:08:41.492654Z",
+        "discarded_at" => nil,
+        "line_1" => "73234 Obie Fields",
+        "line_2" => nil,
+        "state" => "FL",
+        "status" => "immutable",
+        "updated_at" => "2025-08-31T00:08:41.458810Z",
+        "zip" => "81933"
       },
-      "id" => "a2356d28-8b4e-48bf-a834-2e37ae37e813",
+      "id" => "56b4ba75-d039-4cba-b479-2ef937918c4e",
       "links" => %{
-        "self" => "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813"
+        "self" =>
+          "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e"
       },
       "relationships" => %{
-        "payment_demands" => %{
+        "customer" => %{
+          "data" => %{
+            "id" => "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d",
+            "type" => "customers"
+          },
           "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_demands",
             "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_demands"
+              "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e/relationships/customer"
           }
         },
-        "consumer_addresses" => %{
-          "data" => [
-            %{
-              "id" => "573b18f8-140e-4983-95b6-7b031b35ed37",
-              "type" => "consumer_addresses"
-            }
-          ],
+        "merchant" => %{
+          "data" => %{
+            "id" => "5c83409a-f8c2-40ae-ad4c-fd721c114750",
+            "type" => "merchants"
+          },
           "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/consumer_addresses",
             "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/consumer_addresses"
-          }
-        },
-        "customers" => %{
-          "data" => [
-            %{
-              "id" => "565e6a1f-4038-485c-81d8-0f6fb121ee91",
-              "type" => "customers"
-            }
-          ],
-          "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/customers",
-            "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/customers"
-          }
-        },
-        "events" => %{
-          "data" => [
-            %{
-              "id" => "609286c2-9e29-41bd-8810-b5feb63a5cf5",
-              "type" => "events"
-            },
-            %{
-              "id" => "74ccf77b-11de-427a-aae2-367d8b0762d8",
-              "type" => "events"
-            },
-            %{
-              "id" => "d39f0318-9a9f-4454-8c3b-4f41cc25fa7e",
-              "type" => "events"
-            },
-            %{
-              "id" => "a3e9506b-b7d8-4f5a-b635-bbd13b927b5e",
-              "type" => "events"
-            },
-            %{
-              "id" => "ca915a3b-4bb9-4b2e-bb1c-8cc27aa0f736",
-              "type" => "events"
-            },
-            %{
-              "id" => "3a52b97a-8541-4773-b261-a9757376012f",
-              "type" => "events"
-            },
-            %{
-              "id" => "61856eda-18b6-43ec-85fd-e4fbf3d5f584",
-              "type" => "events"
-            }
-          ],
-          "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/events",
-            "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/events"
-          }
-        },
-        "payment_methods" => %{
-          "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_methods",
-            "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_methods"
-          }
-        },
-        "payment_subscriptions" => %{
-          "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/payment_subscriptions",
-            "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/payment_subscriptions"
-          }
-        },
-        "webhook_subscriptions" => %{
-          "links" => %{
-            "related" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/webhook_subscriptions",
-            "self" =>
-              "http://localhost:3000/merchants/a2356d28-8b4e-48bf-a834-2e37ae37e813/relationships/webhook_subscriptions"
+              "https://api.tryedge.test:4001/v2/payment_demands/56b4ba75-d039-4cba-b479-2ef937918c4e/relationships/merchant"
           }
         }
       },
-      "type" => "merchants"
+      "type" => "consumer_addresses"
     }
   ]
 
-  @data %EPTSDK.Customer{
-    id: "565e6a1f-4038-485c-81d8-0f6fb121ee91",
-    type: "customers",
-    name: "Johnson Sable 58050",
-    email: "john+58050@example.com",
-    phone_number: nil,
-    discarded_at: nil,
-    blocked_at: nil,
-    created_at: ~U[2024-01-16 17:24:38Z],
-    updated_at: ~U[2024-01-16 17:35:11Z],
-    addresses: %EPTSDK.Relationship{
-      name: "addresses",
-      has: :many,
-      data: [
-        %{
-          id: "573b18f8-140e-4983-95b6-7b031b35ed37",
-          type: "consumer_addresses"
-        }
-      ]
-    },
-    payment_methods: %EPTSDK.RelationshipNotAvailable{
-      name: "payment_methods",
-      reason: :unfetched
-    },
-    payment_demands: %EPTSDK.RelationshipNotAvailable{
-      name: "payment_demands",
-      reason: :unfetched
-    },
-    merchant: %EPTSDK.RelationshipNotAvailable{
+  @data %EPTSDK.PaymentDemand{
+    id: "f52985bd-d8a3-4186-a70f-c9505dfc124c",
+    type: "payment_demands",
+    amount: %Money{amount: 25242, currency: :USD},
+    amount_cents: 25242,
+    amount_currency: "USD",
+    payer_timezone: "America/Los_Angeles",
+    fee: %Money{amount: 1033, currency: :USD},
+    fee_cents: 1033,
+    description: nil,
+    idempotency_key: "66e5a001-e3d9-4f99-af8c-715527d62d0f",
+    processor_state: :succeeded,
+    created_at: ~U[2025-08-31 00:08:41.458810Z],
+    updated_at: ~U[2025-04-10 00:08:41.492654Z],
+    merchant: %EPTSDK.Relationship{
       name: "merchant",
-      reason: :undefined_relationship
+      data: %{id: "5c83409a-f8c2-40ae-ad4c-fd721c114750", type: "merchants"},
+      has: :one
     },
-    __raw__: %{},
-    __links__: %{}
+    buyer: %EPTSDK.Relationship{
+      name: "buyer",
+      data: %{id: "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d", type: "customers"},
+      has: :one
+    },
+    receiver: %EPTSDK.Relationship{
+      name: "receiver",
+      data: %{id: "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d", type: "customers"},
+      has: :one
+    },
+    payer: %EPTSDK.Relationship{
+      name: "payer",
+      data: %{id: "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d", type: "customers"},
+      has: :one
+    },
+    payment_method: %EPTSDK.Relationship{
+      name: "payment_method",
+      data: %{id: "71570f7e-f9ec-4e89-9a6b-b1cfff2d5342", type: "payment_methods"},
+      has: :one
+    },
+    billing_address: %EPTSDK.Relationship{
+      name: "billing_address",
+      data: %{
+        id: "56b4ba75-d039-4cba-b479-2ef937918c4e",
+        type: "consumer_addresses"
+      },
+      has: :one
+    },
+    payment_subscription: %EPTSDK.RelationshipNotAvailable{
+      name: "payment_subscription",
+      reason: :undefined
+    },
+    shipping_address: %EPTSDK.Relationship{
+      name: "shipping_address",
+      data: %{
+        id: "56b4ba75-d039-4cba-b479-2ef937918c4e",
+        type: "consumer_addresses"
+      },
+      has: :one
+    },
+    __raw__: %{
+      "attributes" => %{
+        "amount_cents" => 25242,
+        "amount_currency" => "USD",
+        "capture_method" => "automatic",
+        "created_at" => "2025-08-31T00:08:41.458810Z",
+        "description" => nil,
+        "fee_cents" => 1033,
+        "idempotency_key" => "66e5a001-e3d9-4f99-af8c-715527d62d0f",
+        "payer_timezone" => "America/Los_Angeles",
+        "processor_state" => "succeeded",
+        "succeeded_at" => "2025-04-10T00:08:41.492654Z",
+        "updated_at" => "2025-04-10T00:08:41.492654Z"
+      },
+      "id" => "f52985bd-d8a3-4186-a70f-c9505dfc124c",
+      "links" => %{
+        "self" =>
+          "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c"
+      },
+      "relationships" => %{
+        "billing_address" => %{
+          "data" => %{
+            "id" => "56b4ba75-d039-4cba-b479-2ef937918c4e",
+            "type" => "consumer_addresses"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/billing_address"
+          }
+        },
+        "buyer" => %{
+          "data" => %{
+            "id" => "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d",
+            "type" => "customers"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/buyer"
+          }
+        },
+        "merchant" => %{
+          "data" => %{
+            "id" => "5c83409a-f8c2-40ae-ad4c-fd721c114750",
+            "type" => "merchants"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/merchant"
+          }
+        },
+        "payer" => %{
+          "data" => %{
+            "id" => "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d",
+            "type" => "customers"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/payer"
+          }
+        },
+        "payment_method" => %{
+          "data" => %{
+            "id" => "71570f7e-f9ec-4e89-9a6b-b1cfff2d5342",
+            "type" => "payment_methods"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/payment_method"
+          }
+        },
+        "receiver" => %{
+          "data" => %{
+            "id" => "c6919dd4-0fc4-4e7e-8c24-b0f645d44e2d",
+            "type" => "customers"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/receiver"
+          }
+        },
+        "shipping_address" => %{
+          "data" => %{
+            "id" => "56b4ba75-d039-4cba-b479-2ef937918c4e",
+            "type" => "consumer_addresses"
+          },
+          "links" => %{
+            "self" =>
+              "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c/relationships/shipping_address"
+          }
+        }
+      },
+      "type" => "payment_demands"
+    },
+    __links__: %{
+      "self" =>
+        "https://api.tryedge.test:4001/v2/payment_demands/f52985bd-d8a3-4186-a70f-c9505dfc124c"
+    }
   }
 
   test "sideload/3" do
     assert match?(
-             {:ok, %EPTSDK.Customer{addresses: [%EPTSDK.ConsumerAddress{}]}, [_ | _], %EPTSDK{}},
+             {:ok, %EPTSDK.PaymentDemand{}, [_ | _], %EPTSDK{}},
              EPTSDK.sideload(
                {:ok, @data, @included,
                 EPTSDK.client(%{token: "token", user_agent: "user_agent"})},

@@ -1,5 +1,10 @@
 # Changelog
 
+## 13.0.0
+
+- [breaking] Added a lot of new fields that we now support for purchases
+- [breaking] Refactored completely how we define resource definitions
+
 ## 12.0.2
 
 - [bug] `EPTSDK.sideload/2` didn't get the changes needed to allow for 422 exceptions
@@ -10,8 +15,8 @@
 
 ## 12.0.0
 
-- [bug] We weren't properly handling 5XX exceptions
-- [bug] The customer description was not settable or fetchable
+- [breaking] We weren't properly handling 5XX exceptions
+- [breaking] The customer description was not settable or fetchable
 
 ## 11.0.1
 

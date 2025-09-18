@@ -3,7 +3,93 @@ defmodule EPTSDK.Resource do
   The basic shape of all resource requests, sliced into various common actions against resources.
   """
 
-  defmacro with_list() do
+  defmacro defresource() do
+    quote do
+      @enforce_keys [
+        :id,
+        :type,
+        :__raw__,
+        :__links__
+      ]
+      defstruct Map.keys(@fields) ++
+                  Map.keys(@relationships) ++
+                  [
+                    :id,
+                    :type,
+                    :__raw__,
+                    :__links__
+                  ]
+
+      defp apply_field({key, _details}, accumulated, attributes, _selected)
+           when attributes == %{} do
+        Map.put(accumulated, key, %EPTSDK.PropertyNotAvailable{name: key, reason: :undefined})
+      end
+
+      defp apply_field({key, {type, options}}, accumulated, attributes, selected) do
+        Map.put(
+          accumulated,
+          key,
+          attributes
+          |> EPTSDK.Encoder.fetch_field(key, type, selected, options)
+          |> EPTSDK.Encoder.cast(key, type, options)
+        )
+      end
+
+      defp apply_field({key, type}, accumulated, attributes, selected) when is_atom(type) do
+        Map.put(
+          accumulated,
+          key,
+          attributes
+          |> EPTSDK.Encoder.fetch_field(key, type, selected)
+          |> EPTSDK.Encoder.cast(key, type)
+        )
+      end
+
+      defp apply_relationship({key, _details}, accumulated, relationships, _includes)
+           when relationships == %{} do
+        Map.put(accumulated, key, %EPTSDK.RelationshipNotAvailable{name: key, reason: :undefined})
+      end
+
+      defp apply_relationship({key, kind}, accumulated, relationships, includes) do
+        Map.put(
+          accumulated,
+          key,
+          relationships
+          |> EPTSDK.Encoder.fetch_relationship(key, includes)
+          |> EPTSDK.Encoder.cast(key, kind)
+        )
+      end
+
+      def new(id, type, record, links, client) do
+        attributes = Map.get(record, "attributes", %{})
+        relationships = Map.get(record, "relationships", %{})
+        links = Map.get(record, "relationships", links)
+
+        struct(
+          __MODULE__,
+          Map.merge(
+            Enum.reduce(
+              @relationships,
+              Enum.reduce(
+                @fields,
+                %{},
+                &apply_field(&1, &2, attributes, Map.get(client.fields, type, []))
+              ),
+              &apply_relationship(&1, &2, relationships, client.include)
+            ),
+            %{
+              id: id,
+              type: type,
+              __links__: links,
+              __raw__: record
+            }
+          )
+        )
+      end
+    end
+  end
+
+  defmacro deflist() do
     quote location: :keep do
       @doc """
       Fetches all `%#{Kernel.inspect(__MODULE__)}{}`.
@@ -26,7 +112,7 @@ defmodule EPTSDK.Resource do
     end
   end
 
-  defmacro with_show() do
+  defmacro defshow() do
     quote location: :keep do
       @doc """
       Fetches a `%#{Kernel.inspect(__MODULE__)}{}` by `record` or by `id`.
@@ -51,7 +137,7 @@ defmodule EPTSDK.Resource do
     end
   end
 
-  defmacro with_create() do
+  defmacro defcreate() do
     quote location: :keep do
       @doc """
       Creates an new `%#{Kernel.inspect(__MODULE__)}{}}` with `attributes:` and `relationships:`.
@@ -90,7 +176,7 @@ defmodule EPTSDK.Resource do
     end
   end
 
-  defmacro with_update() do
+  defmacro defupdate() do
     quote location: :keep do
       @doc """
       Updates an existing `%#{Kernel.inspect(__MODULE__)}` with `attributes:` and `relationships:`.
@@ -146,7 +232,7 @@ defmodule EPTSDK.Resource do
     end
   end
 
-  defmacro with_delete() do
+  defmacro defdelete() do
     quote location: :keep do
       def delete(_, _, options \\ [])
 
@@ -181,7 +267,7 @@ defmodule EPTSDK.Resource do
       )
       when is_map(entity) do
     entity
-    |> EPTSDK.Encoder.to_struct(payload["links"])
+    |> EPTSDK.Encoder.to_struct(payload["links"], client)
     |> (&{:ok, &1, payload["included"] || [], client}).()
   end
 
@@ -193,7 +279,7 @@ defmodule EPTSDK.Resource do
       )
       when is_list(entities) do
     entities
-    |> Enum.map(&EPTSDK.Encoder.to_struct(&1, %{}))
+    |> Enum.map(&EPTSDK.Encoder.to_struct(&1, %{}, client))
     |> (&{:ok, &1, payload["included"] || [], client}).()
   end
 

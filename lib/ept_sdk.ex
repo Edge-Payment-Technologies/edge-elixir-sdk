@@ -24,13 +24,17 @@ defmodule EPTSDK do
             http_client: Req.new(),
             response: nil,
             links: nil,
-            meta: nil
+            meta: nil,
+            fields: %{},
+            include: []
 
   @type t() :: %__MODULE__{
           authorization: String.t(),
           user_agent: String.t(),
           location: URI.t() | String.t(),
-          http_client: Req.Request.t()
+          http_client: Req.Request.t(),
+          fields: map(),
+          include: list()
         }
 
   def client(%{token: token, user_agent: user_agent} = properties) when is_map(properties) do
@@ -55,13 +59,14 @@ defmodule EPTSDK do
       when is_list(records) and is_list(included) and is_list(relationships) do
     {:ok,
      Enum.map(records, fn record ->
-       Enum.reduce(relationships, record, &update_record(&1, &2, included))
+       Enum.reduce(relationships, record, &update_record(&1, &2, included, client))
      end), included, client}
   end
 
   def sideload({:ok, record, included, client}, relationships)
       when is_struct(record) and is_list(included) and is_list(relationships) do
-    {:ok, Enum.reduce(relationships, record, &update_record(&1, &2, included)), included, client}
+    {:ok, Enum.reduce(relationships, record, &update_record(&1, &2, included, client)), included,
+     client}
   end
 
   def sideload({:ok, nil, included, client}, _relationships), do: {:ok, nil, included, client}
@@ -73,9 +78,10 @@ defmodule EPTSDK do
       when is_atom(signal) and is_struct(client, EPTSDK),
       do: exception
 
-  defp update_record(name, record, included) when is_atom(name) do
   def sideload({:error, _anything} = exception, _relationships), do: exception
 
+  defp update_record(name, record, included, client)
+       when is_atom(name) and is_list(included) do
     Map.merge(record, %{
       name =>
         record
@@ -83,26 +89,27 @@ defmodule EPTSDK do
         |> case do
           %EPTSDK.Relationship{has: :many, data: data} ->
             Enum.map(data, fn datum ->
-              find_and_encode_relationship(datum, included) ||
-                %EPTSDK.RelationshipNotAvailable{name: name, reason: :not_included}
+              find_and_encode_relationship(datum, included, client) || []
             end)
 
           %EPTSDK.Relationship{has: :one, data: data} ->
-            find_and_encode_relationship(data, included) ||
-              %EPTSDK.RelationshipNotAvailable{name: name, reason: :not_included}
+            find_and_encode_relationship(data, included, client) || nil
 
-          relationship ->
+          %EPTSDK.RelationshipNotAvailable{} = relationship ->
             relationship
+
+          nil ->
+            %EPTSDK.RelationshipNotAvailable{name: name, reason: :undefined}
         end
     })
   end
 
-  defp find_and_encode_relationship(relationship, included) do
+  defp find_and_encode_relationship(relationship, included, client) do
     included
     |> Enum.find(&compare_relationship_to_included(&1, relationship))
     |> case do
       nil -> nil
-      found_record -> EPTSDK.Encoder.to_struct(found_record, %{})
+      found_record -> EPTSDK.Encoder.to_struct(found_record, %{}, client)
     end
   end
 

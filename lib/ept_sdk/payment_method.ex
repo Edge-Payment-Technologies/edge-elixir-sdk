@@ -3,73 +3,51 @@ defmodule EPTSDK.PaymentMethod do
 
   @path "/payment_methods"
   @resource_type "payment_methods"
-  @enforce_keys [
-    :id,
-    :card_cvv_token,
-    :card_pan_token,
-    :expiry_month,
-    :expiry_year,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :payment_demands,
-    :customer,
-    :address,
-    :__raw__,
-    :__links__
-  ]
-  defstruct [
-    :id,
-    :type,
-    :card_bin,
-    :card_cvv_token,
-    :card_last_four,
-    :card_pan_token,
-    :external_state,
-    :kind,
-    :description,
-    :name,
-    :expiry_month,
-    :expiry_year,
-    :discarded_at,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :payment_demands,
-    :customer,
-    :address,
-    :__raw__,
-    :__links__
-  ]
 
-  with_list()
-  with_show()
-  with_create()
-  with_update()
-  with_delete()
+  @fields %{
+    nickname: :string,
+    card_pan_token: :string,
+    card_cvv_token: :string,
+    routing_number_token: :string,
+    account_number_token: :string,
+    expiry_month: :string,
+    expiry_year: :string,
+    card_bin: :string,
+    last_four: :string,
+    external_state: {:enum, values: [:pending, :confirmed, :failed, :errored]},
+    kind:
+      {:enum,
+       values: [
+         :visa,
+         :mastercard,
+         :amex,
+         :discover,
+         :diners,
+         :elo,
+         :hiper,
+         :hipercard,
+         :jcb,
+         :maestro,
+         :mir,
+         :unionpay,
+         :checking,
+         :savings
+       ]},
+    discarded_at: :datetime,
+    created_at: :datetime,
+    updated_at: :datetime
+  }
+  @relationships %{
+    merchant: :one,
+    payment_demands: :many,
+    customer: :one,
+    address: :one
+  }
 
-  def new(id, type, attributes, record, links) do
-    %__MODULE__{
-      id: id,
-      type: type,
-      card_pan_token: EPTSDK.Encoder.fetch(attributes, "card_pan_token"),
-      card_cvv_token: EPTSDK.Encoder.fetch(attributes, "card_cvv_token"),
-      expiry_month: EPTSDK.Encoder.fetch(attributes, "expiry_month"),
-      expiry_year: EPTSDK.Encoder.fetch(attributes, "expiry_year"),
-      card_bin: EPTSDK.Encoder.fetch(attributes, "card_bin"),
-      card_last_four: EPTSDK.Encoder.fetch(attributes, "card_last_four"),
-      external_state: EPTSDK.Encoder.fetch(attributes, "external_state", :atom),
-      kind: EPTSDK.Encoder.fetch(attributes, "kind", :atom),
-      discarded_at: EPTSDK.Encoder.fetch_datetime(attributes, "discarded_at"),
-      created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
-      updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      payment_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demands"),
-      customer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "customer"),
-      address: EPTSDK.Encoder.fetch_relationship(record["relationships"], "address"),
-      __links__: record["links"] || links,
-      __raw__: record
-    }
-  end
+  defresource()
+  deflist()
+  defshow()
+  defcreate()
+  defupdate()
+  defdelete()
 end

@@ -3,99 +3,69 @@ defmodule EPTSDK.PaymentDemand do
 
   @path "/payment_demands"
   @resource_type "payment_demands"
-  @enforce_keys [
-    :id,
-    :amount,
-    :amount_cents,
-    :amount_currency,
-    :net,
-    :net_cents,
-    :fee,
-    :fee_cents,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :buyer,
-    :receiver,
-    :payer,
-    :payment_method,
-    :billing_address,
-    :payment_subscription,
-    :shipping_address,
-    :processor_state,
-    :__raw__,
-    :__links__
-  ]
-  defstruct [
-    :id,
-    :type,
-    :amount,
-    :amount_cents,
-    :amount_currency,
-    :net,
-    :net_cents,
-    :fee,
-    :fee_cents,
-    :description,
-    :idempotency_key,
-    :processor_state,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :buyer,
-    :receiver,
-    :payer,
-    :payment_method,
-    :billing_address,
-    :refund_demands,
-    :payment_subscription,
-    :shipping_address,
-    :__raw__,
-    :__links__
-  ]
 
-  with_list()
-  with_show()
-  with_create()
-  with_update()
+  @fields %{
+    amount: {:money, cents: :amount_cents, currency: :amount_currency},
+    amount_cents: :integer,
+    amount_currency: {:enum, values: [:USD]},
+    payer_timezone: :string,
+    description: :string,
+    idempotency_key: :string,
+    processor_state:
+      {:enum,
+       values: [
+         :incomplete,
+         :ready,
+         :pending,
+         :processing,
+         :succeeded,
+         :reversed,
+         :refunded,
+         :failed,
+         :disputed
+       ]},
+    purchase_kind: {:enum, values: [:order, :invoice]},
+    purchase_reference: :string,
+    customer_reference: :string,
+    line_items: {:array, :map},
+    shipping_detail: :map,
+    tax_detail: :map,
+    metadata: :map,
+    capture_method: {:enum, values: [:automatic, :manual]},
+    fee: {:money, cents: :fee_cents, currency: :amount_currency},
+    fee_cents: :integer,
+    confirmed: :boolean,
+    refunded_at: :datetime,
+    succeeded_at: :datetime,
+    disputed_at: :datetime,
+    reversed_at: :datetime,
+    failed_at: :datetime,
+    created_at: :datetime,
+    updated_at: :datetime
+  }
 
-  def new(id, type, attributes, record, links) do
-    %__MODULE__{
-      id: id,
-      type: type,
-      amount: EPTSDK.Encoder.fetch(attributes, ["amount_cents", "amount_currency"], :money),
-      amount_cents: EPTSDK.Encoder.fetch(attributes, "amount_cents"),
-      amount_currency: EPTSDK.Encoder.fetch(attributes, "amount_currency"),
-      fee: EPTSDK.Encoder.fetch(attributes, ["fee_cents", "amount_currency"], :money),
-      fee_cents: EPTSDK.Encoder.fetch(attributes, "fee_cents"),
-      net: EPTSDK.Encoder.fetch(attributes, ["net_cents", "amount_currency"], :money),
-      net_cents: EPTSDK.Encoder.fetch(attributes, "net_cents"),
-      idempotency_key: EPTSDK.Encoder.fetch(attributes, "idempotency_key"),
-      processor_state: EPTSDK.Encoder.fetch(attributes, "processor_state", :atom),
-      description: EPTSDK.Encoder.fetch(attributes, "description"),
-      created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
-      updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      buyer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "buyer"),
-      receiver: EPTSDK.Encoder.fetch_relationship(record["relationships"], "receiver"),
-      payer: EPTSDK.Encoder.fetch_relationship(record["relationships"], "payer"),
-      payment_method:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_method"),
-      billing_address:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "billing_address"),
-      payment_subscription:
-        EPTSDK.Encoder.fetch_relationship(
-          record["relationships"],
-          "payment_subscription"
-        ),
-      refund_demands:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "refund_demands"),
-      shipping_address:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "shipping_address"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      __links__: record["links"] || links,
-      __raw__: record
-    }
-  end
+  @relationships %{
+    processor_detail: :one,
+    fee_plan: :one,
+    merchant: :one,
+    merchant_token: :one,
+    merchant_integration: :one,
+    buyer: :one,
+    receiver: :one,
+    payer: :one,
+    payment_method: :one,
+    refund_demands: :many,
+    billing_address: :one,
+    payment_subscription: :one,
+    shipping_address: :one
+  }
+
+  defresource()
+
+  deflist()
+  defshow()
+  defcreate()
+  defupdate()
 
   @doc """
   Confirms an existing `%#{Kernel.inspect(__MODULE__)}` for processing.

@@ -77,21 +77,16 @@ defmodule EPTSDK.EncoderTest do
              %EPTSDK.Customer{
                id: "565e6a1f-4038-485c-81d8-0f6fb121ee91",
                addresses: %EPTSDK.Relationship{
-                 has: :many,
                  name: "addresses",
-                 data: [
-                   %{
-                     id: "573b18f8-140e-4983-95b6-7b031b35ed37",
-                     type: "consumer_addresses"
-                   }
-                 ]
+                 data: [%{id: "573b18f8-140e-4983-95b6-7b031b35ed37", type: "consumer_addresses"}],
+                 has: :many
                },
                merchant: %EPTSDK.RelationshipNotAvailable{
                  name: "merchant",
-                 reason: :undefined_relationship
+                 reason: :unfetched
                },
-               payment_methods: %EPTSDK.RelationshipNotAvailable{
-                 name: "payment_methods",
+               verified_payment_methods: %EPTSDK.RelationshipNotAvailable{
+                 name: "verified_payment_methods",
                  reason: :unfetched
                },
                created_at: %DateTime{},
@@ -101,7 +96,8 @@ defmodule EPTSDK.EncoderTest do
                @data,
                %{
                  "self" => "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91"
-               }
+               },
+               EPTSDK.client(%{token: "token", user_agent: "user_agent"})
              )
            )
   end

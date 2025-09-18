@@ -3,51 +3,27 @@ defmodule EPTSDK.RefundDemand do
 
   @path "/refund_demands"
   @resource_type "refund_demands"
-  @enforce_keys [
-    :id,
-    :amount,
-    :amount_cents,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :payment_demand,
-    :__raw__,
-    :__links__
-  ]
-  defstruct [
-    :id,
-    :type,
-    :amount,
-    :amount_cents,
-    :amount_currency,
-    :state,
-    :created_at,
-    :updated_at,
-    :merchant,
-    :payment_demand,
-    :__raw__,
-    :__links__
-  ]
+  @fields %{
+    amount: {:money, cents: :amount_cents, currency: :amount_currency},
+    amount_cents: :integer,
+    amount_currency: {:enum, values: [:USD]},
+    state: {:enum, values: [:pending, :processing, :succeeded, :failed]},
+    created_at: :datetime,
+    processing_at: :datetime,
+    succeeded_at: :datetime,
+    failed_at: :datetime,
+    updated_at: :datetime
+  }
+  @relationships %{
+    processor_detail: :one,
+    payment_demand: :one,
+    merchant: :one,
+    payment_method: :one
+  }
 
-  with_list()
-  with_show()
-  with_create()
+  defresource()
 
-  def new(id, type, attributes, record, links) do
-    %__MODULE__{
-      id: id,
-      type: type,
-      amount: EPTSDK.Encoder.fetch(attributes, ["amount_cents", "amount_currency"], :money),
-      amount_cents: EPTSDK.Encoder.fetch(attributes, "amount_cents"),
-      amount_currency: EPTSDK.Encoder.fetch(attributes, "amount_currency"),
-      state: EPTSDK.Encoder.fetch(attributes, "state"),
-      created_at: EPTSDK.Encoder.fetch_datetime(attributes, "created_at"),
-      updated_at: EPTSDK.Encoder.fetch_datetime(attributes, "updated_at"),
-      payment_demand:
-        EPTSDK.Encoder.fetch_relationship(record["relationships"], "payment_demand"),
-      merchant: EPTSDK.Encoder.fetch_relationship(record["relationships"], "merchant"),
-      __links__: record["links"] || links,
-      __raw__: record
-    }
-  end
+  deflist()
+  defshow()
+  defcreate()
 end
