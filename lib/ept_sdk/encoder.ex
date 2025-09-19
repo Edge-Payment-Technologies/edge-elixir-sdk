@@ -176,7 +176,7 @@ defmodule EPTSDK.Encoder do
   end
 
   def cast(value, name, :datetime, _options) do
-    DateTime.from_iso8601(value, "{ISO:Extended:Z}")
+    DateTime.from_iso8601(value)
     |> case do
       {:ok, timestamp, _usec} -> timestamp
       {:error, _reason} -> %EPTSDK.PropertyNotAvailable{name: name, reason: :decoding_error}

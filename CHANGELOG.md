@@ -1,5 +1,9 @@
 # Changelog
 
+## 13.0.2
+
+- [bug] Elixir already supports extended datetime parsing by default
+
 ## 13.0.1
 
 - [bug] Support full ISO extended datetime parsing
