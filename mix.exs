@@ -4,7 +4,7 @@ defmodule EPTSDK.MixProject do
   def project do
     [
       app: :ept_sdk,
-      version: "13.0.0",
+      version: "13.0.1",
       description: "An SDK for interacting with the Edge Payment Technologies API",
       package: %{
         links: %{"GitHub" => "https://github.com/Edge-Payment-Technologies/edge-elixir-sdk"},

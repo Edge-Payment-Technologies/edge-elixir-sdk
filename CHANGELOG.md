@@ -1,5 +1,9 @@
 # Changelog
 
+## 13.0.1
+
+- [bug] Support full ISO extended datetime parsing
+
 ## 13.0.0
 
 - [breaking] Added a lot of new fields that we now support for purchases
