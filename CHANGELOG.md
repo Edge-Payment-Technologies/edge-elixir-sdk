@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- [feature] Add `EPTSDK.PaymentSubscriptions.confirm/3` for the new intent-to-subscription confirm flow
+
 ## 13.0.2
 
 - [bug] Elixir already supports extended datetime parsing by default
