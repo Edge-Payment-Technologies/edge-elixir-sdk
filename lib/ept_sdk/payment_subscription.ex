@@ -62,6 +62,7 @@ defmodule EPTSDK.PaymentSubscriptions do
   deflist()
   defshow()
   defcreate()
+  defupdate()
 
   @doc """
   Confirms an existing `%#{Kernel.inspect(__MODULE__)}` for processing.
