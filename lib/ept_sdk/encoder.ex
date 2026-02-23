@@ -89,7 +89,7 @@ defmodule EPTSDK.Encoder do
         client
       )
       when is_struct(client, EPTSDK),
-      do: EPTSDK.PaymentSubscriptions.new(id, type, record, links, client)
+      do: EPTSDK.PaymentSubscription.new(id, type, record, links, client)
 
   def to_struct(
         %{

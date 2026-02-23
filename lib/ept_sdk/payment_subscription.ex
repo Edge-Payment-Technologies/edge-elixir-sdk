@@ -1,4 +1,4 @@
-defmodule EPTSDK.PaymentSubscriptions do
+defmodule EPTSDK.PaymentSubscription do
   import EPTSDK.Resource, only: :macros
 
   @path "/payment_subscriptions"
