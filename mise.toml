@@ -1,0 +1,12 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
+[settings]
+lockfile = true
+
+[env]
+KERL_BUILD_DOCS = 'yes'
+ERL_AFLAGS = '-kernel shell_history enabled'
+
+[tools]
+erlang = '28.1'
+elixir = '1.19.0-otp-28'

@@ -1,8 +1,10 @@
 # Changelog
 
-## Unreleased
+## 14.0.0
 
 - [feature] Add `EPTSDK.PaymentSubscription.confirm/3` for the new intent-to-subscription confirm flow
+- [breaking] Renaming `PaymentSubscriptions` to `PaymentSubscription`
+- [breaking] Allow for `EPTSDK.PaymentSubscription.update/3` so that programs can update the terms of the subscription if needed
 
 ## 13.0.2
 
