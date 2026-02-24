@@ -273,11 +273,11 @@ defmodule EPTSDK do
 
   def update_client_from_request(
         {:ok, payload, %Req.Response{} = response},
-        client
+        %__MODULE__{} = client
       )
-      when is_struct(client, EPTSDK) and is_map(payload) do
+      when is_map(payload) do
     {:ok, payload,
-     %__MODULE__{
+     %{
        client
        | response: response,
          links: payload["links"],
