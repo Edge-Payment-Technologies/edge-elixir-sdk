@@ -49,6 +49,17 @@ customerA == customerB
 })
 ```
 
+## Error Handling
+
+All public operations return tagged tuples so callers can branch on success or failure without raising. Successful calls return `{:ok, resource, included, client}`. When the Edge JSON:API responds with errors, you will see:
+
+- `{:unprocessable_content, body, %Req.Response{}}` for validation failures (HTTP 422).
+- `{:internal_server_error, %Req.Response{}}` for server-side faults (HTTP 500).
+- `{:error, %Req.Response{}}` for other 4xx/5xx responses when no body is decoded.
+- `{:error, exception}` for transport and client exceptions.
+
+`EPTSDK.update_client_from_request/2` preserves these tuples, so downstream code should pattern match on the tuple tag before attempting to work with the response payload.
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

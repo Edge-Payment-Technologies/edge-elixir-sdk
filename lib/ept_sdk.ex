@@ -286,6 +286,20 @@ defmodule EPTSDK do
   end
 
   def update_client_from_request(
+        {indicator, %Req.Response{}} = error,
+        _client
+      )
+      when indicator in [:error, :internal_server_error],
+      do: error
+
+  def update_client_from_request(
+        {indicator, _exception, _response} = error,
+        _client
+      )
+      when indicator in [:error, :decoding_error, :unprocessable_content],
+      do: error
+
+  def update_client_from_request(
         {indicator, _exception, _response} = error,
         _client
       )

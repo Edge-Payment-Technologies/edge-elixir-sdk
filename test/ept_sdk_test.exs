@@ -331,4 +331,12 @@ defmodule EPTSDKTest do
              })
            )
   end
+
+  test "update_client_from_request/2 returns error for internal server responses" do
+    client = EPTSDK.client(%{token: "token", user_agent: "HAL/1.0"})
+    response = Req.Response.new(status: 500)
+
+    assert {:internal_server_error, ^response} =
+             EPTSDK.update_client_from_request({:internal_server_error, response}, client)
+  end
 end
