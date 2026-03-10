@@ -1,5 +1,9 @@
 # Changelog
 
+## 14.0.1
+
+- [breaking] Correct `EPTSDK.PaymentSubscription` proration enum to `:create_prorations` and document first-cycle subscription proration behavior
+
 ## 14.0.0
 
 - [feature] Add `EPTSDK.PaymentSubscription.confirm/3` for the new intent-to-subscription confirm flow
