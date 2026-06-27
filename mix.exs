@@ -27,7 +27,7 @@ defmodule EPTSDK.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:req, "~> 0.5.0"},
+      {:req, "~> 0.5.0 or ~> 0.6.0"},
       {:jason, "~> 1.4"},
       {:plug, "~> 1.15"},
       {:timex, "~> 3.7"},
