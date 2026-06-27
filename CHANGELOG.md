@@ -1,5 +1,10 @@
 # Changelog
 
+## 14.0.2
+
+- Loosing restriction on req version
+- [bugfix] Some functions had their failure typespecs incorrectly describe the tuples they were returning, so we fixed that
+
 ## 14.0.1
 
 - [breaking] Correct `EPTSDK.PaymentSubscription` proration enum to `:create_prorations` and document first-cycle subscription proration behavior
