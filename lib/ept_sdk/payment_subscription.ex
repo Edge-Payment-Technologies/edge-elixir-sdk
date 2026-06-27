@@ -1,6 +1,20 @@
 defmodule EPTSDK.PaymentSubscription do
   import EPTSDK.Resource, only: :macros
 
+  @moduledoc """
+  A recurring payment agreement for charging a customer on a billing schedule.
+
+  First-cycle proration is controlled by `:proration_behavior`.
+
+  When a payment subscription is created or confirmed with
+  `proration_behavior: :create_prorations` and a future `billing_cycle_anchor_at`,
+  Edge creates an immediate prorated first charge for the remaining portion of the
+  current billing period while preserving the billing anchor for the first full cycle.
+
+  When `proration_behavior: :none`, Edge skips the immediate prorated charge and
+  delays the first charge until `billing_cycle_anchor_at`.
+  """
+
   @path "/payment_subscriptions"
   @resource_type "payment_subscriptions"
   @fields %{
@@ -17,7 +31,7 @@ defmodule EPTSDK.PaymentSubscription do
     purchase_kind: {:enum, values: [:order, :invoice]},
     purchase_reference: :string,
     trial_end_at: :datetime,
-    proration_behavior: {:enum, values: [:none, :create_proration]},
+    proration_behavior: {:enum, values: [:none, :create_prorations]},
     billing_cycle_anchor_at: :datetime,
     billing_period:
       {:enum,
@@ -66,6 +80,10 @@ defmodule EPTSDK.PaymentSubscription do
 
   @doc """
   Confirms an existing `%#{Kernel.inspect(__MODULE__)}` for processing.
+
+  If the subscription is configured with `proration_behavior: :create_prorations`
+  and a future `billing_cycle_anchor_at`, confirmation creates an immediate prorated
+  first charge.
 
   The `options` argument can also have:
 

@@ -72,6 +72,24 @@ defmodule EPTSDK.EncoderTest do
     "type" => "customers"
   }
 
+  @payment_subscription_data %{
+    "attributes" => %{
+      "amount_cents" => 15_000,
+      "amount_currency" => "USD",
+      "billing_cycle_anchor_at" => "2030-02-01T00:00:00Z",
+      "billing_period" => "one_month",
+      "created_at" => "2024-01-16T17:24:38Z",
+      "proration_behavior" => "create_prorations",
+      "updated_at" => "2024-01-16T17:35:11Z"
+    },
+    "id" => "7ec47d55-0d4d-4be4-b925-ea40cbfa7ce3",
+    "links" => %{
+      "self" => "http://localhost:3000/payment_subscriptions/7ec47d55-0d4d-4be4-b925-ea40cbfa7ce3"
+    },
+    "relationships" => %{},
+    "type" => "payment_subscriptions"
+  }
+
   test "when handling a customer it normalizes the associated and included address, payment method, and merchant" do
     assert match?(
              %EPTSDK.Customer{
@@ -96,6 +114,27 @@ defmodule EPTSDK.EncoderTest do
                @data,
                %{
                  "self" => "http://localhost:3000/customers/565e6a1f-4038-485c-81d8-0f6fb121ee91"
+               },
+               EPTSDK.client(%{token: "token", user_agent: "user_agent"})
+             )
+           )
+  end
+
+  test "when handling a payment subscription it preserves proration behavior and billing details" do
+    assert match?(
+             %EPTSDK.PaymentSubscription{
+               id: "7ec47d55-0d4d-4be4-b925-ea40cbfa7ce3",
+               proration_behavior: "create_prorations",
+               billing_period: "one_month",
+               billing_cycle_anchor_at: %DateTime{},
+               created_at: %DateTime{},
+               updated_at: %DateTime{}
+             },
+             EPTSDK.Encoder.to_struct(
+               @payment_subscription_data,
+               %{
+                 "self" =>
+                   "http://localhost:3000/payment_subscriptions/7ec47d55-0d4d-4be4-b925-ea40cbfa7ce3"
                },
                EPTSDK.client(%{token: "token", user_agent: "user_agent"})
              )

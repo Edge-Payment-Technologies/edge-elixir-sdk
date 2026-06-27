@@ -49,6 +49,34 @@ customerA == customerB
 })
 ```
 
+## Payment subscription proration
+
+When you create or confirm a payment subscription with `proration_behavior: :create_prorations`
+and a future `billing_cycle_anchor_at`, Edge creates an immediate prorated first charge for the
+remaining portion of the current billing period.
+
+The billing anchor is still preserved, so the first full recurring charge is collected on
+`billing_cycle_anchor_at`.
+
+When `proration_behavior: :none`, Edge does not create an immediate prorated charge. The first
+charge is delayed until the billing anchor and is billed as a full cycle.
+
+```elixir
+{:ok, payment_subscription, [], client} =
+  EPTSDK.PaymentSubscription.create(client,
+    attributes: %{
+      amount_cents: 15_000,
+      amount_currency: :USD,
+      billing_period: :one_month,
+      billing_cycle_anchor_at: ~U[2030-02-01 00:00:00Z],
+      proration_behavior: :create_prorations
+    }
+  )
+
+{:ok, confirmed_subscription, [], client} =
+  EPTSDK.PaymentSubscription.confirm(client, payment_subscription)
+```
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
