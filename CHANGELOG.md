@@ -1,5 +1,10 @@
 # Changelog
 
+## 14.0.1
+
+- Loosing restriction on req version
+- [bugfix] Some functions had their failure typespecs incorrectly describe the tuples they were returning, so we fixed that
+
 ## 14.0.0
 
 - [feature] Add `EPTSDK.PaymentSubscription.confirm/3` for the new intent-to-subscription confirm flow
