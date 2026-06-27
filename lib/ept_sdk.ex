@@ -54,7 +54,8 @@ defmodule EPTSDK do
         ) ::
           {:ok, list(struct()) | struct() | nil, list(), EPTSDK.t()}
           | {:error, any()}
-          | {:error | :unprocessable_content | :decoding_error, any(), Req.Response.t()}
+          | {:error | :internal_server_error | :decoding_error | :unprocessable_content, any(),
+             Req.Response.t()}
   def sideload({:ok, records, included, client}, relationships)
       when is_list(records) and is_list(included) and is_list(relationships) do
     {:ok,

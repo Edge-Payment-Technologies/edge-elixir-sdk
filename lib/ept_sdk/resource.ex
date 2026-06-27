@@ -252,12 +252,12 @@ defmodule EPTSDK.Resource do
   @spec from_payload(
           {:ok, list(map()) | map() | nil, EPTSDK.t()}
           | {:error, any()}
-          | {:error, :internal_server_error, :decoding_error, :unprocessable_content, any(),
+          | {:error | :internal_server_error | :decoding_error | :unprocessable_content, any(),
              any()}
         ) ::
           {:ok, list(struct()) | struct() | nil, list(), EPTSDK.t()}
           | {:error, any()}
-          | {:error, :internal_server_error, :decoding_error, :unprocessable_content, any(),
+          | {:error | :internal_server_error | :decoding_error | :unprocessable_content, any(),
              Req.Response.t()}
   def from_payload(
         {:ok,
